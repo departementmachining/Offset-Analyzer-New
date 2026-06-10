@@ -532,27 +532,30 @@ function updateRow(sheet, item) {
             <!-- CLOUD URL PANEL -->
             <div class="premium-card p-6 border-l-8 border-emerald-500 bg-emerald-500/5">
                 <div class="flex flex-col gap-4">
-                    <div class="flex items-center justify-between">
-                        <div>
-                            <h3 class="font-black text-white text-sm uppercase tracking-wider flex items-center gap-2">
-                                <span class="w-2.5 h-2.5 rounded-full" id="cloudDot" style="background:#ef4444;box-shadow:0 0 8px #ef4444"></span>
-                                Koneksi Google Sheets Cloud
-                            </h3>
-                            <p class="text-[10px] text-slate-400 mt-1">Data tersimpan permanen di Google Sheets — edit dari mana saja, sync otomatis</p>
-                        </div>
-                        <div class="flex gap-2">
-                            <button onclick="document.getElementById('changePwdModal').classList.remove('hidden')" class="px-4 py-2 bg-blue-500/10 border border-blue-500/30 text-blue-400 rounded-xl text-[10px] font-black uppercase tracking-widest hover:bg-blue-500/20 transition flex items-center gap-2">
-                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z"></path></svg>
-                                Ganti Password
-                            </button>
-                            <button onclick="document.getElementById('setupModal').classList.remove('hidden')" class="px-4 py-2 bg-slate-700/50 border border-white/10 text-slate-400 rounded-xl text-[10px] font-black uppercase tracking-widest hover:bg-slate-700 transition flex items-center gap-2">
-                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-                                Panduan
-                            </button>
-                            <button onclick="logoutAdmin()" class="px-4 py-2 bg-rose-500/10 border border-rose-500/30 text-rose-400 rounded-xl text-[10px] font-black uppercase tracking-widest hover:bg-rose-500/20 transition flex items-center gap-2">
-                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path></svg>
-                                Keluar
-                            </button>
+                    <div class="flex flex-col gap-3">
+                        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+                            <div>
+                                <h3 class="font-black text-white text-sm uppercase tracking-wider flex items-center gap-2">
+                                    <span class="w-2.5 h-2.5 rounded-full flex-shrink-0" id="cloudDot" style="background:#ef4444;box-shadow:0 0 8px #ef4444"></span>
+                                    Koneksi Google Sheets Cloud
+                                </h3>
+                                <p class="text-[10px] text-slate-400 mt-1">Data tersimpan permanen di Google Sheets — edit dari mana saja, sync otomatis</p>
+                            </div>
+                            <!-- Action buttons: wrap on portrait, row on landscape -->
+                            <div class="flex flex-wrap gap-2 sm:flex-nowrap sm:flex-shrink-0">
+                                <button onclick="document.getElementById('changePwdModal').classList.remove('hidden')" class="flex-1 sm:flex-none px-3 py-2.5 bg-blue-500/10 border border-blue-500/30 text-blue-400 rounded-xl text-[9px] font-black uppercase tracking-widest hover:bg-blue-500/20 transition flex items-center justify-center gap-1.5 whitespace-nowrap">
+                                    <svg class="w-3.5 h-3.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z"></path></svg>
+                                    Ganti Password
+                                </button>
+                                <button onclick="document.getElementById('setupModal').classList.remove('hidden')" class="flex-1 sm:flex-none px-3 py-2.5 bg-slate-700/50 border border-white/10 text-slate-400 rounded-xl text-[9px] font-black uppercase tracking-widest hover:bg-slate-700 transition flex items-center justify-center gap-1.5 whitespace-nowrap">
+                                    <svg class="w-3.5 h-3.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                                    Panduan
+                                </button>
+                                <button onclick="logoutAdmin()" class="flex-1 sm:flex-none px-3 py-2.5 bg-rose-500/10 border border-rose-500/30 text-rose-400 rounded-xl text-[9px] font-black uppercase tracking-widest hover:bg-rose-500/20 transition flex items-center justify-center gap-1.5 whitespace-nowrap">
+                                    <svg class="w-3.5 h-3.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path></svg>
+                                    Keluar
+                                </button>
+                            </div>
                         </div>
                     </div>
                     <div class="flex flex-col md:flex-row gap-3">
@@ -669,6 +672,10 @@ function updateRow(sheet, item) {
 
     function getAdminPassword() {
         return localStorage.getItem('admin_password') || 'admin123';
+    }
+
+    function setAdminAuth(val) {
+        adminAuthenticated = val;
     }
 
     // ═══════════════════════════════════════════════════
@@ -1175,7 +1182,7 @@ function updateRow(sheet, item) {
         const input = document.getElementById('adminPasswordInput').value;
         if (input === getAdminPassword()) {
             // SUCCESS
-            adminAuthenticated = true;
+            setAdminAuth(true);
             loginAttempts = 0;
             document.getElementById('passwordModal').classList.add('hidden');
             document.getElementById('adminPasswordInput').value = '';
@@ -1225,12 +1232,6 @@ function updateRow(sheet, item) {
         document.getElementById('adminPasswordInput').value = '';
         updatePinDots('');
         document.getElementById('pwdError').style.opacity = '0';
-    }
-
-    function logoutAdmin() {
-        adminAuthenticated = false;
-        switchMenu('dashboard');
-        showToast("SESI ADMIN BERAKHIR");
     }
 
     function updatePinDots(val) {
@@ -1304,16 +1305,14 @@ function updateRow(sheet, item) {
     //  UI NAVIGATION
     // ═══════════════════════════════════════════════════
     function switchMenu(menu) {
+        // Switching to dashboard always ends admin session
+        if (menu === 'dashboard' && adminAuthenticated) {
+            setAdminAuth(false);
+        }
+
         document.getElementById('menu-dashboard').classList.toggle('hidden', menu !== 'dashboard');
         document.getElementById('menu-admin').classList.toggle('hidden', menu !== 'admin');
-
-        // Hide KPI cards when in admin panel
-        const kpi = document.getElementById('kpiSection');
-        if (menu === 'admin') {
-            kpi.style.display = 'none';
-        } else {
-            kpi.style.display = '';
-        }
+        document.getElementById('kpiSection').style.display = menu === 'admin' ? 'none' : '';
 
         const dashBtn = document.getElementById('nav-dashboard');
         const adminBtn = document.getElementById('nav-admin');
@@ -1327,6 +1326,12 @@ function updateRow(sheet, item) {
             renderDatabase();
         }
         updateKPIs();
+    }
+
+    function logoutAdmin() {
+        setAdminAuth(false);
+        switchMenu('dashboard');
+        showToast("SESI ADMIN BERAKHIR");
     }
 
     function switchLine(n) { activeLine = parseInt(n); updateTypeDropdowns(); updateComparison(); updateKPIs(); }
