@@ -8,26 +8,64 @@
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;700&display=swap');
         
-        :root { --primary: #090d16; --accent: #f59e0b; --accent-glow: rgba(245, 158, 11, 0.15); }
+        :root {
+            --primary: #090d16;
+            --accent: #f59e0b;
+            --accent-glow: rgba(245, 158, 11, 0.15);
+        }
 
-        body { background: radial-gradient(circle at top right, #111827, #070a13); font-family: 'Plus Jakarta Sans', sans-serif; color: #f1f5f9; min-height: 100vh; }
+        body {
+            background: radial-gradient(circle at top right, #111827, #070a13);
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            color: #f1f5f9;
+            min-height: 100vh;
+        }
 
-        .premium-card { background: rgba(17, 24, 39, 0.6); backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.06); box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.5); border-radius: 24px; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
-        .premium-card:hover { border-color: rgba(245, 158, 11, 0.2); box-shadow: 0 25px 50px -12px rgba(245, 158, 11, 0.08); }
+        .premium-card {
+            background: rgba(17, 24, 39, 0.6);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.5);
+            border-radius: 24px;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
 
-        .btn-gold { background: linear-gradient(135deg, #fbbf24 0%, #d97706 100%); color: #451a03; box-shadow: 0 4px 20px rgba(217, 119, 6, 0.3); transition: all 0.3s ease; }
-        .btn-gold:hover { transform: translateY(-2px); box-shadow: 0 6px 24px rgba(217, 119, 6, 0.5); }
+        .premium-card:hover {
+            border-color: rgba(245, 158, 11, 0.2);
+            box-shadow: 0 25px 50px -12px rgba(245, 158, 11, 0.08);
+        }
 
-        .nav-active { background: rgba(255, 255, 255, 0.08); color: #fbbf24; border: 1px solid rgba(251, 191, 36, 0.3); box-shadow: inset 0 0 12px rgba(251, 191, 36, 0.1); }
+        .btn-gold {
+            background: linear-gradient(135deg, #fbbf24 0%, #d97706 100%);
+            color: #451a03;
+            box-shadow: 0 4px 20px rgba(217, 119, 6, 0.3);
+            transition: all 0.3s ease;
+        }
 
-        .sync-indicator { width: 10px; height: 10px; border-radius: 50%; display: inline-block; }
+        .btn-gold:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 24px rgba(217, 119, 6, 0.5);
+        }
+
+        .nav-active {
+            background: rgba(255, 255, 255, 0.08);
+            color: #fbbf24;
+            border: 1px solid rgba(251, 191, 36, 0.3);
+            box-shadow: inset 0 0 12px rgba(251, 191, 36, 0.1);
+        }
+
+        .sync-indicator {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            display: inline-block;
+        }
+        
         .status-online { background-color: #10b981; box-shadow: 0 0 12px #10b981; }
         .status-offline { background-color: #ef4444; box-shadow: 0 0 12px #ef4444; }
         .status-syncing { background-color: #f59e0b; animation: pulse 1s infinite; box-shadow: 0 0 12px #f59e0b; }
 
         @keyframes pulse { 0% { opacity: 1; transform: scale(1); } 50% { opacity: 0.4; transform: scale(1.1); } 100% { opacity: 1; transform: scale(1); } }
-        @keyframes spin { to { transform: rotate(360deg); } }
-        .animate-spin-slow { animation: spin 2s linear infinite; }
 
         .custom-scrollbar::-webkit-scrollbar { width: 6px; height: 6px; }
         .custom-scrollbar::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.1); border-radius: 10px; }
@@ -38,154 +76,45 @@
 
         .filter-select {
             background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2224%22%20height%3D%2224%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22%23fbbf24%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpolyline%20points%3D%226%209%2012%2015%2018%209%22%3E%3C%2Fpolyline%3E%3C%2Fsvg%3E');
-            background-repeat: no-repeat; background-position: right 0.75rem center; background-size: 1.1em;
+            background-repeat: no-repeat;
+            background-position: right 0.75rem center;
+            background-size: 1.1em;
         }
 
         .glow-text-blue { text-shadow: 0 0 10px rgba(59, 130, 246, 0.5); }
         .glow-text-emerald { text-shadow: 0 0 10px rgba(16, 185, 129, 0.5); }
 
-        .numpad-btn {
-            background: rgba(17, 24, 39, 0.8);
-            border: 1px solid rgba(255,255,255,0.08);
-            color: #e2e8f0;
-            padding: 14px;
-            border-radius: 16px;
-            font-size: 16px;
-            font-weight: 700;
-            transition: all 0.15s ease;
-            cursor: pointer;
-        }
-        .numpad-btn:hover { background: rgba(251,191,36,0.1); border-color: rgba(251,191,36,0.3); color: #fbbf24; transform: scale(1.05); }
-        .numpad-btn:active { transform: scale(0.95); }
+        /* HISTORY PANEL */
+        .history-item { animation: slideIn 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+        @keyframes slideIn { from { opacity: 0; transform: translateX(-10px); } to { opacity: 1; transform: translateX(0); } }
 
-        /* Sync banner */
-        #syncBanner { transition: all 0.4s ease; }
-
-        /* Password modal */
-        @keyframes shake {
-            0%,100% { transform: translateX(0); }
-            20% { transform: translateX(-8px); }
-            40% { transform: translateX(8px); }
-            60% { transform: translateX(-6px); }
-            80% { transform: translateX(6px); }
+        /* NO CHANGE TAG */
+        .tag-no-change {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            background: rgba(100, 116, 139, 0.12);
+            border: 1px solid rgba(100, 116, 139, 0.25);
+            color: #64748b;
+            font-size: 9px;
+            font-weight: 900;
+            letter-spacing: 0.1em;
+            padding: 2px 8px;
+            border-radius: 999px;
+            text-transform: uppercase;
         }
-        .shake { animation: shake 0.4s cubic-bezier(.36,.07,.19,.97) both; }
 
-        @keyframes lockPulse {
-            0%,100% { transform: scale(1); filter: drop-shadow(0 0 0px #f59e0b); }
-            50% { transform: scale(1.15); filter: drop-shadow(0 0 8px #f59e0b); }
-        }
-        .lock-pulse { animation: lockPulse 2s ease-in-out infinite; }
+        /* HISTORY BADGE PULSE */
+        .hist-badge { animation: badgePop 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) forwards; }
+        @keyframes badgePop { from { transform: scale(0.5); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+
+        /* HISTORY PANEL SCROLL */
+        #historyPanel { transition: max-height 0.4s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.3s ease; }
     </style>
 </head>
 <body class="pb-16 custom-scrollbar">
 
-    <!-- PASSWORD MODAL ADMIN -->
-    <div id="passwordModal" class="hidden fixed inset-0 z-[600] flex items-center justify-center p-4 bg-black/90 backdrop-blur-lg">
-        <div id="passwordBox" class="bg-[#0a0e1a] border border-amber-500/20 rounded-[32px] p-10 max-w-sm w-full shadow-2xl shadow-black animate-fade">
-            <!-- Lock Icon -->
-            <div class="flex justify-center mb-6">
-                <div class="w-20 h-20 bg-amber-500/10 rounded-[24px] flex items-center justify-center border border-amber-500/20">
-                    <svg id="lockIcon" class="w-10 h-10 text-amber-400 lock-pulse" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path>
-                    </svg>
-                </div>
-            </div>
-
-            <div class="text-center mb-6">
-                <h2 class="text-2xl font-black text-white tracking-tight">ADMIN PANEL</h2>
-                <p class="text-slate-500 text-[10px] font-bold uppercase tracking-widest mt-1">Akses Terbatas — Masukkan Password</p>
-            </div>
-
-            <!-- PIN dots display -->
-            <div class="flex justify-center gap-3 mb-6" id="pinDots">
-                <div class="w-3 h-3 rounded-full border-2 border-slate-600" id="dot1"></div>
-                <div class="w-3 h-3 rounded-full border-2 border-slate-600" id="dot2"></div>
-                <div class="w-3 h-3 rounded-full border-2 border-slate-600" id="dot3"></div>
-                <div class="w-3 h-3 rounded-full border-2 border-slate-600" id="dot4"></div>
-                <div class="w-3 h-3 rounded-full border-2 border-slate-600" id="dot5"></div>
-                <div class="w-3 h-3 rounded-full border-2 border-slate-600" id="dot6"></div>
-            </div>
-
-            <!-- Password Input -->
-            <div class="relative mb-2">
-                <input id="adminPasswordInput" type="password" maxlength="20"
-                    placeholder="Ketik password..."
-                    onkeydown="if(event.key==='Enter') checkAdminPassword()"
-                    oninput="updatePinDots(this.value)"
-                    class="w-full bg-slate-900/80 border border-slate-700/60 px-5 py-4 rounded-2xl text-center text-sm font-mono font-bold text-amber-300 outline-none focus:border-amber-400 transition-all tracking-[0.5em] placeholder-slate-700 placeholder:tracking-normal">
-                <button id="togglePwdBtn" onclick="togglePwdVisibility()" class="absolute right-4 top-1/2 -translate-y-1/2 text-slate-500 hover:text-amber-400 transition">
-                    <svg id="eyeIcon" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path></svg>
-                </button>
-            </div>
-            <p id="pwdError" class="text-center text-rose-400 text-[10px] font-black uppercase tracking-widest mb-4 opacity-0 transition-opacity">Password salah! Coba lagi.</p>
-
-            <!-- Attempt counter -->
-            <div id="attemptWarning" class="hidden mb-4 bg-rose-500/10 border border-rose-500/20 rounded-xl px-4 py-2 text-center">
-                <span id="attemptText" class="text-rose-400 text-[10px] font-black uppercase tracking-widest"></span>
-            </div>
-
-            <!-- Numpad (opsional, bisa skip jika pakai keyboard) -->
-            <div class="grid grid-cols-3 gap-2 mb-4">
-                <button onclick="appendPin('1')" class="numpad-btn">1</button>
-                <button onclick="appendPin('2')" class="numpad-btn">2</button>
-                <button onclick="appendPin('3')" class="numpad-btn">3</button>
-                <button onclick="appendPin('4')" class="numpad-btn">4</button>
-                <button onclick="appendPin('5')" class="numpad-btn">5</button>
-                <button onclick="appendPin('6')" class="numpad-btn">6</button>
-                <button onclick="appendPin('7')" class="numpad-btn">7</button>
-                <button onclick="appendPin('8')" class="numpad-btn">8</button>
-                <button onclick="appendPin('9')" class="numpad-btn">9</button>
-                <button onclick="clearPin()" class="numpad-btn text-rose-400 font-black">⌫</button>
-                <button onclick="appendPin('0')" class="numpad-btn">0</button>
-                <button onclick="checkAdminPassword()" class="numpad-btn bg-amber-500/20 border-amber-500/40 text-amber-400 font-black">↵</button>
-            </div>
-
-            <div class="flex gap-3">
-                <button onclick="closePasswordModal()" class="flex-1 py-3.5 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-2xl font-bold text-xs uppercase transition">Batal</button>
-                <button onclick="checkAdminPassword()" class="flex-1 py-3.5 btn-gold rounded-2xl font-bold text-xs uppercase shadow-lg">Masuk</button>
-            </div>
-
-            <!-- Change password hint (only when logged in) -->
-            <p class="text-center text-slate-600 text-[9px] mt-4 uppercase tracking-widest">Default: <span class="text-slate-500 font-mono">admin123</span></p>
-        </div>
-    </div>
-
-    <!-- CHANGE PASSWORD MODAL -->
-    <div id="changePwdModal" class="hidden fixed inset-0 z-[600] flex items-center justify-center p-4 bg-black/90 backdrop-blur-lg">
-        <div class="bg-[#0a0e1a] border border-blue-500/20 rounded-[32px] p-8 max-w-sm w-full shadow-2xl animate-fade">
-            <div class="flex items-center gap-3 mb-6">
-                <div class="p-2 bg-blue-500/10 rounded-xl text-blue-400">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z"></path></svg>
-                </div>
-                <div>
-                    <h2 class="text-lg font-black text-white">Ganti Password</h2>
-                    <p class="text-slate-500 text-[9px] uppercase tracking-widest">Admin Panel Security</p>
-                </div>
-            </div>
-            <div class="space-y-4 mb-6">
-                <div>
-                    <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1 mb-1.5 block">Password Lama</label>
-                    <input id="oldPwd" type="password" class="w-full bg-slate-900 border border-slate-700/60 p-4 rounded-2xl text-sm font-mono text-white outline-none focus:border-blue-400">
-                </div>
-                <div>
-                    <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1 mb-1.5 block">Password Baru</label>
-                    <input id="newPwd" type="password" class="w-full bg-slate-900 border border-slate-700/60 p-4 rounded-2xl text-sm font-mono text-white outline-none focus:border-blue-400">
-                </div>
-                <div>
-                    <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1 mb-1.5 block">Konfirmasi Password Baru</label>
-                    <input id="confirmPwd" type="password" class="w-full bg-slate-900 border border-slate-700/60 p-4 rounded-2xl text-sm font-mono text-white outline-none focus:border-blue-400">
-                </div>
-                <p id="changePwdError" class="text-rose-400 text-[10px] font-black uppercase tracking-widest opacity-0 transition-opacity ml-1"></p>
-            </div>
-            <div class="flex gap-3">
-                <button onclick="document.getElementById('changePwdModal').classList.add('hidden')" class="flex-1 py-4 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-2xl font-bold text-xs uppercase transition">Batal</button>
-                <button onclick="applyChangePassword()" class="flex-1 py-4 bg-blue-500 hover:bg-blue-600 text-white rounded-2xl font-bold text-xs uppercase shadow-lg transition">Simpan</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- MODAL EDIT DATA -->
+    <!-- MODAL EDIT DATA (GLASSMORPHISM LUXURY) -->
     <div id="editModal" class="hidden fixed inset-0 z-[400] flex items-center justify-center p-4 bg-black/80 backdrop-blur-md">
         <div class="bg-[#0f1422] border border-white/10 rounded-[32px] p-8 max-w-md w-full shadow-2xl shadow-black/80 animate-fade">
             <div class="flex items-center gap-3 mb-1">
@@ -195,6 +124,7 @@
                 <h2 class="text-2xl font-black text-white">Edit Data Offset</h2>
             </div>
             <p class="text-slate-400 text-[10px] font-bold uppercase tracking-widest mb-6">Peralatan Presisi & Database CNC</p>
+            
             <input type="hidden" id="edit-id">
             <div class="grid grid-cols-2 gap-4 mb-6">
                 <div class="col-span-2">
@@ -218,6 +148,7 @@
                     <input id="edit-z" type="number" step="0.001" class="w-full bg-emerald-500/10 border border-emerald-500/30 p-4 rounded-2xl text-sm font-mono font-bold text-emerald-400 outline-none focus:border-emerald-500">
                 </div>
             </div>
+
             <div class="flex gap-3">
                 <button onclick="closeEditModal()" class="flex-1 py-4 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-2xl font-bold text-xs uppercase transition">Batal</button>
                 <button onclick="applyEdit()" class="flex-1 py-4 btn-gold rounded-2xl font-bold text-xs uppercase shadow-lg">Simpan</button>
@@ -225,149 +156,13 @@
         </div>
     </div>
 
-    <!-- SETUP GUIDE MODAL -->
-    <div id="setupModal" class="hidden fixed inset-0 z-[500] flex items-center justify-center p-4 bg-black/90 backdrop-blur-md">
-        <div class="bg-[#0f1422] border border-emerald-500/30 rounded-[32px] p-8 max-w-2xl w-full shadow-2xl animate-fade overflow-y-auto max-h-[90vh] custom-scrollbar">
-            <div class="flex items-center gap-3 mb-2">
-                <span class="p-2 bg-emerald-500/10 rounded-xl text-emerald-400">
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
-                </span>
-                <h2 class="text-2xl font-black text-white">Panduan Setup Google Sheets Sync</h2>
-            </div>
-            <p class="text-slate-400 text-xs mb-6">Ikuti langkah berikut untuk mengaktifkan sinkronisasi dua arah dengan Google Sheets.</p>
-
-            <div class="space-y-4 text-xs text-slate-300">
-                <div class="bg-slate-900/60 rounded-2xl p-4 border border-white/5">
-                    <div class="flex items-center gap-2 mb-2"><span class="w-6 h-6 bg-amber-500 text-slate-950 rounded-full flex items-center justify-center font-black text-xs">1</span><span class="font-black text-white uppercase tracking-wide">Buat Google Sheet Baru</span></div>
-                    <p class="text-slate-400 ml-8">Buka <a href="https://sheets.new" target="_blank" class="text-emerald-400 underline">sheets.new</a> → buat spreadsheet baru dengan nama <span class="text-amber-400 font-mono">Offset Analyzer DB</span></p>
-                </div>
-                <div class="bg-slate-900/60 rounded-2xl p-4 border border-white/5">
-                    <div class="flex items-center gap-2 mb-2"><span class="w-6 h-6 bg-amber-500 text-slate-950 rounded-full flex items-center justify-center font-black text-xs">2</span><span class="font-black text-white uppercase tracking-wide">Buka Apps Script</span></div>
-                    <p class="text-slate-400 ml-8">Di Google Sheet → klik <span class="text-white font-bold">Extensions</span> → <span class="text-white font-bold">Apps Script</span></p>
-                </div>
-                <div class="bg-slate-900/60 rounded-2xl p-4 border border-white/5">
-                    <div class="flex items-center gap-2 mb-2"><span class="w-6 h-6 bg-amber-500 text-slate-950 rounded-full flex items-center justify-center font-black text-xs">3</span><span class="font-black text-white uppercase tracking-wide">Paste Script di bawah ini</span></div>
-                    <p class="text-slate-400 ml-8 mb-3">Hapus semua isi editor, paste script berikut, lalu klik Save:</p>
-                    <div class="bg-slate-950 rounded-xl p-4 font-mono text-[10px] text-emerald-300 leading-relaxed overflow-x-auto custom-scrollbar border border-emerald-900/30" id="scriptPreview">
-// ═══════════════════════════════════════════════
-// OFFSET ANALYZER PRO - Google Apps Script
-// Salin seluruh kode ini ke Apps Script Editor
-// ═══════════════════════════════════════════════
-
-const SHEET_NAME = "OffsetDB";
-const SECRET_KEY = "OFFSET_PRO_2024"; // Ganti jika perlu
-
-function doGet(e) {
-  try {
-    const sheet = getOrCreateSheet();
-    const data = readAllData(sheet);
-    return ContentService.createTextOutput(JSON.stringify({ status: "ok", db: data }))
-      .setMimeType(ContentService.MimeType.JSON);
-  } catch(err) {
-    return ContentService.createTextOutput(JSON.stringify({ status: "error", message: err.message }))
-      .setMimeType(ContentService.MimeType.JSON);
-  }
-}
-
-function doPost(e) {
-  try {
-    const payload = JSON.parse(e.postData.contents);
-    if (payload.key !== SECRET_KEY) {
-      return ContentService.createTextOutput(JSON.stringify({ status: "unauthorized" }))
-        .setMimeType(ContentService.MimeType.JSON);
-    }
-    const sheet = getOrCreateSheet();
-    if (payload.action === "SAVE_ALL") {
-      writeAllData(sheet, payload.db);
-      return ContentService.createTextOutput(JSON.stringify({ status: "saved" }))
-        .setMimeType(ContentService.MimeType.JSON);
-    }
-    if (payload.action === "UPDATE_ROW") {
-      updateRow(sheet, payload.item);
-      return ContentService.createTextOutput(JSON.stringify({ status: "updated" }))
-        .setMimeType(ContentService.MimeType.JSON);
-    }
-  } catch(err) {
-    return ContentService.createTextOutput(JSON.stringify({ status: "error", message: err.message }))
-      .setMimeType(ContentService.MimeType.JSON);
-  }
-}
-
-function getOrCreateSheet() {
-  const ss = SpreadsheetApp.getActiveSpreadsheet();
-  let sheet = ss.getSheetByName(SHEET_NAME);
-  if (!sheet) {
-    sheet = ss.insertSheet(SHEET_NAME);
-    sheet.appendRow(["line","id","type","op","tool","x","z","updated_at"]);
-    sheet.getRange(1,1,1,8).setBackground("#1a1a2e").setFontColor("#fbbf24").setFontWeight("bold");
-    sheet.setFrozenRows(1);
-  }
-  return sheet;
-}
-
-function readAllData(sheet) {
-  const rows = sheet.getDataRange().getValues();
-  if (rows.length <= 1) return { line1:[], line2:[], line3:[], line4:[] };
-  const db = { line1:[], line2:[], line3:[], line4:[] };
-  for (let i = 1; i < rows.length; i++) {
-    const [line, id, type, op, tool, x, z] = rows[i];
-    if (!line || !id) continue;
-    const key = "line" + line;
-    if (!db[key]) db[key] = [];
-    db[key].push({ id: String(id), type: String(type), op: String(op), tool: String(tool), x: parseFloat(x)||0, z: parseFloat(z)||0 });
-  }
-  return db;
-}
-
-function writeAllData(sheet, db) {
-  const lastRow = sheet.getLastRow();
-  if (lastRow > 1) sheet.deleteRows(2, lastRow - 1);
-  const rows = [];
-  for (let ln = 1; ln <= 4; ln++) {
-    const items = db["line" + ln] || [];
-    items.forEach(item => {
-      rows.push([ln, item.id, item.type, item.op, item.tool, item.x, item.z, new Date().toISOString()]);
-    });
-  }
-  if (rows.length > 0) sheet.getRange(2, 1, rows.length, 8).setValues(rows);
-}
-
-function updateRow(sheet, item) {
-  const rows = sheet.getDataRange().getValues();
-  for (let i = 1; i < rows.length; i++) {
-    if (String(rows[i][1]) === String(item.id)) {
-      sheet.getRange(i+1, 1, 1, 8).setValues([[item.line, item.id, item.type, item.op, item.tool, item.x, item.z, new Date().toISOString()]]);
-      return;
-    }
-  }
-  sheet.appendRow([item.line, item.id, item.type, item.op, item.tool, item.x, item.z, new Date().toISOString()]);
-}
-                    </div>
-                    <button onclick="copyScript()" class="mt-3 ml-8 px-4 py-2 bg-emerald-500/20 border border-emerald-500/30 text-emerald-400 rounded-xl text-[10px] font-black uppercase tracking-widest hover:bg-emerald-500/30 transition">📋 Salin Script</button>
-                </div>
-                <div class="bg-slate-900/60 rounded-2xl p-4 border border-white/5">
-                    <div class="flex items-center gap-2 mb-2"><span class="w-6 h-6 bg-amber-500 text-slate-950 rounded-full flex items-center justify-center font-black text-xs">4</span><span class="font-black text-white uppercase tracking-wide">Deploy sebagai Web App</span></div>
-                    <p class="text-slate-400 ml-8">Klik <span class="text-white font-bold">Deploy</span> → <span class="text-white font-bold">New deployment</span> → pilih type <span class="text-amber-400">Web app</span> → Execute as: <span class="text-amber-400">Me</span> → Who has access: <span class="text-amber-400">Anyone</span> → klik <span class="text-emerald-400 font-bold">Deploy</span></p>
-                </div>
-                <div class="bg-slate-900/60 rounded-2xl p-4 border border-white/5">
-                    <div class="flex items-center gap-2 mb-2"><span class="w-6 h-6 bg-amber-500 text-slate-950 rounded-full flex items-center justify-center font-black text-xs">5</span><span class="font-black text-white uppercase tracking-wide">Salin Web App URL</span></div>
-                    <p class="text-slate-400 ml-8">Salin URL yang muncul (format: <span class="font-mono text-amber-400 text-[9px]">https://script.google.com/macros/s/.../exec</span>) → paste di field URL pada Admin Panel → klik <span class="text-emerald-400 font-bold">Koneksikan</span></p>
-                </div>
-            </div>
-
-            <button onclick="document.getElementById('setupModal').classList.add('hidden')" class="mt-6 w-full py-4 btn-gold rounded-2xl font-black text-xs uppercase tracking-widest">Mengerti, Tutup Panduan</button>
-        </div>
-    </div>
-
     <!-- HEADER PREMIUM -->
-    <header class="text-white pt-10 pb-20 px-6 md:px-8 mb-[-40px]" style="background: linear-gradient(135deg, #070a13 0%, #111827 100%);">
+    <header class="header-gradient text-white pt-10 pb-20 px-6 md:px-8 mb-[-40px]">
         <div class="max-w-7xl mx-auto flex flex-col lg:flex-row justify-between items-center gap-6">
             <div class="space-y-2 text-center lg:text-left">
                 <div class="flex items-center justify-center lg:justify-start gap-2.5 mb-1">
                     <span id="syncStatusDot" class="sync-indicator status-offline"></span>
                     <span id="syncStatusText" class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Sistem Offline</span>
-                    <span class="text-slate-600">|</span>
-                    <span id="lastSyncTime" class="text-[10px] font-bold text-slate-500 uppercase tracking-widest">Belum pernah sync</span>
                     <span class="text-slate-600">|</span>
                     <span class="text-[10px] font-bold text-amber-500 uppercase tracking-widest flex items-center gap-1">
                         <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
@@ -379,12 +174,14 @@ function updateRow(sheet, item) {
                 </h1>
                 <p class="text-xs text-slate-400 font-medium tracking-wide">Sistem Analisis Deviasi Dimensi Pemesinan CNC Presisi Tinggi</p>
             </div>
+
+            <!-- NAVIGATION BUTTONS -->
             <div class="bg-slate-900/60 p-1.5 rounded-2xl backdrop-blur-md border border-white/10 flex gap-1">
                 <button onclick="switchMenu('dashboard')" id="nav-dashboard" class="px-8 py-3.5 rounded-xl text-xs font-black transition-all nav-active flex items-center gap-2">
                     <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path></svg>
                     DASHBOARD
                 </button>
-                <button onclick="requestAdminAccess()" id="nav-admin" class="px-8 py-3.5 rounded-xl text-xs font-black transition-all text-slate-400 hover:text-white flex items-center gap-2">
+                <button onclick="switchMenu('admin')" id="nav-admin" class="px-8 py-3.5 rounded-xl text-xs font-black transition-all text-slate-400 hover:text-white flex items-center gap-2">
                     <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4"></path></svg>
                     ADMIN PANEL
                 </button>
@@ -392,19 +189,10 @@ function updateRow(sheet, item) {
         </div>
     </header>
 
-    <!-- AUTO-SYNC BANNER -->
-    <div id="syncBanner" class="hidden max-w-7xl mx-auto px-6 md:px-8 mt-2 mb-[-20px] relative z-10">
-        <div class="bg-amber-500/10 border border-amber-500/30 rounded-2xl px-6 py-3 flex items-center gap-3">
-            <svg id="syncBannerIcon" class="w-4 h-4 text-amber-400 animate-spin-slow" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
-            <span id="syncBannerText" class="text-amber-400 text-[10px] font-black uppercase tracking-widest">Menghubungkan ke Google Sheets...</span>
-            <button onclick="document.getElementById('syncBanner').classList.add('hidden')" class="ml-auto text-slate-500 hover:text-white text-xs">✕</button>
-        </div>
-    </div>
-
-    <main class="max-w-7xl mx-auto px-6 md:px-8 mt-12">
+    <main class="max-w-7xl mx-auto px-6 md:px-8">
         
         <!-- STATS KPI WIDGETS -->
-        <div id="kpiSection" class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+        <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
             <div class="premium-card p-4 flex items-center justify-between">
                 <div>
                     <span class="text-[9px] font-bold text-slate-400 uppercase tracking-widest">Garis Aktif</span>
@@ -435,16 +223,17 @@ function updateRow(sheet, item) {
             <div class="premium-card p-4 flex items-center justify-between">
                 <div>
                     <span class="text-[9px] font-bold text-slate-400 uppercase tracking-widest">Status Sinkron</span>
-                    <div id="statSyncDelay" class="text-sm font-extrabold text-rose-400 mt-1">LOKAL ONLY</div>
+                    <div id="statSyncDelay" class="text-sm font-extrabold text-emerald-400 mt-1">AMN/LOKAL</div>
                 </div>
                 <div class="p-2.5 bg-indigo-500/10 rounded-xl text-indigo-400">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
                 </div>
             </div>
         </div>
 
         <!-- DASHBOARD MENU -->
         <div id="menu-dashboard" class="animate-fade space-y-8">
+            <!-- LINE SELECTION & COMPARISON CONTROLLER -->
             <div class="premium-card p-6 border-l-4 border-amber-500 bg-gradient-to-r from-amber-500/5 to-transparent">
                 <div class="flex flex-col lg:flex-row gap-6 lg:items-end">
                     <div class="space-y-2">
@@ -456,6 +245,7 @@ function updateRow(sheet, item) {
                             <option value="4">LINE 4</option>
                         </select>
                     </div>
+                    
                     <div class="flex flex-col sm:flex-row gap-4 flex-1">
                         <div class="space-y-2 flex-1">
                             <label class="text-[10px] font-black text-blue-400 uppercase tracking-widest ml-1">Tipe Master (Referensi)</label>
@@ -466,19 +256,22 @@ function updateRow(sheet, item) {
                             <select id="type2Selector" onchange="updateComparison()" class="filter-select w-full bg-[#141b2b] border border-indigo-500/20 rounded-xl px-4 py-3.5 text-sm font-bold text-indigo-400 outline-none cursor-pointer"></select>
                         </div>
                     </div>
-                    <button onclick="fetchFromCloud(true)" class="lg:ml-auto bg-amber-500 hover:bg-amber-600 text-[#1e1b4b] px-8 py-3.5 rounded-xl text-[10px] font-black uppercase tracking-widest transition shadow-lg shadow-amber-500/20 flex items-center justify-center gap-2">
+                    
+                    <button onclick="fetchFromCloud()" class="lg:ml-auto bg-amber-500 hover:bg-amber-600 text-[#1e1b4b] px-8 py-3.5 rounded-xl text-[10px] font-black uppercase tracking-widest transition shadow-lg shadow-amber-500/20 flex items-center justify-center gap-2">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
                         Segarkan Cloud
                     </button>
                 </div>
             </div>
 
-            <!-- COMPARISON PANELS -->
+            <!-- COMPARISON SUMMARY CARDS -->
             <div id="summaryContainer" class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                <!-- PANEL OP 1 -->
                 <div id="panel-op1" class="premium-card overflow-hidden border-t-4 border-blue-500">
                     <div class="bg-blue-950/40 px-6 py-4 flex justify-between items-center border-b border-white/5">
                         <h3 class="font-black text-blue-400 text-xs uppercase tracking-widest flex items-center gap-2">
-                            <span class="w-2.5 h-2.5 bg-blue-500 rounded-full animate-pulse"></span>SELISIH OP 1 (DIFFERENCE)
+                            <span class="w-2.5 h-2.5 bg-blue-500 rounded-full animate-pulse"></span>
+                            SELISIH OP 1 (DIFFERENCE)
                         </h3>
                         <span id="count-op1" class="bg-blue-500/20 border border-blue-400/30 text-blue-400 px-3 py-1 rounded-lg text-xs font-black">0</span>
                     </div>
@@ -486,10 +279,13 @@ function updateRow(sheet, item) {
                         <div class="py-16 text-center text-slate-500 text-[11px] font-black uppercase italic tracking-widest">Silakan pilih tipe pada panel di atas</div>
                     </div>
                 </div>
+
+                <!-- PANEL OP 2 -->
                 <div id="panel-op2" class="premium-card overflow-hidden border-t-4 border-emerald-500">
                     <div class="bg-emerald-950/40 px-6 py-4 flex justify-between items-center border-b border-white/5">
                         <h3 class="font-black text-emerald-400 text-xs uppercase tracking-widest flex items-center gap-2">
-                            <span class="w-2.5 h-2.5 bg-emerald-500 rounded-full animate-pulse"></span>SELISIH OP 2 (DIFFERENCE)
+                            <span class="w-2.5 h-2.5 bg-emerald-500 rounded-full animate-pulse"></span>
+                            SELISIH OP 2 (DIFFERENCE)
                         </h3>
                         <span id="count-op2" class="bg-emerald-500/20 border border-emerald-400/30 text-emerald-400 px-3 py-1 rounded-lg text-xs font-black">0</span>
                     </div>
@@ -499,11 +295,11 @@ function updateRow(sheet, item) {
                 </div>
             </div>
 
-            <!-- DETAILED MATRIX -->
+            <!-- DETAILED MATRIX REPORT -->
             <div class="premium-card overflow-hidden">
                 <div class="px-8 py-5 border-b border-white/5 bg-[#0e1422]/60 flex justify-between items-center">
                     <h3 class="text-slate-300 font-black text-xs uppercase tracking-widest flex items-center gap-2">
-                        <svg class="w-4 h-4 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17V7m0 10a2 2 0 01-2 2H5a2 2 0 01-2-2V7a2 2 0 012-2h2a2 2 0 012 2m0 10a2 2 0 002 2h2a2 2 0 002-2M9 7a2 2 0 012-2h2a2 2 0 012 2m0 10V7m0 10a2 2 0 002 2h2a2 2 0 002-2V7a2 2 0 00-2-2h-2a2 2 0 00-2 2"></path></svg>
+                        <svg class="w-4 h-4 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z"></path></svg>
                         Laporan Matriks Deviasi Detail
                     </h3>
                 </div>
@@ -519,7 +315,9 @@ function updateRow(sheet, item) {
                             </tr>
                         </thead>
                         <tbody id="detailTableBody" class="text-xs divide-y divide-white/5 bg-[#0a0f1d]/40">
-                            <tr><td colspan="5" class="px-8 py-20 text-center text-slate-500 italic font-black text-xs uppercase tracking-widest">Pilih Tipe Master & Target Terlebih Dahulu</td></tr>
+                            <tr>
+                                <td colspan="5" class="px-8 py-20 text-center text-slate-500 italic font-black text-xs uppercase tracking-widest">Pilih Tipe Master & Target Terlebih Dahulu</td>
+                            </tr>
                         </tbody>
                     </table>
                 </div>
@@ -528,60 +326,46 @@ function updateRow(sheet, item) {
 
         <!-- ADMIN MENU -->
         <div id="menu-admin" class="hidden animate-fade space-y-8 pb-20">
-
-            <!-- CLOUD URL PANEL -->
+            <!-- Google Script Cloud URL Panel -->
             <div class="premium-card p-6 border-l-8 border-emerald-500 bg-emerald-500/5">
-                <div class="flex flex-col gap-4">
-                    <div class="flex flex-col gap-3">
-                        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
-                            <div>
-                                <h3 class="font-black text-white text-sm uppercase tracking-wider flex items-center gap-2">
-                                    <span class="w-2.5 h-2.5 rounded-full flex-shrink-0" id="cloudDot" style="background:#ef4444;box-shadow:0 0 8px #ef4444"></span>
-                                    Koneksi Google Sheets Cloud
-                                </h3>
-                                <p class="text-[10px] text-slate-400 mt-1">Data tersimpan permanen di Google Sheets — edit dari mana saja, sync otomatis</p>
-                            </div>
-                            <!-- Action buttons: wrap on portrait, row on landscape -->
-                            <div class="flex flex-wrap gap-2 sm:flex-nowrap sm:flex-shrink-0">
-                                <button onclick="document.getElementById('changePwdModal').classList.remove('hidden')" class="flex-1 sm:flex-none px-3 py-2.5 bg-blue-500/10 border border-blue-500/30 text-blue-400 rounded-xl text-[9px] font-black uppercase tracking-widest hover:bg-blue-500/20 transition flex items-center justify-center gap-1.5 whitespace-nowrap">
-                                    <svg class="w-3.5 h-3.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z"></path></svg>
-                                    Ganti Password
-                                </button>
-                                <button onclick="document.getElementById('setupModal').classList.remove('hidden')" class="flex-1 sm:flex-none px-3 py-2.5 bg-slate-700/50 border border-white/10 text-slate-400 rounded-xl text-[9px] font-black uppercase tracking-widest hover:bg-slate-700 transition flex items-center justify-center gap-1.5 whitespace-nowrap">
-                                    <svg class="w-3.5 h-3.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-                                    Panduan
-                                </button>
-                                <button onclick="logoutAdmin()" class="flex-1 sm:flex-none px-3 py-2.5 bg-rose-500/10 border border-rose-500/30 text-rose-400 rounded-xl text-[9px] font-black uppercase tracking-widest hover:bg-rose-500/20 transition flex items-center justify-center gap-1.5 whitespace-nowrap">
-                                    <svg class="w-3.5 h-3.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path></svg>
-                                    Keluar
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="flex flex-col md:flex-row gap-3">
+                <div class="flex flex-col md:flex-row justify-between items-center gap-4">
+                    <div class="flex-1 flex gap-3 w-full">
                         <div class="relative flex-1">
                             <span class="absolute inset-y-0 left-4 flex items-center text-emerald-400">
                                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"></path></svg>
                             </span>
-                            <input id="scriptUrl" type="text" placeholder="Paste Google Apps Script Web App URL di sini..." class="w-full bg-slate-950/60 border border-emerald-500/20 pl-12 pr-4 py-4 rounded-2xl text-xs text-emerald-200 placeholder-emerald-800 outline-none focus:border-emerald-400 transition-all">
+                            <input id="scriptUrl" type="password" placeholder="Masukkan Google Apps Script Web App URL..." class="w-full bg-slate-950/60 border border-emerald-500/20 pl-12 pr-4 py-4 rounded-2xl text-xs text-emerald-200 placeholder-emerald-800 outline-none focus:border-emerald-400 transition-all">
                         </div>
-                        <button onclick="saveScriptUrl()" class="px-8 py-4 bg-emerald-500 hover:bg-emerald-600 text-slate-950 rounded-2xl text-[10px] font-black uppercase tracking-widest shadow-lg shadow-emerald-500/10 transition-all flex items-center gap-2">
-                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 12h14M12 5l7 7-7 7"></path></svg>
-                            Koneksikan
-                        </button>
-                        <button onclick="fetchFromCloud(true)" class="px-6 py-4 bg-blue-500/10 border border-blue-500/30 hover:bg-blue-500/20 text-blue-400 rounded-2xl text-[10px] font-black uppercase tracking-widest transition flex items-center gap-2">
-                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
-                            Tarik Data Cloud
-                        </button>
-                    </div>
-                    <div id="syncInfo" class="hidden bg-slate-950/40 rounded-xl px-4 py-3 text-[10px] text-slate-400 font-mono border border-white/5">
-                        <span id="syncInfoText">—</span>
+                        <button onclick="saveScriptUrl()" class="px-8 py-4 bg-emerald-500 hover:bg-emerald-600 text-slate-950 rounded-2xl text-[10px] font-black uppercase tracking-widest shadow-lg shadow-emerald-500/10 transition-all">Koneksikan</button>
                     </div>
                 </div>
             </div>
 
-            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-                <!-- BULK IMPORT -->
+            <!-- HISTORY NOTIFICATION PANEL -->
+            <div class="premium-card overflow-hidden border-l-4 border-violet-500 bg-violet-500/5">
+                <div class="px-6 py-4 border-b border-white/5 flex justify-between items-center">
+                    <div class="flex items-center gap-3">
+                        <span class="p-2 bg-violet-500/10 rounded-xl text-violet-400">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"></path></svg>
+                        </span>
+                        <div>
+                            <h3 class="text-xs font-black text-violet-300 uppercase tracking-widest">Histori Update Offset</h3>
+                            <p class="text-[9px] text-slate-500 font-bold uppercase tracking-widest">Riwayat perubahan nilai offset</p>
+                        </div>
+                        <span id="historyBadge" class="bg-violet-500/20 border border-violet-400/30 text-violet-400 px-2.5 py-0.5 rounded-full text-[10px] font-black min-w-[24px] text-center">0</span>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <button onclick="toggleHistoryPanel()" id="histToggleBtn" class="text-[9px] font-black text-slate-400 uppercase border border-white/10 bg-slate-800/60 hover:bg-slate-700/60 px-3 py-1.5 rounded-lg transition">Tampilkan</button>
+                        <button onclick="clearHistory()" class="text-[9px] font-black text-red-400 uppercase border border-red-500/20 bg-red-500/5 hover:bg-red-500/20 px-3 py-1.5 rounded-lg transition">Hapus Semua</button>
+                    </div>
+                </div>
+                <div id="historyPanel" class="hidden max-h-72 overflow-y-auto custom-scrollbar divide-y divide-white/5">
+                    <div id="historyList">
+                        <div class="px-6 py-10 text-center text-slate-500 text-[10px] font-black uppercase italic tracking-widest">Belum ada riwayat perubahan offset</div>
+                    </div>
+                </div>
+            </div>
+                <!-- FORM IMPORT DATA -->
                 <div class="premium-card p-8 border-t-8 border-amber-500 h-fit bg-gradient-to-b from-amber-500/5 to-transparent">
                     <div class="flex justify-between items-center mb-6">
                         <h2 class="text-lg font-black text-white uppercase tracking-wider">Bulk Import</h2>
@@ -594,12 +378,14 @@ function updateRow(sheet, item) {
                             <button onclick="setAdminInputLine(3)" id="adm-l3" class="py-2.5 rounded-xl border font-black text-xs border-white/10 text-slate-400 hover:border-white/20">L3</button>
                             <button onclick="setAdminInputLine(4)" id="adm-l4" class="py-2.5 rounded-xl border font-black text-xs border-white/10 text-slate-400 hover:border-white/20">L4</button>
                         </div>
-                        <textarea id="bulkInput" class="w-full h-48 p-4 bg-slate-950/80 border border-white/10 rounded-2xl text-[11px] font-mono text-amber-300 outline-none focus:border-amber-400 transition-all custom-scrollbar" placeholder="Format Penulisan:&#10;TIPE OP TOOL X Z&#10;CON: CAM 10 T01 12.001 5.341&#10;CON: OP10 T15 0.231 -1.432"></textarea>
+                        <div class="relative">
+                            <textarea id="bulkInput" class="w-full h-48 p-4 bg-slate-950/80 border border-white/10 rounded-2xl text-[11px] font-mono text-amber-300 outline-none focus:border-amber-400 transition-all custom-scrollbar" placeholder="Format Penulisan:&#10;TIPE OP TOOL X Z&#10;CON: CAM 10 T01 12.001 5.341&#10;CON: OP10 T15 0.231 -1.432"></textarea>
+                        </div>
                         <button onclick="importData()" class="w-full btn-gold py-4 rounded-2xl font-black text-xs uppercase tracking-widest shadow-xl shadow-amber-500/10">Simpan & Impor Data</button>
                     </div>
                 </div>
 
-                <!-- DATABASE TABLE -->
+                <!-- DATABASE MANAGEMENT -->
                 <div class="lg:col-span-2 premium-card overflow-hidden flex flex-col">
                     <div class="px-8 py-6 border-b border-white/5 bg-slate-900/40 space-y-4">
                         <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
@@ -609,21 +395,32 @@ function updateRow(sheet, item) {
                             </div>
                             <div class="flex gap-1" id="viewTabsContainer"></div>
                         </div>
+                        
+                        <!-- DOUBLE FILTERS -->
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-4 pt-2">
                             <div>
                                 <label class="text-[8px] font-black text-slate-400 uppercase tracking-widest mb-1.5 block ml-1">Filter Tipe Unit</label>
-                                <select id="dbTypeFilter" onchange="renderDatabase()" class="filter-select w-full bg-[#121826] border border-white/10 rounded-xl py-3 px-4 text-[11px] font-bold text-slate-300 outline-none focus:border-amber-400 appearance-none cursor-pointer">
+                                <select 
+                                    id="dbTypeFilter" 
+                                    onchange="renderDatabase()" 
+                                    class="filter-select w-full bg-[#121826] border border-white/10 rounded-xl py-3 px-4 text-[11px] font-bold text-slate-300 outline-none focus:border-amber-400 appearance-none cursor-pointer"
+                                >
                                     <option value="">SEMUA TIPE</option>
                                 </select>
                             </div>
                             <div>
                                 <label class="text-[8px] font-black text-slate-400 uppercase tracking-widest mb-1.5 block ml-1">Filter Nomor Tool</label>
-                                <select id="dbToolFilter" onchange="renderDatabase()" class="filter-select w-full bg-[#121826] border border-white/10 rounded-xl py-3 px-4 text-[11px] font-bold text-slate-300 outline-none focus:border-amber-400 appearance-none cursor-pointer">
+                                <select 
+                                    id="dbToolFilter" 
+                                    onchange="renderDatabase()" 
+                                    class="filter-select w-full bg-[#121826] border border-white/10 rounded-xl py-3 px-4 text-[11px] font-bold text-slate-300 outline-none focus:border-amber-400 appearance-none cursor-pointer"
+                                >
                                     <option value="">SEMUA TOOL</option>
                                 </select>
                             </div>
                         </div>
                     </div>
+
                     <div class="overflow-x-auto max-h-[500px] custom-scrollbar bg-[#0a0f1d]/20">
                         <table class="w-full text-left text-xs">
                             <thead class="bg-slate-950 text-[10px] font-black text-slate-400 uppercase sticky top-0 z-10 border-b border-white/5 shadow-md">
@@ -636,7 +433,9 @@ function updateRow(sheet, item) {
                                 </tr>
                             </thead>
                             <tbody id="dbTableBody" class="divide-y divide-white/5">
-                                <tr><td colspan="5" class="px-8 py-20 text-center text-slate-500 italic font-black text-xs uppercase tracking-widest">Database Kosong</td></tr>
+                                <tr>
+                                    <td colspan="5" class="px-8 py-20 text-center text-slate-500 italic font-black text-xs uppercase tracking-widest">Database Kosong</td>
+                                </tr>
                             </tbody>
                         </table>
                     </div>
@@ -645,731 +444,566 @@ function updateRow(sheet, item) {
         </div>
     </main>
 
-    <!-- TOAST -->
+    <!-- TOAST NOTIFICATION -->
     <div id="toast" class="fixed bottom-8 left-1/2 -translate-x-1/2 bg-[#121824] border border-amber-500/20 text-amber-400 px-8 py-4 rounded-2xl shadow-2xl text-xs font-black uppercase tracking-widest z-[500] opacity-0 transition-all duration-300 pointer-events-none flex items-center gap-3">
         <span class="w-2 h-2 bg-amber-400 rounded-full animate-ping"></span>
         <span id="toastText">SYNC</span>
     </div>
 
     <script>
-    // ═══════════════════════════════════════════════════
-    //  OFFSET ANALYZER PRO — Core State
-    // ═══════════════════════════════════════════════════
-    const DEFAULT_DB = { line1: [], line2: [], line3: [], line4: [] };
-    const SECRET_KEY = "OFFSET_PRO_2024"; // Harus sama dengan di Apps Script
+        const DEFAULT_DB = {
+            line1: [], line2: [], line3: [], line4: []
+        };
+        
+        let db = JSON.parse(localStorage.getItem('offset_db')) || DEFAULT_DB;
+        let googleScriptUrl = localStorage.getItem('google_script_url') || "";
+        let activeLine = 1;
+        let adminInLine = 1;
+        let adminViewLine = 1;
 
-    let db = JSON.parse(localStorage.getItem('offset_db') || 'null') || DEFAULT_DB;
-    let googleScriptUrl = localStorage.getItem('google_script_url') || "";
-    let activeLine = 1;
-    let adminInLine = 1;
-    let adminViewLine = 1;
-    let autoSyncInterval = null;
-    let lastSyncHash = "";
-    let adminAuthenticated = false;
-    let loginAttempts = 0;
-    const MAX_ATTEMPTS = 5;
-    let lockoutUntil = 0;
-
-    function getAdminPassword() {
-        return localStorage.getItem('admin_password') || 'admin123';
-    }
-
-    function setAdminAuth(val) {
-        adminAuthenticated = val;
-    }
-
-    // ═══════════════════════════════════════════════════
-    //  INIT — Auto-sync saat halaman dibuka
-    // ═══════════════════════════════════════════════════
-    window.onload = async () => {
-        renderViewTabs();
-        updateTypeDropdowns();
-        updateKPIs();
-
-        if (googleScriptUrl) {
-            document.getElementById('scriptUrl').value = googleScriptUrl;
-            showSyncBanner("Menghubungkan ke Google Sheets...", true);
-            await fetchFromCloud(false); // Silent auto-sync saat buka
-            startAutoSync(); // Polling setiap 30 detik
-        } else {
+        window.onload = () => {
+            renderViewTabs();
+            updateTypeDropdowns();
             checkSyncStatus();
-        }
-    };
+            updateKPIs();
+            updateHistoryBadge();
+            if (googleScriptUrl) fetchFromCloud();
+        };
 
-    // ═══════════════════════════════════════════════════
-    //  AUTO-SYNC POLLING — Deteksi perubahan dari Sheet
-    // ═══════════════════════════════════════════════════
-    function startAutoSync() {
-        if (autoSyncInterval) clearInterval(autoSyncInterval);
-        autoSyncInterval = setInterval(async () => {
-            if (!googleScriptUrl) return;
-            try {
-                const url = googleScriptUrl + "?t=" + Date.now();
-                const res = await fetch(url);
-                const data = await res.json();
-                if (data.status === "ok" && data.db) {
-                    const newHash = JSON.stringify(data.db);
-                    if (newHash !== lastSyncHash && lastSyncHash !== "") {
-                        // Data berubah dari Google Sheets!
-                        db = data.db;
-                        localStorage.setItem('offset_db', JSON.stringify(db));
-                        lastSyncHash = newHash;
-                        updateTypeDropdowns();
-                        renderDatabase();
-                        updateComparison();
-                        updateKPIs();
-                        showToast("📊 DATA DIPERBARUI DARI SHEETS");
-                        updateLastSyncTime();
-                    } else if (lastSyncHash === "") {
-                        lastSyncHash = newHash;
+        function checkSyncStatus(status = 'default') {
+            const dot = document.getElementById('syncStatusDot');
+            const text = document.getElementById('syncStatusText');
+            const latencyElement = document.getElementById('statSyncDelay');
+            
+            if (status === 'syncing') {
+                dot.className = "sync-indicator status-syncing";
+                text.innerText = "Sinkronisasi...";
+                latencyElement.className = "text-sm font-extrabold text-amber-400 animate-pulse";
+                latencyElement.innerText = "SINKRONISASI...";
+                return;
+            }
+            if (googleScriptUrl) {
+                dot.className = "sync-indicator status-online";
+                text.innerText = "Cloud Terkoneksi";
+                latencyElement.className = "text-sm font-extrabold text-emerald-400";
+                latencyElement.innerText = "CLOUD AKTIF";
+            } else {
+                dot.className = "sync-indicator status-offline";
+                text.innerText = "Cloud Terputus";
+                latencyElement.className = "text-sm font-extrabold text-rose-400";
+                latencyElement.innerText = "LOKAL ONLY";
+            }
+        }
+
+        function switchMenu(menu) {
+            document.getElementById('menu-dashboard').classList.toggle('hidden', menu !== 'dashboard');
+            document.getElementById('menu-admin').classList.toggle('hidden', menu !== 'admin');
+            
+            const dashBtn = document.getElementById('nav-dashboard');
+            const adminBtn = document.getElementById('nav-admin');
+            
+            if (menu === 'dashboard') {
+                dashBtn.className = "px-8 py-3.5 rounded-xl text-xs font-black transition-all nav-active flex items-center gap-2";
+                adminBtn.className = "px-8 py-3.5 rounded-xl text-xs font-black transition-all text-slate-400 hover:text-white flex items-center gap-2";
+                updateComparison();
+            } else {
+                adminBtn.className = "px-8 py-3.5 rounded-xl text-xs font-black transition-all nav-active flex items-center gap-2";
+                dashBtn.className = "px-8 py-3.5 rounded-xl text-xs font-black transition-all text-slate-400 hover:text-white flex items-center gap-2";
+                renderDatabase();
+            }
+            updateKPIs();
+        }
+
+        function updateKPIs() {
+            const lineData = db[`line${activeLine}`] || [];
+            document.getElementById('statLine').innerText = `LINE ${activeLine}`;
+            
+            const types = [...new Set(lineData.map(d => d.type))].length;
+            document.getElementById('statTotalType').innerText = types;
+
+            const tools = [...new Set(lineData.map(d => d.tool))].length;
+            document.getElementById('statTotalTool').innerText = tools;
+        }
+
+        function updateTypeDropdowns() {
+            const currentLineData = db[`line${activeLine}`] || [];
+            const types = [...new Set(currentLineData.map(d => d.type))].sort();
+            const options = `<option value="">- PILIH TIPE -</option>` + types.map(t => `<option value="${t}">${t}</option>`).join('');
+            document.getElementById('type1Selector').innerHTML = options;
+            document.getElementById('type2Selector').innerHTML = options;
+
+            updateAdminFilters();
+        }
+
+        function updateAdminFilters() {
+            const adminData = db[`line${adminViewLine}`] || [];
+            
+            // Update Tipe Dropdown
+            const types = [...new Set(adminData.map(d => d.type))].sort();
+            const typeFilter = document.getElementById('dbTypeFilter');
+            const currentType = typeFilter.value;
+            typeFilter.innerHTML = `<option value="">SEMUA TIPE</option>` + 
+                types.map(t => `<option value="${t}" ${t === currentType ? 'selected' : ''}>${t}</option>`).join('');
+
+            // Update Tool Dropdown
+            const tools = [...new Set(adminData.map(d => d.tool))].sort();
+            const toolFilter = document.getElementById('dbToolFilter');
+            const currentTool = toolFilter.value;
+            toolFilter.innerHTML = `<option value="">SEMUA TOOL</option>` + 
+                tools.map(t => `<option value="${t}" ${t === currentTool ? 'selected' : ''}>${t}</option>`).join('');
+        }
+
+        function updateComparison() {
+            const t1 = document.getElementById('type1Selector').value;
+            const t2 = document.getElementById('type2Selector').value;
+            const tableBody = document.getElementById('detailTableBody');
+            
+            if (!t1 || !t2) {
+                tableBody.innerHTML = `<tr><td colspan="5" class="px-8 py-20 text-center text-slate-500 italic font-black text-xs uppercase tracking-widest">Silakan Pilih Tipe Master & Target</td></tr>`;
+                document.getElementById('op1Content').innerHTML = `<div class="py-16 text-center text-slate-500 text-[11px] font-black uppercase italic tracking-widest">Pilih tipe terlebih dahulu</div>`;
+                document.getElementById('op2Content').innerHTML = `<div class="py-16 text-center text-slate-500 text-[11px] font-black uppercase italic tracking-widest">Pilih tipe terlebih dahulu</div>`;
+                document.getElementById('count-op1').innerText = "0";
+                document.getElementById('count-op2').innerText = "0";
+                return;
+            }
+
+            const data1 = (db[`line${activeLine}`] || []).filter(x => x.type === t1);
+            const data2 = (db[`line${activeLine}`] || []).filter(x => x.type === t2);
+
+            let op1List = [], op2List = [], fullRows = "";
+            let totalMatched = 0, totalNoChange = 0;
+
+            data1.forEach(m1 => {
+                const m2 = data2.find(x => x.tool === m1.tool && x.op === m1.op);
+                if (m2) {
+                    totalMatched++;
+                    const dx = (m1.x - m2.x).toFixed(3);
+                    const dz = (m1.z - m2.z).toFixed(3);
+                    const isDiff = parseFloat(dx) !== 0 || parseFloat(dz) !== 0;
+                    if (!isDiff) totalNoChange++;
+
+                    const formattedDx = parseFloat(dx) > 0 ? `+${dx}` : dx;
+                    const formattedDz = parseFloat(dz) > 0 ? `+${dz}` : dz;
+
+                    const noChangeTag = !isDiff
+                        ? `<span class="tag-no-change"><svg class="w-2.5 h-2.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>No Change</span>`
+                        : '';
+
+                    fullRows += `
+                        <tr class="hover:bg-white/[0.02] transition-colors duration-150">
+                            <td class="px-8 py-4 font-extrabold text-slate-200">
+                                <div class="flex items-center gap-2 flex-wrap">
+                                    <span class="text-sm tracking-wide text-amber-400">${m1.tool}</span>
+                                    ${noChangeTag}
+                                </div>
+                                <span class="text-[9px] text-slate-500 font-bold uppercase tracking-widest">${m1.op}</span>
+                            </td>
+                            <td class="px-8 py-4 text-slate-400 font-mono text-xs">
+                                <div class="flex items-center gap-1.5"><span class="text-[9px] font-black text-blue-400">X:</span> ${m1.x.toFixed(3)}</div>
+                                <div class="flex items-center gap-1.5"><span class="text-[9px] font-black text-emerald-400">Z:</span> ${m1.z.toFixed(3)}</div>
+                            </td>
+                            <td class="px-8 py-4 text-slate-400 font-mono text-xs">
+                                <div class="flex items-center gap-1.5"><span class="text-[9px] font-black text-blue-400">X:</span> ${m2.x.toFixed(3)}</div>
+                                <div class="flex items-center gap-1.5"><span class="text-[9px] font-black text-emerald-400">Z:</span> ${m2.z.toFixed(3)}</div>
+                            </td>
+                            <td class="px-8 py-4 text-center font-mono font-black text-xs ${parseFloat(dx) !== 0 ? 'text-blue-400 bg-blue-500/5 glow-text-blue' : 'text-slate-600'}">${formattedDx}</td>
+                            <td class="px-8 py-4 text-center font-mono font-black text-xs ${parseFloat(dz) !== 0 ? 'text-emerald-400 bg-emerald-500/5 glow-text-emerald' : 'text-slate-600'}">${formattedDz}</td>
+                        </tr>`;
+
+                    if (isDiff) {
+                        const opStr = m1.op.toUpperCase();
+                        if (opStr.includes('1') || opStr.includes('10')) op1List.push({tool: m1.tool, op: m1.op, dx: formattedDx, dz: formattedDz});
+                        else if (opStr.includes('2') || opStr.includes('20')) op2List.push({tool: m1.tool, op: m1.op, dx: formattedDx, dz: formattedDz});
                     }
                 }
-            } catch(e) { /* Diam saja jika polling gagal */ }
-        }, 30000); // Cek setiap 30 detik
-    }
-
-    function stopAutoSync() {
-        if (autoSyncInterval) { clearInterval(autoSyncInterval); autoSyncInterval = null; }
-    }
-
-    // ═══════════════════════════════════════════════════
-    //  FETCH FROM CLOUD — Tarik data dari Google Sheets
-    // ═══════════════════════════════════════════════════
-    async function fetchFromCloud(showFeedback = true) {
-        if (!googleScriptUrl) {
-            showToast("URL BELUM DIISI");
-            return;
-        }
-        checkSyncStatus('syncing');
-        if (showFeedback) showSyncBanner("Mengambil data dari Google Sheets...", true);
-
-        try {
-            const url = googleScriptUrl + "?t=" + Date.now();
-            const res = await fetch(url);
-
-            if (!res.ok) throw new Error("HTTP " + res.status);
-            const data = await res.json();
-
-            if (data.status === "ok" && data.db) {
-                db = data.db;
-                localStorage.setItem('offset_db', JSON.stringify(db));
-                lastSyncHash = JSON.stringify(db);
-                updateTypeDropdowns();
-                renderDatabase();
-                updateComparison();
-                updateKPIs();
-                checkSyncStatus('online');
-                updateLastSyncTime();
-                if (showFeedback) {
-                    showSyncBanner("✓ Data berhasil disinkronkan dari Google Sheets", false);
-                    showToast("DATA CLOUD DIPERBARUI");
-                } else {
-                    hideSyncBanner();
-                }
-                setSyncInfo("Terakhir tarik: " + new Date().toLocaleString('id-ID'));
-            } else {
-                throw new Error(data.message || "Response tidak valid");
-            }
-        } catch(e) {
-            checkSyncStatus('offline');
-            hideSyncBanner();
-            if (showFeedback) showToast("GAGAL HUBUNGI CLOUD");
-            setSyncInfo("Error: " + e.message + " | Mode Lokal Aktif");
-            console.error("Cloud fetch error:", e);
-        }
-    }
-
-    // ═══════════════════════════════════════════════════
-    //  SYNC TO CLOUD — Kirim seluruh DB ke Google Sheets
-    // ═══════════════════════════════════════════════════
-    async function syncToCloud() {
-        if (!googleScriptUrl) return;
-        checkSyncStatus('syncing');
-
-        const payload = {
-            action: 'SAVE_ALL',
-            key: SECRET_KEY,
-            db: db
-        };
-
-        try {
-            const res = await fetch(googleScriptUrl, {
-                method: 'POST',
-                headers: { 'Content-Type': 'text/plain' }, // Hindari CORS preflight
-                body: JSON.stringify(payload)
             });
 
-            if (!res.ok) throw new Error("HTTP " + res.status);
-            const data = await res.json();
+            // Tampilkan ringkasan no-change di atas table
+            const noChangeSummary = (totalMatched > 0 && totalNoChange > 0)
+                ? `<tr class="bg-slate-800/30">
+                    <td colspan="5" class="px-8 py-3">
+                        <div class="flex items-center gap-2 flex-wrap">
+                            <span class="text-[9px] font-black text-slate-400 uppercase tracking-widest">Ringkasan:</span>
+                            <span class="tag-no-change">${totalNoChange} Tool Tanpa Perubahan Offset</span>
+                            <span class="text-[9px] text-slate-500 font-bold">${totalMatched - totalNoChange} tool dengan deviasi dari total ${totalMatched} tool cocok</span>
+                        </div>
+                    </td>
+                   </tr>`
+                : '';
 
-            if (data.status === "saved" || data.status === "updated") {
-                lastSyncHash = JSON.stringify(db);
-                checkSyncStatus('online');
-                updateLastSyncTime();
-                setSyncInfo("Terakhir simpan: " + new Date().toLocaleString('id-ID'));
-                showToast("✓ TERSIMPAN KE GOOGLE SHEETS");
-            } else {
-                throw new Error(data.message || "Gagal simpan");
+            tableBody.innerHTML = (noChangeSummary + fullRows) || `<tr><td colspan="5" class="px-8 py-16 text-center text-slate-500 font-black uppercase tracking-widest italic">Tidak Ada Data Perkakas yang Cocok</td></tr>`;
+            renderSimplePanel(op1List, 'op1Content', 'count-op1', 'blue');
+            renderSimplePanel(op2List, 'op2Content', 'count-op2', 'emerald');
+        }
+
+        function renderSimplePanel(list, targetId, countId, color) {
+            document.getElementById(countId).innerText = list.length;
+            const container = document.getElementById(targetId);
+            if (list.length === 0) {
+                container.innerHTML = `<div class="py-16 text-center text-slate-500 text-[10px] font-bold uppercase italic tracking-widest">Semua Nilai Identik</div>`;
+                return;
             }
-        } catch(e) {
-            checkSyncStatus('offline');
-            // Data tetap ada di localStorage, tidak hilang
-            setSyncInfo("Gagal sync cloud, data tersimpan lokal. Error: " + e.message);
-            showToast("DATA LOKAL AMAN (CLOUD GAGAL)");
-            console.error("Cloud sync error:", e);
+            container.innerHTML = list.map(item => `
+                <div class="bg-slate-900/80 p-4 rounded-xl border border-white/5 shadow-inner flex justify-between items-center animate-fade">
+                    <div>
+                        <div class="text-sm font-black text-white tracking-wide">${item.tool}</div>
+                        <div class="text-[8px] text-slate-500 font-bold uppercase tracking-widest">${item.op}</div>
+                    </div>
+                    <div class="flex gap-4 text-right">
+                        <div>
+                            <div class="text-[8px] text-blue-400 font-bold tracking-widest uppercase">Dev X</div>
+                            <div class="text-xs font-mono font-black ${parseFloat(item.dx) !== 0 ? 'text-blue-400' : 'text-slate-500'}">${item.dx}</div>
+                        </div>
+                        <div>
+                            <div class="text-[8px] text-emerald-400 font-bold tracking-widest uppercase">Dev Z</div>
+                            <div class="text-xs font-mono font-black ${parseFloat(item.dz) !== 0 ? 'text-emerald-400' : 'text-slate-500'}">${item.dz}</div>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
         }
-    }
 
-    // ═══════════════════════════════════════════════════
-    //  SAVE — Simpan lokal + sync ke cloud
-    // ═══════════════════════════════════════════════════
-    function saveToStorage() {
-        localStorage.setItem('offset_db', JSON.stringify(db)); // Selalu simpan lokal dulu
-        updateKPIs();
-        if (googleScriptUrl) {
-            syncToCloud(); // Lalu sync ke cloud
-        }
-    }
+        function renderDatabase() {
+            const filterType = document.getElementById('dbTypeFilter').value;
+            const filterTool = document.getElementById('dbToolFilter').value;
+            let data = db[`line${adminViewLine}`] || [];
+            
+            if (filterType) data = data.filter(item => item.type === filterType);
+            if (filterTool) data = data.filter(item => item.tool === filterTool);
 
-    // ═══════════════════════════════════════════════════
-    //  URL MANAGEMENT
-    // ═══════════════════════════════════════════════════
-    function saveScriptUrl() {
-        const url = document.getElementById('scriptUrl').value.trim();
-        if (!url) { showToast("URL TIDAK BOLEH KOSONG"); return; }
-        if (!url.includes('script.google.com')) {
-            showToast("FORMAT URL TIDAK VALID");
-            return;
-        }
-        googleScriptUrl = url;
-        localStorage.setItem('google_script_url', googleScriptUrl);
-        checkSyncStatus('syncing');
-        showSyncBanner("Menguji koneksi ke Google Sheets...", true);
-        fetchFromCloud(true).then(() => {
-            startAutoSync();
-        });
-    }
+            const body = document.getElementById('dbTableBody');
+            updateAdminFilters();
 
-    // ═══════════════════════════════════════════════════
-    //  STATUS DISPLAY
-    // ═══════════════════════════════════════════════════
-    function checkSyncStatus(status = 'default') {
-        const dot = document.getElementById('syncStatusDot');
-        const text = document.getElementById('syncStatusText');
-        const stat = document.getElementById('statSyncDelay');
-        const cloudDot = document.getElementById('cloudDot');
-
-        const states = {
-            syncing: {
-                dotClass: 'sync-indicator status-syncing', label: 'Sinkronisasi...',
-                statClass: 'text-sm font-extrabold text-amber-400 animate-pulse', statText: 'SINKRONISASI...',
-                cloudColor: '#f59e0b', cloudShadow: '#f59e0b'
-            },
-            online: {
-                dotClass: 'sync-indicator status-online', label: 'Cloud Terkoneksi',
-                statClass: 'text-sm font-extrabold text-emerald-400', statText: 'CLOUD AKTIF',
-                cloudColor: '#10b981', cloudShadow: '#10b981'
-            },
-            offline: {
-                dotClass: 'sync-indicator status-offline', label: 'Koneksi Gagal',
-                statClass: 'text-sm font-extrabold text-rose-400', statText: 'LOKAL ONLY',
-                cloudColor: '#ef4444', cloudShadow: '#ef4444'
-            },
-            default: googleScriptUrl ? {
-                dotClass: 'sync-indicator status-online', label: 'Cloud Terhubung',
-                statClass: 'text-sm font-extrabold text-emerald-400', statText: 'CLOUD AKTIF',
-                cloudColor: '#10b981', cloudShadow: '#10b981'
-            } : {
-                dotClass: 'sync-indicator status-offline', label: 'Belum Terhubung',
-                statClass: 'text-sm font-extrabold text-rose-400', statText: 'LOKAL ONLY',
-                cloudColor: '#ef4444', cloudShadow: '#ef4444'
+            if (data.length === 0) {
+                body.innerHTML = `<tr><td colspan="5" class="px-8 py-20 text-center text-slate-500 font-bold uppercase tracking-widest italic">Data tidak ditemukan</td></tr>`;
+                return;
             }
-        };
-
-        const s = states[status] || states.default;
-        dot.className = s.dotClass;
-        text.innerText = s.label;
-        stat.className = s.statClass;
-        stat.innerText = s.statText;
-        if (cloudDot) {
-            cloudDot.style.background = s.cloudColor;
-            cloudDot.style.boxShadow = '0 0 8px ' + s.cloudShadow;
+            body.innerHTML = data.map(d => `
+                <tr class="hover:bg-white/[0.02] transition-colors duration-150">
+                    <td class="px-8 py-3.5 font-black text-amber-400 uppercase tracking-tighter text-sm">${d.type}</td>
+                    <td class="px-8 py-3.5 font-bold text-slate-200">
+                        ${d.tool} <span class="text-[9px] text-slate-500 font-black">(${d.op})</span>
+                    </td>
+                    <td class="px-8 py-3.5 text-center font-mono font-bold text-blue-400 bg-blue-500/5">${d.x.toFixed(3)}</td>
+                    <td class="px-8 py-3.5 text-center font-mono font-bold text-emerald-400 bg-emerald-500/5">${d.z.toFixed(3)}</td>
+                    <td class="px-8 py-3.5 text-right">
+                        <button onclick="openEditModal('${d.id}')" class="text-amber-400 font-black text-[10px] uppercase mr-4 hover:text-amber-300 transition-colors">Edit</button>
+                        <button onclick="deleteRecord('${d.id}')" class="text-rose-400 font-black text-[10px] uppercase hover:text-rose-300 transition-colors">Hapus</button>
+                    </td>
+                </tr>
+            `).join('');
         }
-    }
 
-    function updateLastSyncTime() {
-        const now = new Date();
-        document.getElementById('lastSyncTime').innerText = 
-            'Sync ' + now.toLocaleTimeString('id-ID', {hour:'2-digit', minute:'2-digit'});
-    }
-
-    function showSyncBanner(msg, loading) {
-        const banner = document.getElementById('syncBanner');
-        const icon = document.getElementById('syncBannerIcon');
-        document.getElementById('syncBannerText').innerText = msg;
-        banner.classList.remove('hidden');
-        if (loading) {
-            icon.classList.add('animate-spin-slow');
-            icon.style.color = '#f59e0b';
-        } else {
-            icon.classList.remove('animate-spin-slow');
-            icon.style.color = '#10b981';
-            setTimeout(hideSyncBanner, 3000);
+        function saveToStorage() {
+            localStorage.setItem('offset_db', JSON.stringify(db));
+            if (googleScriptUrl) syncToCloud();
+            updateKPIs();
         }
-    }
 
-    function hideSyncBanner() {
-        document.getElementById('syncBanner').classList.add('hidden');
-    }
-
-    function setSyncInfo(msg) {
-        const el = document.getElementById('syncInfo');
-        document.getElementById('syncInfoText').innerText = msg;
-        el.classList.remove('hidden');
-    }
-
-    // ═══════════════════════════════════════════════════
-    //  DATA OPERATIONS
-    // ═══════════════════════════════════════════════════
-    function importData() {
-        const val = document.getElementById('bulkInput').value.trim();
-        if (!val) return;
-        let count = 0;
-        val.split('\n').forEach(r => {
-            const p = r.trim().split(/\s+/);
-            if (p.length >= 3) {
-                db[`line${adminInLine}`].push({
-                    id: 'id' + Date.now() + Math.random().toString(36).substr(2, 5),
-                    type: p[0].toUpperCase(), op: p[1].toUpperCase(), tool: p[2].toUpperCase(),
-                    x: parseFloat(p[3] || 0), z: parseFloat(p[4] || 0)
+        async function syncToCloud() {
+            if (!googleScriptUrl) return;
+            checkSyncStatus('syncing');
+            const payload = { action: 'SAVE_DATA', db: db };
+            try {
+                await fetch(googleScriptUrl, {
+                    method: 'POST',
+                    mode: 'no-cors', 
+                    cache: 'no-cache',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
                 });
-                count++;
+                setTimeout(() => {
+                    checkSyncStatus();
+                    showToast("SINKRON CLOUD BERHASIL");
+                }, 1500);
+            } catch (e) {
+                checkSyncStatus();
+                showToast("GAGAL SINKRON CLOUD");
             }
-        });
-        saveToStorage();
-        updateAdminFilters();
-        renderDatabase();
-        updateTypeDropdowns();
-        document.getElementById('bulkInput').value = "";
-        showToast(`${count} DATA BERHASIL DIIMPOR`);
-    }
-
-    function openEditModal(id) {
-        const item = db[`line${adminViewLine}`].find(x => x.id === id);
-        if (!item) return;
-        document.getElementById('edit-id').value = item.id;
-        document.getElementById('edit-type').value = item.type;
-        document.getElementById('edit-op').value = item.op;
-        document.getElementById('edit-tool').value = item.tool;
-        document.getElementById('edit-x').value = item.x;
-        document.getElementById('edit-z').value = item.z;
-        document.getElementById('editModal').classList.remove('hidden');
-    }
-
-    function applyEdit() {
-        const id = document.getElementById('edit-id').value;
-        const idx = db[`line${adminViewLine}`].findIndex(x => x.id === id);
-        if (idx !== -1) {
-            db[`line${adminViewLine}`][idx] = {
-                id,
-                type: document.getElementById('edit-type').value.toUpperCase(),
-                op: document.getElementById('edit-op').value.toUpperCase(),
-                tool: document.getElementById('edit-tool').value.toUpperCase(),
-                x: parseFloat(document.getElementById('edit-x').value || 0),
-                z: parseFloat(document.getElementById('edit-z').value || 0)
-            };
-            saveToStorage();
-            updateAdminFilters();
-            renderDatabase();
-            document.getElementById('editModal').classList.add('hidden');
-            showToast("PERUBAHAN TERSIMPAN & SYNC");
         }
-    }
 
-    function deleteRecord(id) {
-        if (confirm("Hapus data ini? Data akan dihapus juga dari Google Sheets.")) {
-            db[`line${adminViewLine}`] = db[`line${adminViewLine}`].filter(x => x.id !== id);
-            saveToStorage();
-            updateAdminFilters();
-            renderDatabase();
-            showToast("DATA DIHAPUS");
+        async function fetchFromCloud() {
+            if (!googleScriptUrl) return;
+            checkSyncStatus('syncing');
+            try {
+                const urlWithCacheBuster = googleScriptUrl + (googleScriptUrl.includes('?') ? '&' : '?') + 't=' + Date.now();
+                const res = await fetch(urlWithCacheBuster);
+                const cloudData = await res.json();
+                if (cloudData && (cloudData.line1 || cloudData.line2)) {
+                    db = cloudData;
+                    localStorage.setItem('offset_db', JSON.stringify(db));
+                    updateTypeDropdowns();
+                    renderDatabase();
+                    updateComparison();
+                    updateKPIs();
+                    showToast("DATA CLOUD DIPERBARUI");
+                }
+            } catch (e) {
+                showToast("MODE LOKAL (Offline)");
+            }
+            checkSyncStatus();
         }
-    }
 
-    function clearLineData() {
-        if (confirm("Hapus SEMUA data pada line ini? Tindakan ini tidak bisa dibatalkan.")) {
-            db[`line${adminInLine}`] = [];
-            saveToStorage();
-            updateAdminFilters();
-            renderDatabase();
-            showToast("LINE DATA DIHAPUS");
-        }
-    }
-
-    // ═══════════════════════════════════════════════════
-    //  RENDER FUNCTIONS
-    // ═══════════════════════════════════════════════════
-    function renderDatabase() {
-        const filterType = document.getElementById('dbTypeFilter').value;
-        const filterTool = document.getElementById('dbToolFilter').value;
-        let data = db[`line${adminViewLine}`] || [];
-        if (filterType) data = data.filter(item => item.type === filterType);
-        if (filterTool) data = data.filter(item => item.tool === filterTool);
-
-        updateAdminFilters();
-        const body = document.getElementById('dbTableBody');
-
-        if (data.length === 0) {
-            body.innerHTML = `<tr><td colspan="5" class="px-8 py-20 text-center text-slate-500 font-bold uppercase tracking-widest italic">Data tidak ditemukan</td></tr>`;
-            return;
-        }
-        body.innerHTML = data.map(d => `
-            <tr class="hover:bg-white/[0.02] transition-colors duration-150">
-                <td class="px-8 py-3.5 font-black text-amber-400 uppercase tracking-tighter text-sm">${d.type}</td>
-                <td class="px-8 py-3.5 font-bold text-slate-200">${d.tool} <span class="text-[9px] text-slate-500 font-black">(${d.op})</span></td>
-                <td class="px-8 py-3.5 text-center font-mono font-bold text-blue-400 bg-blue-500/5">${(+d.x).toFixed(3)}</td>
-                <td class="px-8 py-3.5 text-center font-mono font-bold text-emerald-400 bg-emerald-500/5">${(+d.z).toFixed(3)}</td>
-                <td class="px-8 py-3.5 text-right">
-                    <button onclick="openEditModal('${d.id}')" class="text-amber-400 font-black text-[10px] uppercase mr-4 hover:text-amber-300 transition-colors">Edit</button>
-                    <button onclick="deleteRecord('${d.id}')" class="text-rose-400 font-black text-[10px] uppercase hover:text-rose-300 transition-colors">Hapus</button>
-                </td>
-            </tr>
-        `).join('');
-    }
-
-    function renderSimplePanel(list, targetId, countId, color) {
-        document.getElementById(countId).innerText = list.length;
-        const container = document.getElementById(targetId);
-        if (list.length === 0) {
-            container.innerHTML = `<div class="py-16 text-center text-slate-500 text-[10px] font-bold uppercase italic tracking-widest">Semua Nilai Identik</div>`;
-            return;
-        }
-        container.innerHTML = list.map(item => `
-            <div class="bg-slate-900/80 p-4 rounded-xl border border-white/5 shadow-inner flex justify-between items-center animate-fade">
-                <div>
-                    <div class="text-sm font-black text-white tracking-wide">${item.tool}</div>
-                    <div class="text-[8px] text-slate-500 font-bold uppercase tracking-widest">${item.op}</div>
-                </div>
-                <div class="flex gap-4 text-right">
-                    <div>
-                        <div class="text-[8px] text-blue-400 font-bold tracking-widest uppercase">Dev X</div>
-                        <div class="text-xs font-mono font-black ${parseFloat(item.dx) !== 0 ? 'text-blue-400' : 'text-slate-500'}">${item.dx}</div>
-                    </div>
-                    <div>
-                        <div class="text-[8px] text-emerald-400 font-bold tracking-widest uppercase">Dev Z</div>
-                        <div class="text-xs font-mono font-black ${parseFloat(item.dz) !== 0 ? 'text-emerald-400' : 'text-slate-500'}">${item.dz}</div>
-                    </div>
-                </div>
-            </div>
-        `).join('');
-    }
-
-    function updateComparison() {
-        const t1 = document.getElementById('type1Selector').value;
-        const t2 = document.getElementById('type2Selector').value;
-        const tableBody = document.getElementById('detailTableBody');
-        if (!t1 || !t2) {
-            tableBody.innerHTML = `<tr><td colspan="5" class="px-8 py-20 text-center text-slate-500 italic font-black text-xs uppercase tracking-widest">Silakan Pilih Tipe Master & Target</td></tr>`;
-            ['op1Content','op2Content'].forEach(id => {
-                document.getElementById(id).innerHTML = `<div class="py-16 text-center text-slate-500 text-[11px] font-black uppercase italic tracking-widest">Pilih tipe terlebih dahulu</div>`;
+        function importData() {
+            const val = document.getElementById('bulkInput').value.trim();
+            if (!val) return;
+            val.split('\n').forEach(r => {
+                const p = r.split(/\s+/);
+                if (p.length >= 3) {
+                    db[`line${adminInLine}`].push({
+                        id: 'id' + Date.now() + Math.random().toString(36).substr(2, 5),
+                        type: p[0].toUpperCase(), op: p[1].toUpperCase(), tool: p[2].toUpperCase(),
+                        x: parseFloat(p[3] || 0), z: parseFloat(p[4] || 0)
+                    });
+                }
             });
-            document.getElementById('count-op1').innerText = "0";
-            document.getElementById('count-op2').innerText = "0";
-            return;
+            saveToStorage(); 
+            updateAdminFilters();
+            renderDatabase(); 
+            updateTypeDropdowns();
+            document.getElementById('bulkInput').value = "";
+            showToast("DATA BERHASIL DIIMPOR");
         }
-        const data1 = (db[`line${activeLine}`] || []).filter(x => x.type === t1);
-        const data2 = (db[`line${activeLine}`] || []).filter(x => x.type === t2);
-        let op1List = [], op2List = [], fullRows = "";
 
-        data1.forEach(m1 => {
-            const m2 = data2.find(x => x.tool === m1.tool && x.op === m1.op);
-            if (m2) {
-                const dx = (m1.x - m2.x).toFixed(3);
-                const dz = (m1.z - m2.z).toFixed(3);
-                const isDiff = parseFloat(dx) !== 0 || parseFloat(dz) !== 0;
-                const formattedDx = parseFloat(dx) > 0 ? `+${dx}` : dx;
-                const formattedDz = parseFloat(dz) > 0 ? `+${dz}` : dz;
+        function openEditModal(id) {
+            const item = db[`line${adminViewLine}`].find(x => x.id === id);
+            if (!item) return;
+            document.getElementById('edit-id').value = item.id;
+            document.getElementById('edit-type').value = item.type;
+            document.getElementById('edit-op').value = item.op;
+            document.getElementById('edit-tool').value = item.tool;
+            document.getElementById('edit-x').value = item.x;
+            document.getElementById('edit-z').value = item.z;
+            document.getElementById('editModal').classList.remove('hidden');
+        }
 
-                fullRows += `
-                    <tr class="hover:bg-white/[0.02] transition-colors duration-150">
-                        <td class="px-8 py-4 font-extrabold text-slate-200">
-                            <span class="text-sm tracking-wide text-amber-400">${m1.tool}</span><br>
-                            <span class="text-[9px] text-slate-500 font-bold uppercase tracking-widest">${m1.op}</span>
-                        </td>
-                        <td class="px-8 py-4 text-slate-400 font-mono text-xs">
-                            <div class="flex items-center gap-1.5"><span class="text-[9px] font-black text-blue-400">X:</span> ${(+m1.x).toFixed(3)}</div>
-                            <div class="flex items-center gap-1.5"><span class="text-[9px] font-black text-emerald-400">Z:</span> ${(+m1.z).toFixed(3)}</div>
-                        </td>
-                        <td class="px-8 py-4 text-slate-400 font-mono text-xs">
-                            <div class="flex items-center gap-1.5"><span class="text-[9px] font-black text-blue-400">X:</span> ${(+m2.x).toFixed(3)}</div>
-                            <div class="flex items-center gap-1.5"><span class="text-[9px] font-black text-emerald-400">Z:</span> ${(+m2.z).toFixed(3)}</div>
-                        </td>
-                        <td class="px-8 py-4 text-center font-mono font-black text-xs ${parseFloat(dx) !== 0 ? 'text-blue-400 bg-blue-500/5 glow-text-blue' : 'text-slate-600'}">${formattedDx}</td>
-                        <td class="px-8 py-4 text-center font-mono font-black text-xs ${parseFloat(dz) !== 0 ? 'text-emerald-400 bg-emerald-500/5 glow-text-emerald' : 'text-slate-600'}">${formattedDz}</td>
-                    </tr>`;
+        function applyEdit() {
+            const id = document.getElementById('edit-id').value;
+            const idx = db[`line${adminViewLine}`].findIndex(x => x.id === id);
+            if (idx !== -1) {
+                const oldItem = { ...db[`line${adminViewLine}`][idx] };
+                const newX = parseFloat(document.getElementById('edit-x').value || 0);
+                const newZ = parseFloat(document.getElementById('edit-z').value || 0);
+                const newType = document.getElementById('edit-type').value.toUpperCase();
+                const newOp = document.getElementById('edit-op').value.toUpperCase();
+                const newTool = document.getElementById('edit-tool').value.toUpperCase();
 
-                if (isDiff) {
-                    const opStr = m1.op.toUpperCase();
-                    if (opStr.includes('1') || opStr.includes('10')) op1List.push({tool: m1.tool, op: m1.op, dx: formattedDx, dz: formattedDz});
-                    else op2List.push({tool: m1.tool, op: m1.op, dx: formattedDx, dz: formattedDz});
+                // Cek apakah ada perubahan nilai offset
+                const xChanged = parseFloat(oldItem.x.toFixed(3)) !== parseFloat(newX.toFixed(3));
+                const zChanged = parseFloat(oldItem.z.toFixed(3)) !== parseFloat(newZ.toFixed(3));
+
+                db[`line${adminViewLine}`][idx] = {
+                    id, type: newType, op: newOp, tool: newTool, x: newX, z: newZ
+                };
+
+                // Simpan histori jika ada perubahan offset
+                if (xChanged || zChanged) {
+                    addHistory({
+                        line: adminViewLine,
+                        type: newType,
+                        op: newOp,
+                        tool: newTool,
+                        oldX: oldItem.x,
+                        oldZ: oldItem.z,
+                        newX: newX,
+                        newZ: newZ,
+                        xChanged,
+                        zChanged
+                    });
                 }
-            }
-        });
 
-        tableBody.innerHTML = fullRows || `<tr><td colspan="5" class="px-8 py-16 text-center text-slate-500 font-black uppercase tracking-widest italic">Tidak Ada Data Perkakas yang Cocok</td></tr>`;
-        renderSimplePanel(op1List, 'op1Content', 'count-op1', 'blue');
-        renderSimplePanel(op2List, 'op2Content', 'count-op2', 'emerald');
-    }
-
-    function updateKPIs() {
-        const lineData = db[`line${activeLine}`] || [];
-        document.getElementById('statLine').innerText = `LINE ${activeLine}`;
-        document.getElementById('statTotalType').innerText = [...new Set(lineData.map(d => d.type))].length;
-        document.getElementById('statTotalTool').innerText = [...new Set(lineData.map(d => d.tool))].length;
-    }
-
-    function updateTypeDropdowns() {
-        const types = [...new Set((db[`line${activeLine}`] || []).map(d => d.type))].sort();
-        const options = `<option value="">- PILIH TIPE -</option>` + types.map(t => `<option value="${t}">${t}</option>`).join('');
-        document.getElementById('type1Selector').innerHTML = options;
-        document.getElementById('type2Selector').innerHTML = options;
-        updateAdminFilters();
-    }
-
-    function updateAdminFilters() {
-        const adminData = db[`line${adminViewLine}`] || [];
-        const types = [...new Set(adminData.map(d => d.type))].sort();
-        const typeFilter = document.getElementById('dbTypeFilter');
-        const cv = typeFilter.value;
-        typeFilter.innerHTML = `<option value="">SEMUA TIPE</option>` + types.map(t => `<option value="${t}" ${t===cv?'selected':''}>${t}</option>`).join('');
-
-        const tools = [...new Set(adminData.map(d => d.tool))].sort();
-        const toolFilter = document.getElementById('dbToolFilter');
-        const ct = toolFilter.value;
-        toolFilter.innerHTML = `<option value="">SEMUA TOOL</option>` + tools.map(t => `<option value="${t}" ${t===ct?'selected':''}>${t}</option>`).join('');
-    }
-
-    // ═══════════════════════════════════════════════════
-    //  PASSWORD & ADMIN ACCESS
-    // ═══════════════════════════════════════════════════
-    function requestAdminAccess() {
-        if (adminAuthenticated) {
-            switchMenu('admin');
-            return;
-        }
-        // Check lockout
-        if (Date.now() < lockoutUntil) {
-            const remaining = Math.ceil((lockoutUntil - Date.now()) / 1000);
-            showToast(`TERKUNCI — TUNGGU ${remaining} DETIK`);
-            return;
-        }
-        // Reset input
-        document.getElementById('adminPasswordInput').value = '';
-        document.getElementById('pwdError').style.opacity = '0';
-        document.getElementById('attemptWarning').classList.add('hidden');
-        updatePinDots('');
-        document.getElementById('passwordModal').classList.remove('hidden');
-        setTimeout(() => document.getElementById('adminPasswordInput').focus(), 100);
-    }
-
-    function checkAdminPassword() {
-        if (Date.now() < lockoutUntil) {
-            const remaining = Math.ceil((lockoutUntil - Date.now()) / 1000);
-            showPwdError(`Terkunci selama ${remaining} detik lagi`);
-            return;
-        }
-
-        const input = document.getElementById('adminPasswordInput').value;
-        if (input === getAdminPassword()) {
-            // SUCCESS
-            setAdminAuth(true);
-            loginAttempts = 0;
-            document.getElementById('passwordModal').classList.add('hidden');
-            document.getElementById('adminPasswordInput').value = '';
-            updatePinDots('');
-            switchMenu('admin');
-            showToast("✓ AKSES ADMIN DIBERIKAN");
-        } else {
-            // FAILED
-            loginAttempts++;
-            const remaining = MAX_ATTEMPTS - loginAttempts;
-
-            // Shake animation
-            const box = document.getElementById('passwordBox');
-            box.classList.remove('shake');
-            void box.offsetWidth;
-            box.classList.add('shake');
-
-            // Clear input
-            document.getElementById('adminPasswordInput').value = '';
-            updatePinDots('');
-
-            if (loginAttempts >= MAX_ATTEMPTS) {
-                lockoutUntil = Date.now() + 60000; // 60 detik lockout
-                loginAttempts = 0;
-                showPwdError('Terlalu banyak percobaan! Terkunci 60 detik.');
-                document.getElementById('attemptWarning').classList.remove('hidden');
-                document.getElementById('attemptText').innerText = '⚠ Akun dikunci selama 60 detik';
-            } else {
-                showPwdError(`Password salah! ${remaining} percobaan tersisa.`);
-                if (remaining <= 2) {
-                    document.getElementById('attemptWarning').classList.remove('hidden');
-                    document.getElementById('attemptText').innerText = `⚠ Peringatan: ${remaining} percobaan lagi sebelum dikunci`;
-                }
+                saveToStorage();
+                updateAdminFilters();
+                renderDatabase();
+                document.getElementById('editModal').classList.add('hidden');
+                showToast("PERUBAHAN BERHASIL DISIMPAN");
             }
         }
-    }
 
-    function showPwdError(msg) {
-        const el = document.getElementById('pwdError');
-        el.innerText = msg;
-        el.style.opacity = '1';
-        setTimeout(() => { el.style.opacity = '0'; }, 3000);
-    }
-
-    function closePasswordModal() {
-        document.getElementById('passwordModal').classList.add('hidden');
-        document.getElementById('adminPasswordInput').value = '';
-        updatePinDots('');
-        document.getElementById('pwdError').style.opacity = '0';
-    }
-
-    function updatePinDots(val) {
-        for (let i = 1; i <= 6; i++) {
-            const dot = document.getElementById('dot' + i);
-            if (!dot) continue;
-            if (i <= val.length) {
-                dot.style.background = '#fbbf24';
-                dot.style.borderColor = '#fbbf24';
-                dot.style.boxShadow = '0 0 6px #fbbf24';
-            } else {
-                dot.style.background = 'transparent';
-                dot.style.borderColor = '#475569';
-                dot.style.boxShadow = 'none';
+        function deleteRecord(id) {
+            if (confirm("Apakah Anda yakin ingin menghapus data koordinat ini?")) {
+                db[`line${adminViewLine}`] = db[`line${adminViewLine}`].filter(x => x.id !== id);
+                saveToStorage(); 
+                updateAdminFilters();
+                renderDatabase();
+                showToast("DATA DIHAPUS");
             }
         }
-    }
 
-    function appendPin(char) {
-        const input = document.getElementById('adminPasswordInput');
-        if (input.value.length < 20) {
-            input.value += char;
-            updatePinDots(input.value);
-        }
-    }
-
-    function clearPin() {
-        const input = document.getElementById('adminPasswordInput');
-        input.value = input.value.slice(0, -1);
-        updatePinDots(input.value);
-    }
-
-    function togglePwdVisibility() {
-        const input = document.getElementById('adminPasswordInput');
-        const icon = document.getElementById('eyeIcon');
-        if (input.type === 'password') {
-            input.type = 'text';
-            icon.innerHTML = '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21"></path>';
-        } else {
-            input.type = 'password';
-            icon.innerHTML = '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>';
-        }
-    }
-
-    function applyChangePassword() {
-        const oldPwd = document.getElementById('oldPwd').value;
-        const newPwd = document.getElementById('newPwd').value;
-        const confirmPwd = document.getElementById('confirmPwd').value;
-        const errEl = document.getElementById('changePwdError');
-
-        if (oldPwd !== getAdminPassword()) {
-            errEl.innerText = 'Password lama salah!'; errEl.style.opacity = '1'; return;
-        }
-        if (newPwd.length < 4) {
-            errEl.innerText = 'Password baru minimal 4 karakter!'; errEl.style.opacity = '1'; return;
-        }
-        if (newPwd !== confirmPwd) {
-            errEl.innerText = 'Konfirmasi password tidak cocok!'; errEl.style.opacity = '1'; return;
+        function clearLineData() {
+            if (confirm("Apakah Anda yakin ingin menghapus SELURUH data pada line aktif ini?")) {
+                db[`line${adminInLine}`] = [];
+                saveToStorage(); 
+                updateAdminFilters();
+                renderDatabase();
+            }
         }
 
-        localStorage.setItem('admin_password', newPwd);
-        document.getElementById('changePwdModal').classList.add('hidden');
-        document.getElementById('oldPwd').value = '';
-        document.getElementById('newPwd').value = '';
-        document.getElementById('confirmPwd').value = '';
-        errEl.style.opacity = '0';
-        showToast("✓ PASSWORD BERHASIL DIUBAH");
-    }
-
-    // ═══════════════════════════════════════════════════
-    //  UI NAVIGATION
-    // ═══════════════════════════════════════════════════
-    function switchMenu(menu) {
-        // Switching to dashboard always ends admin session
-        if (menu === 'dashboard' && adminAuthenticated) {
-            setAdminAuth(false);
+        function setAdminInputLine(n) {
+            adminInLine = n;
+            for(let i=1; i<=4; i++) {
+                document.getElementById(`adm-l${i}`).className = i === n 
+                    ? "py-2.5 rounded-xl border font-black text-xs bg-amber-500 text-slate-950 border-amber-400 shadow-lg shadow-amber-500/10 transition" 
+                    : "py-2.5 rounded-xl border font-black text-xs border-white/10 text-slate-400 hover:border-white/20 transition";
+            }
         }
 
-        document.getElementById('menu-dashboard').classList.toggle('hidden', menu !== 'dashboard');
-        document.getElementById('menu-admin').classList.toggle('hidden', menu !== 'admin');
-        document.getElementById('kpiSection').style.display = menu === 'admin' ? 'none' : '';
-
-        const dashBtn = document.getElementById('nav-dashboard');
-        const adminBtn = document.getElementById('nav-admin');
-        if (menu === 'dashboard') {
-            dashBtn.className = "px-8 py-3.5 rounded-xl text-xs font-black transition-all nav-active flex items-center gap-2";
-            adminBtn.className = "px-8 py-3.5 rounded-xl text-xs font-black transition-all text-slate-400 hover:text-white flex items-center gap-2";
-            updateComparison();
-        } else {
-            adminBtn.className = "px-8 py-3.5 rounded-xl text-xs font-black transition-all nav-active flex items-center gap-2";
-            dashBtn.className = "px-8 py-3.5 rounded-xl text-xs font-black transition-all text-slate-400 hover:text-white flex items-center gap-2";
-            renderDatabase();
+        function setAdminViewLine(n) { 
+            adminViewLine = n; 
+            document.getElementById('dbTypeFilter').value = ""; 
+            document.getElementById('dbToolFilter').value = "";
+            renderViewTabs(); 
+            renderDatabase(); 
         }
-        updateKPIs();
-    }
-
-    function logoutAdmin() {
-        setAdminAuth(false);
-        switchMenu('dashboard');
-        showToast("SESI ADMIN BERAKHIR");
-    }
-
-    function switchLine(n) { activeLine = parseInt(n); updateTypeDropdowns(); updateComparison(); updateKPIs(); }
-    function closeEditModal() { document.getElementById('editModal').classList.add('hidden'); }
-
-    function setAdminInputLine(n) {
-        adminInLine = n;
-        for(let i=1; i<=4; i++) {
-            document.getElementById(`adm-l${i}`).className = i === n
-                ? "py-2.5 rounded-xl border font-black text-xs bg-amber-500 text-slate-950 border-amber-400 shadow-lg shadow-amber-500/10 transition"
-                : "py-2.5 rounded-xl border font-black text-xs border-white/10 text-slate-400 hover:border-white/20 transition";
+        
+        function renderViewTabs() {
+            document.getElementById('viewTabsContainer').innerHTML = [1, 2, 3, 4].map(n => `
+                <button onclick="setAdminViewLine(${n})" class="w-10 h-10 rounded-xl text-xs font-black transition-all ${n === adminViewLine ? 'bg-amber-500 text-slate-950 shadow-lg shadow-amber-500/10 border border-amber-400' : 'bg-slate-900/60 text-slate-400 border border-white/5 hover:border-white/10'}">L${n}</button>
+            `).join('');
         }
-    }
 
-    function setAdminViewLine(n) {
-        adminViewLine = n;
-        document.getElementById('dbTypeFilter').value = "";
-        document.getElementById('dbToolFilter').value = "";
-        renderViewTabs(); renderDatabase();
-    }
+        function saveScriptUrl() {
+            googleScriptUrl = document.getElementById('scriptUrl').value.trim();
+            localStorage.setItem('google_script_url', googleScriptUrl);
+            checkSyncStatus();
+            if (googleScriptUrl) fetchFromCloud();
+            showToast("CLOUD DISAMBUNGKAN");
+        }
 
-    function renderViewTabs() {
-        document.getElementById('viewTabsContainer').innerHTML = [1,2,3,4].map(n => `
-            <button onclick="setAdminViewLine(${n})" class="w-10 h-10 rounded-xl text-xs font-black transition-all ${n === adminViewLine ? 'bg-amber-500 text-slate-950 shadow-lg shadow-amber-500/10 border border-amber-400' : 'bg-slate-900/60 text-slate-400 border border-white/5 hover:border-white/10'}">L${n}</button>
-        `).join('');
-    }
+        function closeEditModal() { document.getElementById('editModal').classList.add('hidden'); }
+        function switchLine(n) { activeLine = parseInt(n); updateTypeDropdowns(); updateComparison(); updateKPIs(); }
 
-    function showToast(m) {
-        const t = document.getElementById('toast');
-        document.getElementById('toastText').innerText = m;
-        t.style.opacity = '1';
-        setTimeout(() => t.style.opacity = '0', 2500);
-    }
+        function showToast(m) {
+            const t = document.getElementById('toast');
+            document.getElementById('toastText').innerText = m;
+            t.style.opacity = '1';
+            setTimeout(() => t.style.opacity = '0', 2500);
+        }
 
-    function copyScript() {
-        const text = document.getElementById('scriptPreview').innerText;
-        navigator.clipboard.writeText(text).then(() => showToast("SCRIPT TERSALIN!"));
-    }
+        // ==============================
+        // HISTORY NOTIFICATION FUNCTIONS
+        // ==============================
+
+        function getHistory() {
+            return JSON.parse(localStorage.getItem('offset_history')) || [];
+        }
+
+        function saveHistory(history) {
+            localStorage.setItem('offset_history', JSON.stringify(history));
+        }
+
+        function addHistory(change) {
+            const history = getHistory();
+            const now = new Date();
+            const bulan = ['Jan','Feb','Mar','Apr','Mei','Jun','Jul','Agu','Sep','Okt','Nov','Des'];
+            const entry = {
+                id: 'hist_' + Date.now(),
+                timestamp: now.toISOString(),
+                dateLabel: `${String(now.getDate()).padStart(2,'0')} ${bulan[now.getMonth()]} ${now.getFullYear()}`,
+                timeLabel: `${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}`,
+                line: change.line,
+                type: change.type,
+                op: change.op,
+                tool: change.tool,
+                oldX: change.oldX,
+                oldZ: change.oldZ,
+                newX: change.newX,
+                newZ: change.newZ,
+                xChanged: change.xChanged,
+                zChanged: change.zChanged
+            };
+            history.unshift(entry); // terbaru di atas
+            if (history.length > 100) history.pop(); // max 100 entri
+            saveHistory(history);
+            renderHistory();
+            updateHistoryBadge();
+        }
+
+        function renderHistory() {
+            const history = getHistory();
+            const list = document.getElementById('historyList');
+            updateHistoryBadge();
+
+            if (history.length === 0) {
+                list.innerHTML = `<div class="px-6 py-10 text-center text-slate-500 text-[10px] font-black uppercase italic tracking-widest">Belum ada riwayat perubahan offset</div>`;
+                return;
+            }
+
+            list.innerHTML = history.map((h, i) => {
+                const dxVal = (h.newX - h.oldX).toFixed(3);
+                const dzVal = (h.newZ - h.oldZ).toFixed(3);
+                const dxStr = parseFloat(dxVal) > 0 ? `+${dxVal}` : dxVal;
+                const dzStr = parseFloat(dzVal) > 0 ? `+${dzVal}` : dzVal;
+
+                return `
+                <div class="history-item px-6 py-4 flex flex-col sm:flex-row sm:items-center gap-3 hover:bg-white/[0.02] transition-colors" style="animation-delay:${i*30}ms">
+                    <!-- Waktu -->
+                    <div class="flex-shrink-0 text-center sm:w-24">
+                        <div class="text-[10px] font-black text-violet-400">${h.dateLabel}</div>
+                        <div class="text-[9px] font-bold text-slate-500">${h.timeLabel}</div>
+                        <div class="text-[8px] font-black text-slate-600 uppercase mt-0.5">LINE ${h.line}</div>
+                    </div>
+
+                    <!-- Divider -->
+                    <div class="hidden sm:block w-px h-10 bg-white/10 flex-shrink-0"></div>
+
+                    <!-- Info -->
+                    <div class="flex-1 min-w-0">
+                        <div class="flex flex-wrap items-center gap-1.5 mb-1">
+                            <span class="text-xs font-black text-amber-400 uppercase">${h.type}</span>
+                            <span class="text-[9px] font-bold text-slate-500">·</span>
+                            <span class="text-[10px] font-bold text-slate-400">${h.op}</span>
+                            <span class="text-[9px] font-bold text-slate-500">·</span>
+                            <span class="text-[10px] font-bold text-slate-300">${h.tool}</span>
+                        </div>
+                        <div class="flex flex-wrap gap-3">
+                            ${h.xChanged ? `
+                            <div class="flex items-center gap-1.5">
+                                <span class="text-[8px] font-black text-blue-400 uppercase">X:</span>
+                                <span class="text-[10px] font-mono text-slate-500 line-through">${h.oldX.toFixed(3)}</span>
+                                <svg class="w-3 h-3 text-slate-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7"/></svg>
+                                <span class="text-[10px] font-mono font-black text-blue-400">${h.newX.toFixed(3)}</span>
+                                <span class="text-[9px] font-mono text-blue-300">(${dxStr})</span>
+                            </div>` : ''}
+                            ${h.zChanged ? `
+                            <div class="flex items-center gap-1.5">
+                                <span class="text-[8px] font-black text-emerald-400 uppercase">Z:</span>
+                                <span class="text-[10px] font-mono text-slate-500 line-through">${h.oldZ.toFixed(3)}</span>
+                                <svg class="w-3 h-3 text-slate-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7"/></svg>
+                                <span class="text-[10px] font-mono font-black text-emerald-400">${h.newZ.toFixed(3)}</span>
+                                <span class="text-[9px] font-mono text-emerald-300">(${dzStr})</span>
+                            </div>` : ''}
+                        </div>
+                    </div>
+                </div>`;
+            }).join('');
+        }
+
+        function updateHistoryBadge() {
+            const count = getHistory().length;
+            const badge = document.getElementById('historyBadge');
+            badge.innerText = count;
+            badge.className = count > 0
+                ? 'bg-violet-500/20 border border-violet-400/30 text-violet-400 px-2.5 py-0.5 rounded-full text-[10px] font-black min-w-[24px] text-center hist-badge'
+                : 'bg-slate-700/20 border border-slate-600/30 text-slate-500 px-2.5 py-0.5 rounded-full text-[10px] font-black min-w-[24px] text-center';
+        }
+
+        function toggleHistoryPanel() {
+            const panel = document.getElementById('historyPanel');
+            const btn = document.getElementById('histToggleBtn');
+            const isHidden = panel.classList.contains('hidden');
+            panel.classList.toggle('hidden', !isHidden);
+            btn.innerText = isHidden ? 'Sembunyikan' : 'Tampilkan';
+            if (isHidden) renderHistory();
+        }
+
+        function clearHistory() {
+            if (confirm('Apakah Anda yakin ingin menghapus seluruh riwayat perubahan offset?')) {
+                localStorage.removeItem('offset_history');
+                renderHistory();
+                showToast('HISTORI DIHAPUS');
+            }
+        }
     </script>
 </body>
 </html>
