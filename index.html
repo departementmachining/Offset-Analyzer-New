@@ -839,8 +839,8 @@ function updateRow(sheet, item) {
     // ═══════════════════════════════════════════════════
     //  SYNC TO CLOUD — Kirim seluruh DB ke Google Sheets
     // ═══════════════════════════════════════════════════
-    async function syncToCloud() {
-        if (!googleScriptUrl) return;
+    async function syncToCloud(retryCount = 0) {
+        if (!googleScriptUrl) return false;
         checkSyncStatus('syncing');
 
         const payload = {
@@ -865,26 +865,34 @@ function updateRow(sheet, item) {
                 updateLastSyncTime();
                 setSyncInfo("Terakhir simpan: " + new Date().toLocaleString('id-ID'));
                 showToast("✓ TERSIMPAN KE GOOGLE SHEETS");
+                return true;
             } else {
                 throw new Error(data.message || "Gagal simpan");
             }
         } catch(e) {
+            // Auto-retry sekali setelah 3 detik
+            if (retryCount < 1) {
+                setSyncInfo("Koneksi lambat, mencoba ulang...");
+                showToast("⟳ MENCOBA ULANG SYNC...");
+                await new Promise(r => setTimeout(r, 3000));
+                return syncToCloud(retryCount + 1);
+            }
             checkSyncStatus('offline');
-            // Data tetap ada di localStorage, tidak hilang
             setSyncInfo("Gagal sync cloud, data tersimpan lokal. Error: " + e.message);
-            showToast("DATA LOKAL AMAN (CLOUD GAGAL)");
+            showToast("⚠ CLOUD GAGAL — DATA AMAN DI LOKAL");
             console.error("Cloud sync error:", e);
+            return false;
         }
     }
 
     // ═══════════════════════════════════════════════════
-    //  SAVE — Simpan lokal + sync ke cloud
+    //  SAVE — Simpan lokal + await sync ke cloud
     // ═══════════════════════════════════════════════════
-    function saveToStorage() {
+    async function saveToStorage() {
         localStorage.setItem('offset_db', JSON.stringify(db)); // Selalu simpan lokal dulu
         updateKPIs();
         if (googleScriptUrl) {
-            syncToCloud(); // Lalu sync ke cloud
+            await syncToCloud(); // await penuh, tidak fire-and-forget
         }
     }
 
@@ -988,7 +996,7 @@ function updateRow(sheet, item) {
     // ═══════════════════════════════════════════════════
     //  DATA OPERATIONS
     // ═══════════════════════════════════════════════════
-    function importData() {
+    async function importData() {
         const val = document.getElementById('bulkInput').value.trim();
         if (!val) return;
         let count = 0;
@@ -1006,7 +1014,7 @@ function updateRow(sheet, item) {
                 count++;
             }
         });
-        saveToStorage();
+        await saveToStorage();
         updateAdminFilters();
         renderDatabase();
         updateTypeDropdowns();
@@ -1029,7 +1037,7 @@ function updateRow(sheet, item) {
         document.getElementById('editModal').classList.remove('hidden');
     }
 
-    function applyEdit() {
+    async function applyEdit() {
         const id = document.getElementById('edit-id').value;
         const idx = db[`line${adminViewLine}`].findIndex(x => x.id === id);
         if (idx !== -1) {
@@ -1047,7 +1055,7 @@ function updateRow(sheet, item) {
                 x: newX,
                 z: newZ
             };
-            saveToStorage();
+            await saveToStorage();
             updateAdminFilters();
             renderDatabase();
             document.getElementById('editModal').classList.add('hidden');
@@ -1060,11 +1068,11 @@ function updateRow(sheet, item) {
         }
     }
 
-    function deleteRecord(id) {
+    async function deleteRecord(id) {
         if (confirm("Hapus data ini? Data akan dihapus juga dari Google Sheets.")) {
             const item = db[`line${adminViewLine}`].find(x => x.id === id);
             db[`line${adminViewLine}`] = db[`line${adminViewLine}`].filter(x => x.id !== id);
-            saveToStorage();
+            await saveToStorage();
             updateAdminFilters();
             renderDatabase();
             showToast("DATA DIHAPUS");
@@ -1072,12 +1080,12 @@ function updateRow(sheet, item) {
         }
     }
 
-    function clearLineData() {
+    async function clearLineData() {
         if (confirm("Hapus SEMUA data pada line ini? Tindakan ini tidak bisa dibatalkan.")) {
             const types = [...new Set(db[`line${adminInLine}`].map(d => d.type))];
             const count = db[`line${adminInLine}`].length;
             db[`line${adminInLine}`] = [];
-            saveToStorage();
+            await saveToStorage();
             updateAdminFilters();
             renderDatabase();
             showToast("LINE DATA DIHAPUS");
