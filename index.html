@@ -645,6 +645,18 @@ function writeAllData(sheet, db) {
                         <span class="text-[10px] text-rose-400 font-black uppercase tracking-widest flex-1">Ada perubahan belum tersimpan ke cloud</span>
                         <button onclick="retrySync()" class="px-3 py-1 bg-rose-500/20 border border-rose-500/30 text-rose-400 rounded-lg text-[9px] font-black uppercase tracking-widest hover:bg-rose-500/30 transition flex-shrink-0">↺ Sync Sekarang</button>
                     </div>
+                    <!-- DEBUG PANEL -->
+                    <div class="mt-2">
+                        <button onclick="toggleDebug()" class="text-[9px] font-black text-slate-600 hover:text-slate-400 uppercase tracking-widest transition">⚙ Debug Sync</button>
+                        <div id="debugPanel" class="hidden mt-2 bg-black/60 border border-white/5 rounded-xl p-3 space-y-2">
+                            <div class="flex gap-2 flex-wrap">
+                                <button onclick="debugTestRead()" class="px-3 py-1.5 bg-blue-500/20 border border-blue-500/30 text-blue-400 rounded-lg text-[9px] font-black uppercase tracking-widest hover:bg-blue-500/30 transition">Test READ</button>
+                                <button onclick="debugTestWrite()" class="px-3 py-1.5 bg-emerald-500/20 border border-emerald-500/30 text-emerald-400 rounded-lg text-[9px] font-black uppercase tracking-widest hover:bg-emerald-500/30 transition">Test WRITE</button>
+                                <button onclick="debugClearLog()" class="px-3 py-1.5 bg-slate-700 text-slate-400 rounded-lg text-[9px] font-black uppercase tracking-widest hover:bg-slate-600 transition">Clear Log</button>
+                            </div>
+                            <div id="debugLog" class="font-mono text-[9px] text-emerald-400 bg-black/40 rounded-lg p-2 max-h-40 overflow-y-auto space-y-0.5 whitespace-pre-wrap break-all"></div>
+                        </div>
+                    </div>
                 </div>
             </div>
 
@@ -863,44 +875,99 @@ function writeAllData(sheet, db) {
     }
 
     // ═══════════════════════════════════════════════════
-    //  SYNC TO CLOUD — Kirim DB ke Google Sheets via GET
-    //  GET tidak ada CORS preflight → aman dari Vercel/
-    //  GitHub Pages ke Apps Script tanpa plugin tambahan
+    //  DEBUG TOOLS
+    // ═══════════════════════════════════════════════════
+    function toggleDebug() {
+        const p = document.getElementById('debugPanel');
+        if (p) p.classList.toggle('hidden');
+    }
+    function debugLog(msg, color = '#34d399') {
+        const el = document.getElementById('debugLog');
+        if (!el) return;
+        const ts = new Date().toLocaleTimeString('id-ID');
+        el.innerHTML += `<div style="color:${color}">[${ts}] ${msg}</div>`;
+        el.scrollTop = el.scrollHeight;
+    }
+    function debugClearLog() {
+        const el = document.getElementById('debugLog');
+        if (el) el.innerHTML = '';
+    }
+    async function debugTestRead() {
+        if (!googleScriptUrl) { debugLog('URL belum diset!', '#f87171'); return; }
+        debugLog('→ TEST READ: ' + googleScriptUrl + '?action=READ');
+        try {
+            const res  = await fetch(googleScriptUrl + '?action=READ&t=' + Date.now());
+            const text = await res.text();
+            debugLog('HTTP status: ' + res.status);
+            debugLog('Response (100 char): ' + text.substring(0, 100));
+            if (text.startsWith('{')) {
+                const d = JSON.parse(text);
+                debugLog('Parse OK → status: ' + d.status, '#34d399');
+            } else {
+                debugLog('⚠ Bukan JSON! Cek deploy Apps Script.', '#f87171');
+            }
+        } catch(e) { debugLog('ERROR: ' + e.message, '#f87171'); }
+    }
+    async function debugTestWrite() {
+        if (!googleScriptUrl) { debugLog('URL belum diset!', '#f87171'); return; }
+        const testDb = { line1:[{id:'test',type:'TEST',op:'OP',tool:'T01',x:0,z:0}], line2:[], line3:[], line4:[] };
+        const url = googleScriptUrl + '?action=SAVE&key=' + encodeURIComponent(SECRET_KEY) + '&db=' + encodeURIComponent(JSON.stringify(testDb)) + '&t=' + Date.now();
+        debugLog('→ TEST WRITE (GET) url length: ' + url.length + ' chars');
+        try {
+            const res  = await fetch(url);
+            const text = await res.text();
+            debugLog('HTTP status: ' + res.status);
+            debugLog('Response: ' + text.substring(0, 200));
+            if (text.startsWith('{')) {
+                const d = JSON.parse(text);
+                debugLog('Parse OK → status: ' + d.status, d.status === 'saved' ? '#34d399' : '#f87171');
+            } else {
+                debugLog('⚠ Bukan JSON! Response: ' + text.substring(0,300), '#f87171');
+            }
+        } catch(e) { debugLog('FETCH ERROR: ' + e.message, '#f87171'); }
+    }
+
+    // ═══════════════════════════════════════════════════
+    //  SYNC TO CLOUD
     // ═══════════════════════════════════════════════════
     async function syncToCloud(retryCount = 0) {
         if (!googleScriptUrl) return false;
         checkSyncStatus('syncing');
 
+        const dbString = JSON.stringify(db);
+        const keyEnc   = encodeURIComponent(SECRET_KEY);
+        const dbEnc    = encodeURIComponent(dbString);
+        const getUrl   = `${googleScriptUrl}?action=SAVE&key=${keyEnc}&db=${dbEnc}&t=${Date.now()}`;
+
+        debugLog(`→ SYNC (retry:${retryCount}) url len:${getUrl.length}`);
+
         try {
-            const dbString = JSON.stringify(db);
-            const keyEnc   = encodeURIComponent(SECRET_KEY);
-            const dbEnc    = encodeURIComponent(dbString);
+            let text;
 
-            // Cek ukuran URL — Apps Script max ~8000 karakter di query string
-            // Jika melebihi, kirim lewat POST body (fallback)
-            const url = `${googleScriptUrl}?action=SAVE&key=${keyEnc}&db=${dbEnc}&t=${Date.now()}`;
-
-            let res, text;
-            if (url.length <= 7500) {
-                // Kirim via GET (tidak ada CORS preflight)
-                res  = await fetch(url, { method: 'GET' });
+            if (getUrl.length <= 7800) {
+                // GET — tidak ada CORS preflight
+                const res = await fetch(getUrl, { method: 'GET' });
                 text = await res.text();
+                debugLog(`GET ${res.status}: ${text.substring(0,120)}`);
             } else {
-                // Payload terlalu besar → POST dengan text/plain (Apps Script terima di doPost)
-                setSyncInfo('Data besar, kirim via POST...');
-                res  = await fetch(googleScriptUrl, {
+                // POST fallback untuk data besar
+                debugLog('Payload besar → POST');
+                const res = await fetch(googleScriptUrl, {
                     method : 'POST',
                     headers: { 'Content-Type': 'text/plain;charset=UTF-8' },
                     body   : JSON.stringify({ action: 'SAVE_ALL', key: SECRET_KEY, db: db })
                 });
                 text = await res.text();
+                debugLog(`POST ${res.status}: ${text.substring(0,120)}`);
             }
 
             if (!text || text.trim().startsWith('<')) {
-                throw new Error('Response bukan JSON. Pastikan Apps Script di-deploy sebagai "Anyone can access".');
+                throw new Error('Response HTML bukan JSON — Apps Script belum di-deploy atau akses "Anyone" belum di-set');
             }
 
             const data = JSON.parse(text);
+            debugLog('Parse OK → status: ' + data.status, data.status === 'saved' ? '#34d399' : '#fbbf24');
+
             if (data.status === 'saved' || data.status === 'updated') {
                 lastSyncHash = dbString;
                 checkSyncStatus('online');
@@ -909,9 +976,10 @@ function writeAllData(sheet, db) {
                 showToast('✓ TERSIMPAN KE GOOGLE SHEETS');
                 return true;
             } else {
-                throw new Error(data.message || 'Status: ' + data.status);
+                throw new Error(data.message || 'Status tidak dikenal: ' + data.status);
             }
         } catch(e) {
+            debugLog('ERROR: ' + e.message, '#f87171');
             return handleSyncError(e, retryCount);
         }
     }
@@ -931,16 +999,17 @@ function writeAllData(sheet, db) {
     async function handleSyncError(e, retryCount) {
         if (retryCount < 2) {
             const delay = (retryCount + 1) * 3000;
-            setSyncInfo(`Koneksi lambat, mencoba ulang (${retryCount + 1}/2)...`);
+            setSyncInfo(`Mencoba ulang (${retryCount + 1}/2)...`);
             showToast(`⟳ MENCOBA ULANG SYNC (${retryCount + 1}/2)`);
             await new Promise(r => setTimeout(r, delay));
             return syncToCloud(retryCount + 1);
         } else {
             checkSyncStatus('offline');
-            setSyncInfo('Gagal sync cloud. Error: ' + e.message);
+            setSyncInfo('Gagal sync: ' + e.message);
             showToast('⚠ CLOUD GAGAL — DATA AMAN DI LOKAL');
             const retryBtn = document.getElementById('retrySyncBtn');
             if (retryBtn) retryBtn.classList.remove('hidden');
+            document.getElementById('debugPanel')?.classList.remove('hidden');
             console.error('Cloud sync error:', e);
             return false;
         }
