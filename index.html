@@ -386,8 +386,6 @@ function readAllData(sheet) {
 }
 
 function writeAllData(sheet, db) {
-  const lastRow = sheet.getLastRow();
-  if (lastRow > 1) sheet.deleteRows(2, lastRow - 1);
   const rows = [];
   for (let ln = 1; ln <= 4; ln++) {
     const items = db["line" + ln] || [];
@@ -395,6 +393,10 @@ function writeAllData(sheet, db) {
       rows.push([ln, item.id, item.type, item.op, item.tool,
                  item.x, item.z, new Date().toISOString()]);
     });
+  }
+  const lastRow = sheet.getLastRow();
+  if (lastRow > 1) {
+    sheet.getRange(2, 1, lastRow - 1, 8).clearContent();
   }
   if (rows.length > 0) sheet.getRange(2, 1, rows.length, 8).setValues(rows);
 }
