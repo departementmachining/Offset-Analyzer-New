@@ -305,42 +305,57 @@
 // ═══════════════════════════════════════════════
 
 const SHEET_NAME = "OffsetDB";
-const SECRET_KEY = "OFFSET_PRO_2024"; // Ganti jika perlu
+const SECRET_KEY = "OFFSET_PRO_2024"; // Ganti jika perlu, harus sama di apps & script
 
+// ─── SEMUA REQUEST LEWAT doGet (GET = no CORS preflight) ───────────────────
+// action=READ            → ambil semua data
+// action=SAVE&key=&db=   → simpan seluruh DB (db = JSON string)
 function doGet(e) {
   try {
-    const sheet = getOrCreateSheet();
-    const data = readAllData(sheet);
-    return ContentService.createTextOutput(JSON.stringify({ status: "ok", db: data }))
-      .setMimeType(ContentService.MimeType.JSON);
+    const action = e.parameter.action || "READ";
+    const sheet  = getOrCreateSheet();
+
+    if (action === "READ") {
+      const data = readAllData(sheet);
+      return buildResponse({ status: "ok", db: data });
+    }
+
+    if (action === "SAVE") {
+      if (e.parameter.key !== SECRET_KEY) {
+        return buildResponse({ status: "unauthorized" });
+      }
+      const dbData = JSON.parse(decodeURIComponent(e.parameter.db));
+      writeAllData(sheet, dbData);
+      return buildResponse({ status: "saved" });
+    }
+
+    return buildResponse({ status: "error", message: "Unknown action: " + action });
+
   } catch(err) {
-    return ContentService.createTextOutput(JSON.stringify({ status: "error", message: err.message }))
-      .setMimeType(ContentService.MimeType.JSON);
+    return buildResponse({ status: "error", message: err.message });
   }
 }
 
+// doPost tetap ada sebagai fallback (tidak wajib dipakai)
 function doPost(e) {
   try {
     const payload = JSON.parse(e.postData.contents);
-    if (payload.key !== SECRET_KEY) {
-      return ContentService.createTextOutput(JSON.stringify({ status: "unauthorized" }))
-        .setMimeType(ContentService.MimeType.JSON);
-    }
+    if (payload.key !== SECRET_KEY) return buildResponse({ status: "unauthorized" });
     const sheet = getOrCreateSheet();
     if (payload.action === "SAVE_ALL") {
       writeAllData(sheet, payload.db);
-      return ContentService.createTextOutput(JSON.stringify({ status: "saved" }))
-        .setMimeType(ContentService.MimeType.JSON);
+      return buildResponse({ status: "saved" });
     }
-    if (payload.action === "UPDATE_ROW") {
-      updateRow(sheet, payload.item);
-      return ContentService.createTextOutput(JSON.stringify({ status: "updated" }))
-        .setMimeType(ContentService.MimeType.JSON);
-    }
+    return buildResponse({ status: "error", message: "Unknown action" });
   } catch(err) {
-    return ContentService.createTextOutput(JSON.stringify({ status: "error", message: err.message }))
-      .setMimeType(ContentService.MimeType.JSON);
+    return buildResponse({ status: "error", message: err.message });
   }
+}
+
+function buildResponse(obj) {
+  return ContentService
+    .createTextOutput(JSON.stringify(obj))
+    .setMimeType(ContentService.MimeType.JSON);
 }
 
 function getOrCreateSheet() {
@@ -364,7 +379,8 @@ function readAllData(sheet) {
     if (!line || !id) continue;
     const key = "line" + line;
     if (!db[key]) db[key] = [];
-    db[key].push({ id: String(id), type: String(type), op: String(op), tool: String(tool), x: parseFloat(x)||0, z: parseFloat(z)||0 });
+    db[key].push({ id: String(id), type: String(type), op: String(op),
+                   tool: String(tool), x: parseFloat(x)||0, z: parseFloat(z)||0 });
   }
   return db;
 }
@@ -376,21 +392,11 @@ function writeAllData(sheet, db) {
   for (let ln = 1; ln <= 4; ln++) {
     const items = db["line" + ln] || [];
     items.forEach(item => {
-      rows.push([ln, item.id, item.type, item.op, item.tool, item.x, item.z, new Date().toISOString()]);
+      rows.push([ln, item.id, item.type, item.op, item.tool,
+                 item.x, item.z, new Date().toISOString()]);
     });
   }
   if (rows.length > 0) sheet.getRange(2, 1, rows.length, 8).setValues(rows);
-}
-
-function updateRow(sheet, item) {
-  const rows = sheet.getDataRange().getValues();
-  for (let i = 1; i < rows.length; i++) {
-    if (String(rows[i][1]) === String(item.id)) {
-      sheet.getRange(i+1, 1, 1, 8).setValues([[item.line, item.id, item.type, item.op, item.tool, item.x, item.z, new Date().toISOString()]]);
-      return;
-    }
-  }
-  sheet.appendRow([item.line, item.id, item.type, item.op, item.tool, item.x, item.z, new Date().toISOString()]);
 }
                     </div>
                     <button onclick="copyScript()" class="mt-3 ml-8 px-4 py-2 bg-emerald-500/20 border border-emerald-500/30 text-emerald-400 rounded-xl text-[10px] font-black uppercase tracking-widest hover:bg-emerald-500/30 transition">📋 Salin Script</button>
@@ -629,8 +635,15 @@ function updateRow(sheet, item) {
                             Tarik Data Cloud
                         </button>
                     </div>
-                    <div id="syncInfo" class="hidden bg-slate-950/40 rounded-xl px-4 py-3 text-[10px] text-slate-400 font-mono border border-white/5">
+                    <div id="syncInfo" class="hidden bg-slate-950/40 rounded-xl px-4 py-3 text-[10px] text-slate-400 font-mono border border-white/5 flex items-center gap-3">
                         <span id="syncInfoText">—</span>
+                        <button id="retrySyncBtn" onclick="retrySync()" class="hidden ml-auto flex-shrink-0 px-3 py-1 bg-amber-500/20 border border-amber-500/30 text-amber-400 rounded-lg text-[9px] font-black uppercase tracking-widest hover:bg-amber-500/30 transition">↺ Retry</button>
+                    </div>
+                    <!-- Pending sync badge -->
+                    <div id="pendingSyncBadge" class="hidden bg-rose-500/10 border border-rose-500/30 rounded-xl px-4 py-3 flex items-center gap-3">
+                        <span class="w-2 h-2 rounded-full bg-rose-400 animate-ping flex-shrink-0"></span>
+                        <span class="text-[10px] text-rose-400 font-black uppercase tracking-widest flex-1">Ada perubahan belum tersimpan ke cloud</span>
+                        <button onclick="retrySync()" class="px-3 py-1 bg-rose-500/20 border border-rose-500/30 text-rose-400 rounded-lg text-[9px] font-black uppercase tracking-widest hover:bg-rose-500/30 transition flex-shrink-0">↺ Sync Sekarang</button>
                     </div>
                 </div>
             </div>
@@ -743,12 +756,20 @@ function updateRow(sheet, item) {
 
         if (googleScriptUrl) {
             document.getElementById('scriptUrl').value = googleScriptUrl;
+            // Cek pending sync dari sesi sebelumnya
+            if (localStorage.getItem('offset_pending_sync') === '1') {
+                showPendingSyncBadge(true);
+                showToast("⚠ ADA PERUBAHAN BELUM TERSYNC");
+            }
             showSyncBanner("Menghubungkan ke Google Sheets...", true);
             await fetchFromCloud(false); // Silent auto-sync saat buka
             startAutoSync(); // Polling setiap 30 detik
+            // Jika ada pending sync, kirim sekarang
+            await flushPendingSync();
         } else {
             checkSyncStatus();
         }
+        updateHistBadge();
     };
 
     // ═══════════════════════════════════════════════════
@@ -759,9 +780,11 @@ function updateRow(sheet, item) {
         autoSyncInterval = setInterval(async () => {
             if (!googleScriptUrl) return;
             try {
-                const url = googleScriptUrl + "?t=" + Date.now();
-                const res = await fetch(url);
-                const data = await res.json();
+                const url = googleScriptUrl + "?action=READ&t=" + Date.now();
+                const res  = await fetch(url, { method: 'GET' });
+                const text = await res.text();
+                if (!text || text.trim().startsWith('<')) return;
+                const data = JSON.parse(text);
                 if (data.status === "ok" && data.db) {
                     const newHash = JSON.stringify(data.db);
                     if (newHash !== lastSyncHash && lastSyncHash !== "") {
@@ -801,11 +824,14 @@ function updateRow(sheet, item) {
         if (showFeedback) showSyncBanner("Mengambil data dari Google Sheets...", true);
 
         try {
-            const url = googleScriptUrl + "?t=" + Date.now();
-            const res = await fetch(url);
+            const url = googleScriptUrl + "?action=READ&t=" + Date.now();
+            const res  = await fetch(url, { method: 'GET' });
+            const text = await res.text();
 
-            if (!res.ok) throw new Error("HTTP " + res.status);
-            const data = await res.json();
+            if (!text || text.trim().startsWith('<')) {
+                throw new Error('Response bukan JSON. Pastikan Apps Script di-deploy sebagai "Anyone can access".');
+            }
+            const data = JSON.parse(text);
 
             if (data.status === "ok" && data.db) {
                 db = data.db;
@@ -837,50 +863,85 @@ function updateRow(sheet, item) {
     }
 
     // ═══════════════════════════════════════════════════
-    //  SYNC TO CLOUD — Kirim seluruh DB ke Google Sheets
+    //  SYNC TO CLOUD — Kirim DB ke Google Sheets via GET
+    //  GET tidak ada CORS preflight → aman dari Vercel/
+    //  GitHub Pages ke Apps Script tanpa plugin tambahan
     // ═══════════════════════════════════════════════════
     async function syncToCloud(retryCount = 0) {
         if (!googleScriptUrl) return false;
         checkSyncStatus('syncing');
 
-        const payload = {
-            action: 'SAVE_ALL',
-            key: SECRET_KEY,
-            db: db
-        };
-
         try {
-            const res = await fetch(googleScriptUrl, {
-                method: 'POST',
-                headers: { 'Content-Type': 'text/plain' }, // Hindari CORS preflight
-                body: JSON.stringify(payload)
-            });
+            const dbString = JSON.stringify(db);
+            const keyEnc   = encodeURIComponent(SECRET_KEY);
+            const dbEnc    = encodeURIComponent(dbString);
 
-            if (!res.ok) throw new Error("HTTP " + res.status);
-            const data = await res.json();
+            // Cek ukuran URL — Apps Script max ~8000 karakter di query string
+            // Jika melebihi, kirim lewat POST body (fallback)
+            const url = `${googleScriptUrl}?action=SAVE&key=${keyEnc}&db=${dbEnc}&t=${Date.now()}`;
 
-            if (data.status === "saved" || data.status === "updated") {
-                lastSyncHash = JSON.stringify(db);
+            let res, text;
+            if (url.length <= 7500) {
+                // Kirim via GET (tidak ada CORS preflight)
+                res  = await fetch(url, { method: 'GET' });
+                text = await res.text();
+            } else {
+                // Payload terlalu besar → POST dengan text/plain (Apps Script terima di doPost)
+                setSyncInfo('Data besar, kirim via POST...');
+                res  = await fetch(googleScriptUrl, {
+                    method : 'POST',
+                    headers: { 'Content-Type': 'text/plain;charset=UTF-8' },
+                    body   : JSON.stringify({ action: 'SAVE_ALL', key: SECRET_KEY, db: db })
+                });
+                text = await res.text();
+            }
+
+            if (!text || text.trim().startsWith('<')) {
+                throw new Error('Response bukan JSON. Pastikan Apps Script di-deploy sebagai "Anyone can access".');
+            }
+
+            const data = JSON.parse(text);
+            if (data.status === 'saved' || data.status === 'updated') {
+                lastSyncHash = dbString;
                 checkSyncStatus('online');
                 updateLastSyncTime();
-                setSyncInfo("Terakhir simpan: " + new Date().toLocaleString('id-ID'));
-                showToast("✓ TERSIMPAN KE GOOGLE SHEETS");
+                setSyncInfo('Terakhir simpan: ' + new Date().toLocaleString('id-ID'));
+                showToast('✓ TERSIMPAN KE GOOGLE SHEETS');
                 return true;
             } else {
-                throw new Error(data.message || "Gagal simpan");
+                throw new Error(data.message || 'Status: ' + data.status);
             }
         } catch(e) {
-            // Auto-retry sekali setelah 3 detik
-            if (retryCount < 1) {
-                setSyncInfo("Koneksi lambat, mencoba ulang...");
-                showToast("⟳ MENCOBA ULANG SYNC...");
-                await new Promise(r => setTimeout(r, 3000));
-                return syncToCloud(retryCount + 1);
-            }
+            return handleSyncError(e, retryCount);
+        }
+    }
+
+    async function retrySync() {
+        if (!googleScriptUrl) { showToast("URL CLOUD BELUM DISET"); return; }
+        setSyncInfo('Mengirim ulang ke Google Sheets...');
+        const ok = await syncToCloud();
+        if (ok) {
+            localStorage.removeItem('offset_pending_sync');
+            showPendingSyncBadge(false);
+            const retryBtn = document.getElementById('retrySyncBtn');
+            if (retryBtn) retryBtn.classList.add('hidden');
+        }
+    }
+
+    async function handleSyncError(e, retryCount) {
+        if (retryCount < 2) {
+            const delay = (retryCount + 1) * 3000;
+            setSyncInfo(`Koneksi lambat, mencoba ulang (${retryCount + 1}/2)...`);
+            showToast(`⟳ MENCOBA ULANG SYNC (${retryCount + 1}/2)`);
+            await new Promise(r => setTimeout(r, delay));
+            return syncToCloud(retryCount + 1);
+        } else {
             checkSyncStatus('offline');
-            setSyncInfo("Gagal sync cloud, data tersimpan lokal. Error: " + e.message);
-            showToast("⚠ CLOUD GAGAL — DATA AMAN DI LOKAL");
-            console.error("Cloud sync error:", e);
+            setSyncInfo('Gagal sync cloud. Error: ' + e.message);
+            showToast('⚠ CLOUD GAGAL — DATA AMAN DI LOKAL');
+            const retryBtn = document.getElementById('retrySyncBtn');
+            if (retryBtn) retryBtn.classList.remove('hidden');
+            console.error('Cloud sync error:', e);
             return false;
         }
     }
@@ -892,9 +953,40 @@ function updateRow(sheet, item) {
         localStorage.setItem('offset_db', JSON.stringify(db)); // Selalu simpan lokal dulu
         updateKPIs();
         if (googleScriptUrl) {
-            await syncToCloud(); // await penuh, tidak fire-and-forget
+            const ok = await syncToCloud();
+            if (!ok) {
+                // Tandai ada pending sync
+                localStorage.setItem('offset_pending_sync', '1');
+                showPendingSyncBadge(true);
+            } else {
+                localStorage.removeItem('offset_pending_sync');
+                showPendingSyncBadge(false);
+            }
         }
     }
+
+    // Cek & kirim ulang jika ada pending sync (dipanggil saat focus kembali)
+    async function flushPendingSync() {
+        if (!googleScriptUrl) return;
+        if (localStorage.getItem('offset_pending_sync') !== '1') return;
+        setSyncInfo('Ada perubahan belum tersync — mengirim ulang...');
+        const ok = await syncToCloud();
+        if (ok) {
+            localStorage.removeItem('offset_pending_sync');
+            showPendingSyncBadge(false);
+            showToast('✓ PENDING SYNC BERHASIL DIKIRIM');
+        }
+    }
+
+    function showPendingSyncBadge(show) {
+        let badge = document.getElementById('pendingSyncBadge');
+        if (!badge) return;
+        badge.classList.toggle('hidden', !show);
+    }
+
+    // Flush saat tab mendapat fokus kembali
+    window.addEventListener('focus', flushPendingSync);
+    window.addEventListener('online', flushPendingSync);
 
     // ═══════════════════════════════════════════════════
     //  URL MANAGEMENT
