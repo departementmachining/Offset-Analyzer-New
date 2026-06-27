@@ -551,7 +551,7 @@ CREATE POLICY allow_update ON offset_db
                             </div>
                             <div class="relative flex-1">
                                 <span class="absolute inset-y-0 left-4 flex items-center text-amber-400 text-[9px] font-black">KEY</span>
-                                <input id="anonKey" type="password" placeholder="anon public key..." class="w-full bg-slate-950/60 border border-amber-500/20 pl-12 pr-4 py-4 rounded-2xl text-xs text-amber-200 placeholder-amber-900 outline-none focus:border-amber-400 transition-all font-mono">
+                                <input id="anonKey" type="text" placeholder="anon public key (eyJ...)" class="w-full bg-slate-950/60 border border-amber-500/20 pl-12 pr-4 py-4 rounded-2xl text-xs text-amber-200 placeholder-amber-900 outline-none focus:border-amber-400 transition-all font-mono" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">
                             </div>
                         </div>
                         <div class="flex gap-3">
@@ -889,17 +889,21 @@ CREATE POLICY allow_update ON offset_db
     // ═══════════════════════════════════════════════════
     //  KONEKSI — Simpan Supabase URL + Key
     // ═══════════════════════════════════════════════════
-    function saveScriptUrl() {
+    async function saveScriptUrl() {
         const url = document.getElementById('scriptUrl').value.trim().replace(/\/+$/, '');
         const key = document.getElementById('anonKey').value.trim();
-        if (!url || !key) { showToast("URL DAN ANON KEY WAJIB DIISI"); return; }
+        debugLog('saveScriptUrl → url: ' + url.substring(0,40) + ' key: ' + key.substring(0,10) + '...');
+        if (!url || !key) { showToast("URL DAN ANON KEY WAJIB DIISI"); debugLog('URL atau Key kosong!', '#f87171'); return; }
         if (!url.includes('supabase.co')) { showToast("FORMAT URL SUPABASE TIDAK VALID"); return; }
-        sbUrl = url; sbKey = key;
+        sbUrl = url;
+        sbKey = key;
         localStorage.setItem('sb_url', sbUrl);
         localStorage.setItem('sb_key', sbKey);
+        debugLog('Config tersimpan. sbReady: ' + sbReady());
         checkSyncStatus('syncing');
         showSyncBanner("Menguji koneksi ke Supabase...", true);
-        fetchFromCloud(true).then(() => startAutoSync());
+        await fetchFromCloud(true);
+        startAutoSync();
     }
 
     // ═══════════════════════════════════════════════════
