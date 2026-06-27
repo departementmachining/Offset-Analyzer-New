@@ -913,20 +913,26 @@ CREATE POLICY allow_update ON offset_db
     //  KONEKSI — Simpan Supabase URL + Key
     // ═══════════════════════════════════════════════════
     async function saveScriptUrl() {
-        const url = document.getElementById('scriptUrl').value.trim().replace(/\/+$/, '');
-        const key = document.getElementById('anonKey').value.trim();
-        debugLog('saveScriptUrl → url: ' + url.substring(0,40) + ' key: ' + key.substring(0,10) + '...');
-        if (!url || !key) { showToast("URL DAN ANON KEY WAJIB DIISI"); debugLog('URL atau Key kosong!', '#f87171'); return; }
-        if (!url.includes('supabase.co')) { showToast("FORMAT URL SUPABASE TIDAK VALID"); return; }
-        sbUrl = url;
-        sbKey = key;
-        localStorage.setItem('sb_url', sbUrl);
-        localStorage.setItem('sb_key', sbKey);
-        debugLog('Config tersimpan. sbReady: ' + sbReady());
-        checkSyncStatus('syncing');
-        showSyncBanner("Menguji koneksi ke Supabase...", true);
-        await fetchFromCloud(true);
-        startAutoSync();
+        try {
+            const url = document.getElementById('scriptUrl').value.trim().replace(/\/+$/, '');
+            const key = document.getElementById('anonKey').value.trim();
+            debugLog('saveScriptUrl → url: ' + url.substring(0,40) + ' key: ' + key.substring(0,10) + '...');
+            if (!url || !key) { showToast("URL DAN ANON KEY WAJIB DIISI"); debugLog('URL atau Key kosong!', '#f87171'); return; }
+            if (!url.includes('supabase.co')) { showToast("FORMAT URL SUPABASE TIDAK VALID"); return; }
+            sbUrl = url;
+            sbKey = key;
+            localStorage.setItem('sb_url', sbUrl);
+            localStorage.setItem('sb_key', sbKey);
+            debugLog('Config tersimpan. Memanggil fetchFromCloud...');
+            checkSyncStatus('syncing');
+            showSyncBanner("Menguji koneksi ke Supabase...", true);
+            await fetchFromCloud(true);
+            debugLog('fetchFromCloud selesai. Mulai autoSync...');
+            startAutoSync();
+        } catch(err) {
+            debugLog('saveScriptUrl ERROR: ' + err.message, '#f87171');
+            console.error('saveScriptUrl error:', err);
+        }
     }
 
     // ═══════════════════════════════════════════════════
@@ -991,7 +997,7 @@ CREATE POLICY allow_update ON offset_db
                 statClass: 'text-sm font-extrabold text-rose-400', statText: 'LOKAL ONLY',
                 cloudColor: '#ef4444', cloudShadow: '#ef4444'
             },
-            default: googleScriptUrl ? {
+            default: sbReady() ? {
                 dotClass: 'sync-indicator status-online', label: 'Cloud Terhubung',
                 statClass: 'text-sm font-extrabold text-emerald-400', statText: 'CLOUD AKTIF',
                 cloudColor: '#10b981', cloudShadow: '#10b981'
