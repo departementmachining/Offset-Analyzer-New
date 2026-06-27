@@ -751,25 +751,48 @@ CREATE POLICY allow_update ON offset_db
     }
 
     async function fetchFromCloud(showFeedback = true) {
-        if (!sbReady()) { if (showFeedback) showToast("SUPABASE BELUM DIKONFIGURASI"); return; }
+        debugLog('fetchFromCloud start — sbUrl:' + sbUrl.substring(0,30) + ' sbKey:' + (sbKey?'OK':'KOSONG'));
+        if (!sbUrl || !sbKey) {
+            debugLog('sbUrl atau sbKey kosong!', '#f87171');
+            if (showFeedback) showToast("SUPABASE BELUM DIKONFIGURASI");
+            return;
+        }
         checkSyncStatus('syncing');
         if (showFeedback) showSyncBanner("Mengambil data dari Supabase...", true);
         try {
-            const res = await fetch(`${sbUrl}/rest/v1/offset_db?select=*&order=line,id`, {
-                headers: { 'apikey': sbKey, 'Authorization': 'Bearer ' + sbKey }
+            const fetchUrl = sbUrl + '/rest/v1/offset_db?select=*&order=line,id';
+            debugLog('Fetch: ' + fetchUrl.substring(0,60));
+            const res = await fetch(fetchUrl, {
+                method: 'GET',
+                headers: {
+                    'apikey': sbKey,
+                    'Authorization': 'Bearer ' + sbKey,
+                    'Content-Type': 'application/json'
+                }
             });
-            if (!res.ok) throw new Error('HTTP ' + res.status + ' ' + await res.text());
+            debugLog('Response status: ' + res.status);
+            if (!res.ok) {
+                const errText = await res.text();
+                throw new Error('HTTP ' + res.status + ' — ' + errText.substring(0,100));
+            }
             const rows = await res.json();
+            debugLog('Rows diterima: ' + rows.length);
             db = rowsToDb(rows);
             localStorage.setItem('offset_db', JSON.stringify(db));
             lastSyncHash = JSON.stringify(rows);
             updateTypeDropdowns(); renderDatabase(); updateComparison(); updateKPIs();
             checkSyncStatus('online'); updateLastSyncTime();
-            if (showFeedback) { showSyncBanner("✓ Data berhasil disinkronkan dari Supabase", false); showToast("DATA CLOUD DIPERBARUI"); }
-            else hideSyncBanner();
+            if (showFeedback) {
+                showSyncBanner("✓ Terhubung ke Supabase", false);
+                showToast("✓ SUPABASE TERKONEKSI");
+            } else {
+                hideSyncBanner();
+            }
             setSyncInfo("Terakhir tarik: " + new Date().toLocaleString('id-ID'));
+            debugLog('fetchFromCloud SUKSES ✓', '#34d399');
         } catch(e) {
-            checkSyncStatus('offline'); hideSyncBanner();
+            checkSyncStatus('offline');
+            hideSyncBanner();
             if (showFeedback) showToast("GAGAL HUBUNGI SUPABASE");
             setSyncInfo("Error: " + e.message);
             debugLog('fetchFromCloud ERROR: ' + e.message, '#f87171');
