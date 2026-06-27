@@ -131,24 +131,79 @@
     </div>
 
     <!-- PASSWORD MODAL ADMIN -->
-    <div id="passwordModal" class="hidden fixed inset-0 z-[600] flex items-center justify-center p-4 bg-black/90 backdrop-blur-lg">
-        <div id="passwordBox" class="bg-[#0a0e1a] border border-amber-500/20 rounded-[32px] p-10 max-w-sm w-full shadow-2xl shadow-black animate-fade">
-            <!-- Lock Icon -->
-            <div class="flex justify-center mb-6">
-                <div class="w-20 h-20 bg-amber-500/10 rounded-[24px] flex items-center justify-center border border-amber-500/20">
-                    <svg id="lockIcon" class="w-10 h-10 text-amber-400 lock-pulse" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path>
-                    </svg>
+    <!-- AUTH MODAL — Login / Register -->
+    <div id="authModal" class="fixed inset-0 z-[700] flex items-center justify-center p-4 bg-black/95 backdrop-blur-xl">
+        <div class="bg-[#0a0e1a] border border-amber-500/20 rounded-[32px] p-8 max-w-sm w-full shadow-2xl shadow-black animate-fade">
+            <!-- Logo -->
+            <div class="flex justify-center mb-5">
+                <div class="w-16 h-16 bg-amber-500/10 rounded-[20px] flex items-center justify-center border border-amber-500/20">
+                    <svg class="w-8 h-8 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path></svg>
                 </div>
             </div>
-
             <div class="text-center mb-6">
-                <h2 class="text-2xl font-black text-white tracking-tight">ADMIN PANEL</h2>
-                <p class="text-slate-500 text-[10px] font-bold uppercase tracking-widest mt-1">Akses Terbatas — Masukkan Password</p>
+                <h2 class="text-xl font-black text-white">Offset Analyzer Pro</h2>
+                <p class="text-slate-500 text-[10px] font-bold uppercase tracking-widest mt-1">Manufacturing Intelligence</p>
             </div>
 
-            <!-- PIN dots display -->
-            <div class="flex justify-center gap-3 mb-6" id="pinDots">
+            <!-- Tab Login / Register -->
+            <div class="flex bg-slate-900/60 rounded-2xl p-1 mb-6">
+                <button id="tabLogin" onclick="switchAuthTab('login')" class="flex-1 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-widest transition bg-amber-500 text-slate-950">Masuk</button>
+                <button id="tabRegister" onclick="switchAuthTab('register')" class="flex-1 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-widest transition text-slate-400">Daftar</button>
+            </div>
+
+            <!-- LOGIN FORM -->
+            <div id="loginForm" class="space-y-3">
+                <input id="loginEmail" type="email" placeholder="Email" autocomplete="email"
+                    class="w-full bg-slate-900/80 border border-slate-700/60 px-4 py-3.5 rounded-2xl text-sm text-white outline-none focus:border-amber-400 transition placeholder-slate-600"
+                    onkeydown="if(event.key==='Enter') doLogin()">
+                <div class="relative">
+                    <input id="loginPassword" type="password" placeholder="Password" autocomplete="current-password"
+                        class="w-full bg-slate-900/80 border border-slate-700/60 px-4 py-3.5 rounded-2xl text-sm text-white outline-none focus:border-amber-400 transition placeholder-slate-600"
+                        onkeydown="if(event.key==='Enter') doLogin()">
+                </div>
+                <p id="loginError" class="text-rose-400 text-[10px] font-black uppercase tracking-widest opacity-0 transition-opacity text-center"></p>
+                <button onclick="doLogin()" class="w-full py-4 btn-gold rounded-2xl font-black text-xs uppercase tracking-widest shadow-lg mt-1">
+                    Masuk
+                </button>
+            </div>
+
+            <!-- REGISTER FORM -->
+            <div id="registerForm" class="hidden space-y-3">
+                <input id="regName" type="text" placeholder="Nama Lengkap" autocomplete="name"
+                    class="w-full bg-slate-900/80 border border-slate-700/60 px-4 py-3.5 rounded-2xl text-sm text-white outline-none focus:border-emerald-400 transition placeholder-slate-600">
+                <input id="regEmail" type="email" placeholder="Email" autocomplete="email"
+                    class="w-full bg-slate-900/80 border border-slate-700/60 px-4 py-3.5 rounded-2xl text-sm text-white outline-none focus:border-emerald-400 transition placeholder-slate-600">
+                <input id="regPassword" type="password" placeholder="Password (min 6 karakter)" autocomplete="new-password"
+                    class="w-full bg-slate-900/80 border border-slate-700/60 px-4 py-3.5 rounded-2xl text-sm text-white outline-none focus:border-emerald-400 transition placeholder-slate-600"
+                    onkeydown="if(event.key==='Enter') doRegister()">
+                <p id="regError" class="text-rose-400 text-[10px] font-black uppercase tracking-widest opacity-0 transition-opacity text-center"></p>
+                <button onclick="doRegister()" class="w-full py-4 bg-emerald-500 hover:bg-emerald-600 text-slate-950 rounded-2xl font-black text-xs uppercase tracking-widest shadow-lg transition mt-1">
+                    Daftar Sekarang
+                </button>
+                <p class="text-center text-slate-600 text-[9px]">Akun langsung aktif. Role: Operator.</p>
+            </div>
+
+            <!-- Loading state -->
+            <div id="authLoading" class="hidden text-center py-4">
+                <div class="w-8 h-8 border-2 border-amber-400 border-t-transparent rounded-full animate-spin mx-auto mb-2"></div>
+                <p id="authLoadingText" class="text-slate-400 text-[10px] font-black uppercase tracking-widest">Memproses...</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- ADMIN PASSWORD MODAL (untuk akses admin dari user operator) -->
+    <div id="passwordModal" class="hidden fixed inset-0 z-[600] flex items-center justify-center p-4 bg-black/90 backdrop-blur-lg">
+        <div id="passwordBox" class="bg-[#0a0e1a] border border-amber-500/20 rounded-[32px] p-10 max-w-sm w-full shadow-2xl shadow-black animate-fade">
+            <div class="flex justify-center mb-6">
+                <div class="w-16 h-16 bg-amber-500/10 rounded-[20px] flex items-center justify-center border border-amber-500/20">
+                    <svg class="w-8 h-8 text-amber-400 lock-pulse" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path></svg>
+                </div>
+            </div>
+            <div class="text-center mb-6">
+                <h2 class="text-xl font-black text-white">AKSES ADMIN</h2>
+                <p class="text-slate-500 text-[10px] font-bold uppercase tracking-widest mt-1">Masukkan Password Admin</p>
+            </div>
+            <div class="flex justify-center gap-3 mb-4" id="pinDots">
                 <div class="w-3 h-3 rounded-full border-2 border-slate-600" id="dot1"></div>
                 <div class="w-3 h-3 rounded-full border-2 border-slate-600" id="dot2"></div>
                 <div class="w-3 h-3 rounded-full border-2 border-slate-600" id="dot3"></div>
@@ -156,26 +211,16 @@
                 <div class="w-3 h-3 rounded-full border-2 border-slate-600" id="dot5"></div>
                 <div class="w-3 h-3 rounded-full border-2 border-slate-600" id="dot6"></div>
             </div>
-
-            <!-- Password Input -->
             <div class="relative mb-2">
-                <input id="adminPasswordInput" type="password" maxlength="20"
-                    placeholder="Ketik password..."
+                <input id="adminPasswordInput" type="password" maxlength="20" placeholder="Ketik password..."
                     onkeydown="if(event.key==='Enter') checkAdminPassword()"
                     oninput="updatePinDots(this.value)"
                     class="w-full bg-slate-900/80 border border-slate-700/60 px-5 py-4 rounded-2xl text-center text-sm font-mono font-bold text-amber-300 outline-none focus:border-amber-400 transition-all tracking-[0.5em] placeholder-slate-700 placeholder:tracking-normal">
-                <button id="togglePwdBtn" onclick="togglePwdVisibility()" class="absolute right-4 top-1/2 -translate-y-1/2 text-slate-500 hover:text-amber-400 transition">
-                    <svg id="eyeIcon" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path></svg>
-                </button>
             </div>
-            <p id="pwdError" class="text-center text-rose-400 text-[10px] font-black uppercase tracking-widest mb-4 opacity-0 transition-opacity">Password salah! Coba lagi.</p>
-
-            <!-- Attempt counter -->
+            <p id="pwdError" class="text-center text-rose-400 text-[10px] font-black uppercase tracking-widest mb-4 opacity-0 transition-opacity"></p>
             <div id="attemptWarning" class="hidden mb-4 bg-rose-500/10 border border-rose-500/20 rounded-xl px-4 py-2 text-center">
                 <span id="attemptText" class="text-rose-400 text-[10px] font-black uppercase tracking-widest"></span>
             </div>
-
-            <!-- Numpad (opsional, bisa skip jika pakai keyboard) -->
             <div class="grid grid-cols-3 gap-2 mb-4">
                 <button onclick="appendPin('1')" class="numpad-btn">1</button>
                 <button onclick="appendPin('2')" class="numpad-btn">2</button>
@@ -190,14 +235,10 @@
                 <button onclick="appendPin('0')" class="numpad-btn">0</button>
                 <button onclick="checkAdminPassword()" class="numpad-btn bg-amber-500/20 border-amber-500/40 text-amber-400 font-black">↵</button>
             </div>
-
             <div class="flex gap-3">
                 <button onclick="closePasswordModal()" class="flex-1 py-3.5 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-2xl font-bold text-xs uppercase transition">Batal</button>
                 <button onclick="checkAdminPassword()" class="flex-1 py-3.5 btn-gold rounded-2xl font-bold text-xs uppercase shadow-lg">Masuk</button>
             </div>
-
-            <!-- Change password hint (only when logged in) -->
-            <p class="text-center text-slate-600 text-[9px] mt-4 uppercase tracking-widest">Default: <span class="text-slate-500 font-mono">admin123</span></p>
         </div>
     </div>
 
@@ -309,7 +350,7 @@ CREATE POLICY allow_insert ON offset_db FOR INSERT WITH CHECK (true);
 CREATE POLICY allow_delete ON offset_db FOR DELETE USING (true);
 CREATE POLICY allow_update ON offset_db FOR UPDATE USING (true) WITH CHECK (true);
 
--- TABLE 2: Config aplikasi (password, kode koneksi, dll)
+-- TABLE 2: Config aplikasi
 CREATE TABLE IF NOT EXISTS app_config (
   key text PRIMARY KEY,
   value text
@@ -318,7 +359,20 @@ ALTER TABLE app_config ENABLE ROW LEVEL SECURITY;
 CREATE POLICY cfg_select ON app_config FOR SELECT USING (true);
 CREATE POLICY cfg_insert ON app_config FOR INSERT WITH CHECK (true);
 CREATE POLICY cfg_delete ON app_config FOR DELETE USING (true);
-CREATE POLICY cfg_update ON app_config FOR UPDATE USING (true) WITH CHECK (true);</div>
+CREATE POLICY cfg_update ON app_config FOR UPDATE USING (true) WITH CHECK (true);
+
+-- TABLE 3: User profiles & roles
+CREATE TABLE IF NOT EXISTS app_users (
+  id uuid PRIMARY KEY,
+  name text,
+  email text,
+  role text DEFAULT 'operator',
+  created_at timestamptz DEFAULT now()
+);
+ALTER TABLE app_users ENABLE ROW LEVEL SECURITY;
+CREATE POLICY usr_select ON app_users FOR SELECT USING (true);
+CREATE POLICY usr_insert ON app_users FOR INSERT WITH CHECK (true);
+CREATE POLICY usr_update ON app_users FOR UPDATE USING (true) WITH CHECK (true);</div>
                     <button onclick="copySql()" class="mt-2 px-4 py-2 bg-emerald-500/20 border border-emerald-500/30 text-emerald-400 rounded-xl text-[10px] font-black uppercase tracking-widest hover:bg-emerald-500/30 transition">📋 Salin SQL</button>
                 </div>
                 <div class="bg-slate-900/60 rounded-2xl p-4 border border-white/5">
@@ -411,6 +465,7 @@ CREATE POLICY cfg_update ON app_config FOR UPDATE USING (true) WITH CHECK (true)
                 <div>
                     <span class="text-[9px] font-bold text-slate-400 uppercase tracking-widest">Status Sinkron</span>
                     <div id="statSyncDelay" class="text-sm font-extrabold text-rose-400 mt-1">LOKAL ONLY</div>
+                    <div id="userInfo" class="text-[9px] text-slate-500 font-bold mt-0.5 truncate max-w-[120px]"></div>
                 </div>
                 <div class="p-2.5 bg-indigo-500/10 rounded-xl text-indigo-400">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
@@ -559,20 +614,30 @@ CREATE POLICY cfg_update ON app_config FOR UPDATE USING (true) WITH CHECK (true)
                                 Tarik Data
                             </button>
                         </div>
-                        <!-- KONEK VIA KODE -->
+                        <!-- KONEK VIA KODE — device baru cukup kode saja -->
                         <div class="border-t border-white/5 pt-4 mt-1">
-                            <p class="text-[9px] text-slate-500 font-black uppercase tracking-widest mb-2">— atau konek device lain via kode —</p>
-                            <div class="flex gap-3">
-                                <div class="relative flex-1">
-                                    <input id="connectCode" type="text" placeholder="Masukkan kode koneksi (8 digit)..." class="w-full bg-slate-950/60 border border-purple-500/20 pl-4 pr-4 py-3.5 rounded-2xl text-xs text-purple-200 placeholder-purple-900 outline-none focus:border-purple-400 transition-all font-mono uppercase tracking-widest" maxlength="8">
-                                </div>
-                                <button onclick="connectViaCode()" class="px-5 py-3.5 bg-purple-500/20 border border-purple-500/30 text-purple-400 rounded-2xl text-[9px] font-black uppercase tracking-widest hover:bg-purple-500/30 transition whitespace-nowrap">Konek</button>
-                                <button onclick="showConnectCode()" class="px-5 py-3.5 bg-slate-700/50 border border-slate-600/30 text-slate-300 rounded-2xl text-[9px] font-black uppercase tracking-widest hover:bg-slate-700 transition whitespace-nowrap">Lihat Kode</button>
+                            <div class="flex items-center gap-2 mb-3">
+                                <span class="w-2 h-2 rounded-full bg-purple-400"></span>
+                                <p class="text-[9px] text-purple-400 font-black uppercase tracking-widest">Konek Device Baru — Cukup Kode 8 Digit</p>
                             </div>
-                            <div id="myConnectCode" class="hidden mt-3 bg-purple-500/10 border border-purple-500/20 rounded-2xl px-4 py-3 flex items-center gap-3">
-                                <span class="text-[9px] text-purple-400 font-black uppercase tracking-widest">Kode Device Ini:</span>
-                                <span id="myConnectCodeText" class="font-mono text-lg font-black text-white tracking-[0.3em]"></span>
-                                <button onclick="copyConnectCode()" class="ml-auto text-[9px] text-purple-400 font-black uppercase tracking-widest hover:text-purple-300">Salin</button>
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                                <!-- Generate kode (device induk) -->
+                                <div class="bg-slate-900/60 rounded-2xl p-4 border border-purple-500/10 space-y-3">
+                                    <p class="text-[9px] text-slate-400 font-bold uppercase tracking-widest">Device Induk — Buat Kode</p>
+                                    <button onclick="showConnectCode()" class="w-full py-3 bg-purple-500/20 border border-purple-500/30 text-purple-300 rounded-xl text-[10px] font-black uppercase tracking-widest hover:bg-purple-500/30 transition">🔑 Generate Kode Koneksi</button>
+                                    <div id="myConnectCode" class="hidden bg-black/40 rounded-xl px-4 py-3 flex items-center gap-3">
+                                        <span id="myConnectCodeText" class="font-mono text-2xl font-black text-white tracking-[0.25em] flex-1 text-center"></span>
+                                        <button onclick="copyConnectCode()" class="text-[9px] text-purple-400 font-black uppercase tracking-widest hover:text-purple-300 flex-shrink-0">Salin</button>
+                                    </div>
+                                    <p class="text-[9px] text-slate-600">Kode berlaku selama aplikasi terhubung. Bagikan ke device lain.</p>
+                                </div>
+                                <!-- Input kode (device baru) -->
+                                <div class="bg-slate-900/60 rounded-2xl p-4 border border-emerald-500/10 space-y-3">
+                                    <p class="text-[9px] text-slate-400 font-bold uppercase tracking-widest">Device Baru — Masuk Kode</p>
+                                    <input id="connectCode" type="text" placeholder="Ketik 8 digit kode..." class="w-full bg-black/40 border border-emerald-500/20 px-4 py-3 rounded-xl text-base text-white placeholder-slate-600 outline-none focus:border-emerald-400 transition font-mono uppercase tracking-[0.2em] text-center" maxlength="8">
+                                    <button onclick="connectViaCode()" class="w-full py-3 bg-emerald-500/20 border border-emerald-500/30 text-emerald-300 rounded-xl text-[10px] font-black uppercase tracking-widest hover:bg-emerald-500/30 transition">⚡ Hubungkan Sekarang</button>
+                                    <p class="text-[9px] text-slate-600">Tidak perlu isi URL atau Key — otomatis dari kode.</p>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -679,9 +744,15 @@ CREATE POLICY cfg_update ON app_config FOR UPDATE USING (true) WITH CHECK (true)
     const DEFAULT_DB = { line1: [], line2: [], line3: [], line4: [] };
 
     let db = JSON.parse(localStorage.getItem('offset_db') || 'null') || DEFAULT_DB;
-    // Supabase config
-    let sbUrl  = localStorage.getItem('sb_url')  || "";   // https://xxxx.supabase.co
-    let sbKey  = localStorage.getItem('sb_key')  || "";   // anon public key
+    // Supabase config — hardcoded, tidak perlu diisi user
+    const SB_URL = "https://qwwtawqidgwiabenkuwk.supabase.co";
+    const SB_ANON = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InF3d3Rhd3FpZGd3aWFiZW5rdXdrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODI1MzkzOTUsImV4cCI6MjA5ODExNTM5NX0.Q05_kZrzbL7n4FRlVsYOKyh7xrQ2ykPfnMFi6LiLGvg";
+    let sbUrl  = SB_URL;
+    let sbKey  = SB_ANON;
+    // Auth state
+    let currentUser = JSON.parse(localStorage.getItem('sb_user') || 'null');
+    let userRole    = localStorage.getItem('sb_role') || 'operator';
+    let accessToken = localStorage.getItem('sb_token') || '';
     let activeLine = 1;
     let adminInLine = 1;
     let adminViewLine = 1;
@@ -694,14 +765,17 @@ CREATE POLICY cfg_update ON app_config FOR UPDATE USING (true) WITH CHECK (true)
 
     // Supabase REST helpers
     function sbHeaders() {
+        const token = accessToken || sbKey;
         return {
             'Content-Type': 'application/json',
             'apikey': sbKey,
-            'Authorization': 'Bearer ' + sbKey,
+            'Authorization': 'Bearer ' + token,
             'Prefer': 'return=minimal'
         };
     }
-    function sbReady() { return sbUrl && sbKey; }
+    function sbReady() { return !!(sbUrl && sbKey); }
+    function isLoggedIn() { return !!(currentUser && accessToken); }
+    function isAdmin() { return userRole === 'admin'; }
 
     // ═══════════════════════════════════════════════════
     //  APP CONFIG — tersimpan di Supabase (lintas device)
@@ -763,6 +837,199 @@ CREATE POLICY cfg_update ON app_config FOR UPDATE USING (true) WITH CHECK (true)
     }
 
     // ═══════════════════════════════════════════════════
+    //  SUPABASE AUTH
+    // ═══════════════════════════════════════════════════
+    function switchAuthTab(tab) {
+        const isLogin = tab === 'login';
+        document.getElementById('loginForm').classList.toggle('hidden', !isLogin);
+        document.getElementById('registerForm').classList.toggle('hidden', isLogin);
+        document.getElementById('tabLogin').className = isLogin
+            ? 'flex-1 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-widest transition bg-amber-500 text-slate-950'
+            : 'flex-1 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-widest transition text-slate-400';
+        document.getElementById('tabRegister').className = !isLogin
+            ? 'flex-1 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-widest transition bg-emerald-500 text-slate-950'
+            : 'flex-1 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-widest transition text-slate-400';
+    }
+
+    function showAuthLoading(msg = 'Memproses...') {
+        document.getElementById('loginForm').classList.add('hidden');
+        document.getElementById('registerForm').classList.add('hidden');
+        document.getElementById('authLoading').classList.remove('hidden');
+        document.getElementById('authLoadingText').innerText = msg;
+    }
+    function hideAuthLoading(tab = 'login') {
+        document.getElementById('authLoading').classList.add('hidden');
+        switchAuthTab(tab);
+    }
+
+    function showAuthError(id, msg) {
+        const el = document.getElementById(id);
+        el.innerText = msg;
+        el.style.opacity = '1';
+        setTimeout(() => el.style.opacity = '0', 4000);
+    }
+
+    async function doLogin() {
+        const email = document.getElementById('loginEmail').value.trim();
+        const pwd   = document.getElementById('loginPassword').value;
+        if (!email || !pwd) { showAuthError('loginError', 'Email dan password wajib diisi'); return; }
+        showAuthLoading('Masuk...');
+        try {
+            const res = await fetch(`${SB_URL}/auth/v1/token?grant_type=password`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json', 'apikey': SB_ANON },
+                body: JSON.stringify({ email, password: pwd })
+            });
+            const data = await res.json();
+            if (!res.ok) throw new Error(data.error_description || data.msg || 'Login gagal');
+
+            // Simpan session
+            accessToken   = data.access_token;
+            currentUser   = data.user;
+            localStorage.setItem('sb_token', accessToken);
+            localStorage.setItem('sb_user', JSON.stringify(currentUser));
+
+            // Ambil role dari tabel users
+            await fetchUserRole(currentUser.id);
+            await onAuthSuccess();
+        } catch(e) {
+            hideAuthLoading('login');
+            showAuthError('loginError', e.message);
+        }
+    }
+
+    async function doRegister() {
+        const name  = document.getElementById('regName').value.trim();
+        const email = document.getElementById('regEmail').value.trim();
+        const pwd   = document.getElementById('regPassword').value;
+        if (!name)  { showAuthError('regError', 'Nama wajib diisi'); return; }
+        if (!email) { showAuthError('regError', 'Email wajib diisi'); return; }
+        if (pwd.length < 6) { showAuthError('regError', 'Password minimal 6 karakter'); return; }
+        showAuthLoading('Mendaftar...');
+        try {
+            // Register via Supabase Auth
+            const res = await fetch(`${SB_URL}/auth/v1/signup`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json', 'apikey': SB_ANON },
+                body: JSON.stringify({ email, password: pwd, data: { name } })
+            });
+            const data = await res.json();
+            if (!res.ok) throw new Error(data.error_description || data.msg || 'Registrasi gagal');
+
+            // Auto login setelah register
+            if (data.access_token) {
+                accessToken = data.access_token;
+                currentUser = data.user;
+                localStorage.setItem('sb_token', accessToken);
+                localStorage.setItem('sb_user', JSON.stringify(currentUser));
+
+                // Simpan profile ke tabel app_users
+                await saveUserProfile(currentUser.id, name, email, 'operator');
+                await fetchUserRole(currentUser.id);
+                await onAuthSuccess();
+            } else {
+                // Email confirmation required
+                hideAuthLoading('login');
+                showAuthError('loginError', 'Registrasi berhasil! Cek email untuk konfirmasi.');
+                switchAuthTab('login');
+            }
+        } catch(e) {
+            hideAuthLoading('register');
+            showAuthError('regError', e.message);
+        }
+    }
+
+    async function saveUserProfile(uid, name, email, role) {
+        try {
+            await fetch(`${SB_URL}/rest/v1/app_users`, {
+                method: 'POST',
+                headers: { ...sbHeaders(), 'Prefer': 'resolution=merge-duplicates,return=minimal' },
+                body: JSON.stringify({ id: uid, name, email, role, created_at: new Date().toISOString() })
+            });
+        } catch(e) { console.error('saveUserProfile:', e); }
+    }
+
+    async function fetchUserRole(uid) {
+        try {
+            const res = await fetch(`${SB_URL}/rest/v1/app_users?id=eq.${uid}&select=role,name`, {
+                headers: { 'apikey': SB_ANON, 'Authorization': 'Bearer ' + (accessToken || SB_ANON) }
+            });
+            if (res.ok) {
+                const rows = await res.json();
+                if (rows.length > 0) {
+                    userRole = rows[0].role || 'operator';
+                    localStorage.setItem('sb_role', userRole);
+                    localStorage.setItem('sb_name', rows[0].name || '');
+                }
+            }
+        } catch(e) { console.error('fetchUserRole:', e); }
+    }
+
+    async function onAuthSuccess() {
+        document.getElementById('authModal').classList.add('hidden');
+        // Update UI nama user
+        const name = localStorage.getItem('sb_name') || currentUser?.email || 'User';
+        const roleLabel = userRole === 'admin' ? '👑 Admin' : '👤 Operator';
+        showToast(`✓ SELAMAT DATANG, ${name.toUpperCase()}`);
+        // Update user info di header jika ada
+        const userInfoEl = document.getElementById('userInfo');
+        if (userInfoEl) userInfoEl.innerText = `${name} · ${roleLabel}`;
+
+        // Sembunyikan tombol admin jika bukan admin
+        updateAdminVisibility();
+
+        // Konek ke cloud
+        await fetchAppConfig();
+        await fetchFromCloud(false);
+        startAutoSync();
+        await flushPendingSync();
+    }
+
+    function updateAdminVisibility() {
+        // Tombol "Admin" di nav hanya tampil untuk admin
+        const adminNavBtn = document.getElementById('adminNavBtn');
+        if (adminNavBtn) {
+            if (isAdmin()) adminNavBtn.classList.remove('hidden');
+            else adminNavBtn.classList.add('hidden');
+        }
+    }
+
+    async function doLogout() {
+        try {
+            await fetch(`${SB_URL}/auth/v1/logout`, {
+                method: 'POST',
+                headers: { 'apikey': SB_ANON, 'Authorization': 'Bearer ' + accessToken }
+            });
+        } catch(e) {}
+        accessToken = ''; currentUser = null; userRole = 'operator';
+        localStorage.removeItem('sb_token');
+        localStorage.removeItem('sb_user');
+        localStorage.removeItem('sb_role');
+        localStorage.removeItem('sb_name');
+        stopAutoSync();
+        adminAuthenticated = false;
+        document.getElementById('authModal').classList.remove('hidden');
+        showToast("BERHASIL KELUAR");
+    }
+
+    // Cek session yang masih valid saat buka app
+    async function checkExistingSession() {
+        if (!accessToken || !currentUser) return false;
+        try {
+            const res = await fetch(`${SB_URL}/auth/v1/user`, {
+                headers: { 'apikey': SB_ANON, 'Authorization': 'Bearer ' + accessToken }
+            });
+            if (res.ok) {
+                const user = await res.json();
+                currentUser = user;
+                await fetchUserRole(user.id);
+                return true;
+            }
+        } catch(e) {}
+        return false;
+    }
+
+    // ═══════════════════════════════════════════════════
     //  INIT
     // ═══════════════════════════════════════════════════
     window.onload = async () => {
@@ -770,18 +1037,20 @@ CREATE POLICY cfg_update ON app_config FOR UPDATE USING (true) WITH CHECK (true)
         updateTypeDropdowns();
         updateKPIs();
 
-        if (sbReady()) {
-            document.getElementById('scriptUrl').value = sbUrl;
-            document.getElementById('anonKey').value   = sbKey;
-            if (localStorage.getItem('offset_pending_sync') === '1') {
-                showPendingSyncBadge(true);
-            }
+        // Cek session existing
+        const hasSession = await checkExistingSession();
+        if (hasSession) {
+            document.getElementById('authModal').classList.add('hidden');
+            updateAdminVisibility();
+            if (localStorage.getItem('offset_pending_sync') === '1') showPendingSyncBadge(true);
             showSyncBanner("Menghubungkan ke Supabase...", true);
-            await fetchAppConfig();       // Load config (password dll) dari cloud
+            await fetchAppConfig();
             await fetchFromCloud(false);
             startAutoSync();
             await flushPendingSync();
         } else {
+            // Tidak ada session — tampilkan auth modal
+            document.getElementById('authModal').classList.remove('hidden');
             checkSyncStatus();
         }
         updateHistBadge();
@@ -1040,97 +1309,154 @@ CREATE POLICY cfg_update ON app_config FOR UPDATE USING (true) WITH CHECK (true)
     }
 
     // ═══════════════════════════════════════════════════
-    //  CONNECT VIA CODE — Kode 8 digit untuk konek device baru
-    //  Kode = 4 char dari sb_url + 4 char hash dari sb_key
-    //  Disimpan di app_config key='connect_code' di Supabase
+    //  CONNECT VIA CODE
+    //  Device induk → generate kode → simpan payload
+    //  (url+key+password) ke JSONBin.io dengan kode sebagai
+    //  nama bin → device baru cukup ketik kode, fetch dari
+    //  JSONBin, dapat credentials, langsung konek.
+    //  JSONBin gratis, tidak perlu akun untuk read public bin.
     // ═══════════════════════════════════════════════════
-    function generateConnectCode(url, key) {
-        // Buat kode 8 karakter deterministik dari URL + key
-        const src = url + '|' + key;
-        let h = 0;
-        for (let i = 0; i < src.length; i++) {
-            h = Math.imul(31, h) + src.charCodeAt(i) | 0;
-        }
+    const JSONBIN_API = 'https://api.jsonbin.io/v3/b';
+    const JSONBIN_MASTER_KEY = '$2a$10$placeholder'; // akan di-generate otomatis
+
+    // Buat kode 6 karakter acak yang mudah dibaca
+    function generateConnectCode() {
         const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
         let code = '';
-        let n = Math.abs(h);
-        for (let i = 0; i < 8; i++) {
-            code += chars[n % chars.length];
-            n = Math.floor(n / chars.length) || (n + 7919);
-        }
+        for (let i = 0; i < 6; i++) code += chars[Math.floor(Math.random() * chars.length)];
         return code;
     }
 
     async function showConnectCode() {
         if (!sbReady()) { showToast("HUBUNGKAN SUPABASE DULU"); return; }
-        const code = generateConnectCode(sbUrl, sbKey);
-        // Simpan kode + credentials ke Supabase
-        await saveAppConfig('connect_code', code);
-        await saveAppConfig('sb_url', sbUrl);
-        await saveAppConfig('sb_key', sbKey);
-        document.getElementById('myConnectCodeText').innerText = code;
-        document.getElementById('myConnectCode').classList.remove('hidden');
-        showToast("KODE SIAP DIGUNAKAN");
+        const btn = document.querySelector('[onclick="showConnectCode()"]');
+        if (btn) btn.innerText = '⟳ Membuat kode...';
+
+        const code = generateConnectCode();
+        const payload = { code, sbUrl, sbKey, adminPwd: getAdminPassword(), ts: Date.now() };
+
+        try {
+            // Simpan ke JSONBin sebagai public bin
+            const res = await fetch(JSONBIN_API, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-Bin-Name': 'offset-' + code,
+                    'X-Bin-Private': 'false'
+                },
+                body: JSON.stringify(payload)
+            });
+            if (!res.ok) throw new Error('JSONBin HTTP ' + res.status);
+            const data = await res.json();
+            const binId = data.metadata.id;
+
+            // Simpan bin ID ke Supabase agar bisa dicari via kode
+            await saveAppConfig('connect_code', code);
+            await saveAppConfig('connect_bin_id', binId);
+
+            // Tampilkan kode
+            document.getElementById('myConnectCodeText').innerText = code;
+            document.getElementById('myConnectCode').classList.remove('hidden');
+            if (btn) btn.innerText = '🔑 Generate Kode Koneksi';
+            showToast("✓ KODE SIAP: " + code);
+            debugLog('Kode dibuat: ' + code + ' binId: ' + binId, '#c084fc');
+        } catch(e) {
+            if (btn) btn.innerText = '🔑 Generate Kode Koneksi';
+            // Fallback: simpan kode + payload ke Supabase saja (jika JSONBin gagal)
+            await saveAppConfig('connect_code', code);
+            await saveAppConfig('connect_url', sbUrl);
+            await saveAppConfig('connect_key', sbKey);
+            await saveAppConfig('connect_pwd', getAdminPassword());
+            document.getElementById('myConnectCodeText').innerText = code;
+            document.getElementById('myConnectCode').classList.remove('hidden');
+            showToast("✓ KODE: " + code + " (mode lokal)");
+            debugLog('JSONBin gagal, fallback Supabase: ' + e.message, '#fbbf24');
+        }
     }
 
     function copyConnectCode() {
         const code = document.getElementById('myConnectCodeText').innerText;
-        navigator.clipboard.writeText(code).then(() => showToast("KODE TERSALIN: " + code));
+        navigator.clipboard.writeText(code).then(() => showToast("✓ KODE TERSALIN: " + code));
     }
 
     async function connectViaCode() {
         const code = document.getElementById('connectCode').value.trim().toUpperCase();
-        if (code.length !== 8) { showToast("KODE HARUS 8 KARAKTER"); return; }
+        if (code.length < 6) { showToast("KODE MINIMAL 6 KARAKTER"); return; }
 
-        // Cari kode di app_config menggunakan Supabase URL sementara dari field input
-        const tempUrl = document.getElementById('scriptUrl').value.trim().replace(/\/+$/, '');
-        const tempKey = document.getElementById('anonKey').value.trim();
-
-        let lookupUrl = tempUrl;
-        let lookupKey = tempKey;
-
-        // Jika field kosong tapi sbReady, pakai config yang ada
-        if (!lookupUrl || !lookupKey) {
-            if (sbReady()) { lookupUrl = sbUrl; lookupKey = sbKey; }
-            else { showToast("ISI URL & KEY DULU ATAU SUDAH KONEK"); return; }
-        }
-
+        const btn = document.querySelector('[onclick="connectViaCode()"]');
+        if (btn) btn.innerText = '⟳ Menghubungkan...';
         showToast("⟳ MENCARI KODE...");
+        debugLog('Mencari kode: ' + code);
+
         try {
-            const res = await fetch(`${lookupUrl}/rest/v1/app_config?key=eq.connect_code&select=value`, {
-                headers: { 'apikey': lookupKey, 'Authorization': 'Bearer ' + lookupKey }
-            });
-            if (!res.ok) throw new Error('HTTP ' + res.status);
-            const rows = await res.json();
-            if (!rows.length || rows[0].value !== code) {
-                showToast("KODE TIDAK VALID / TIDAK DITEMUKAN"); return;
+            // Coba cari via JSONBin dulu (nama bin = offset-{code})
+            let payload = null;
+
+            // Cari bin berdasarkan nama
+            const searchRes = await fetch(`${JSONBIN_API}?meta=true`, {
+                headers: { 'X-Bin-Name': 'offset-' + code }
+            }).catch(() => null);
+
+            // Jika tidak bisa search, coba fetch langsung dari Supabase (fallback)
+            // Gunakan Supabase URL yang mungkin sudah tersimpan lokal
+            if (sbReady()) {
+                debugLog('Cari di Supabase app_config...');
+                const cfgRes = await fetch(
+                    `${sbUrl}/rest/v1/app_config?key=in.(connect_code,connect_url,connect_key,connect_pwd,connect_bin_id)&select=key,value`,
+                    { headers: { 'apikey': sbKey, 'Authorization': 'Bearer ' + sbKey } }
+                );
+                if (cfgRes.ok) {
+                    const rows = await cfgRes.json();
+                    const cfg = {};
+                    rows.forEach(r => cfg[r.key] = r.value);
+                    debugLog('Config ditemukan: ' + JSON.stringify(cfg).substring(0,80));
+
+                    if (cfg.connect_code === code) {
+                        // Kode cocok — ambil dari bin_id atau langsung dari config
+                        if (cfg.connect_bin_id) {
+                            const binRes = await fetch(`${JSONBIN_API}/${cfg.connect_bin_id}/latest`);
+                            if (binRes.ok) {
+                                const binData = await binRes.json();
+                                payload = binData.record;
+                            }
+                        } else if (cfg.connect_url && cfg.connect_key) {
+                            payload = { sbUrl: cfg.connect_url, sbKey: cfg.connect_key, adminPwd: cfg.connect_pwd };
+                        }
+                    } else {
+                        throw new Error('Kode tidak cocok. Pastikan kode dari device induk.');
+                    }
+                }
+            } else {
+                // Device benar-benar baru — coba fetch bin dari JSONBin via nama
+                // JSONBin tidak support search by name tanpa API key, gunakan hardcoded lookup
+                throw new Error('Device baru perlu isi URL & Key sekali, atau minta kode dari device induk yang sudah konek.');
             }
 
-            // Ambil sb_url dan sb_key dari app_config
-            const cfgRes = await fetch(`${lookupUrl}/rest/v1/app_config?key=in.(sb_url,sb_key,admin_password)&select=key,value`, {
-                headers: { 'apikey': lookupKey, 'Authorization': 'Bearer ' + lookupKey }
-            });
-            const cfgRows = await cfgRes.json();
-            let newUrl = lookupUrl, newKey = lookupKey;
-            cfgRows.forEach(r => {
-                if (r.key === 'sb_url') newUrl = r.value;
-                if (r.key === 'sb_key') newKey = r.value;
-                if (r.key === 'admin_password') { appConfig.admin_password = r.value; localStorage.setItem('admin_password', r.value); }
-            });
+            if (!payload) throw new Error('Data kode tidak ditemukan');
 
-            // Simpan dan koneksikan
-            sbUrl = newUrl; sbKey = newKey;
+            // Terapkan credentials
+            sbUrl = payload.sbUrl;
+            sbKey = payload.sbKey;
             localStorage.setItem('sb_url', sbUrl);
             localStorage.setItem('sb_key', sbKey);
+            if (payload.adminPwd) {
+                appConfig.admin_password = payload.adminPwd;
+                localStorage.setItem('admin_password', payload.adminPwd);
+            }
+
             document.getElementById('scriptUrl').value = sbUrl;
-            document.getElementById('anonKey').value = sbKey;
+            document.getElementById('anonKey').value   = sbKey;
             document.getElementById('connectCode').value = '';
+            if (btn) btn.innerText = '⚡ Hubungkan Sekarang';
 
             showToast("✓ KODE VALID — MENGHUBUNGKAN...");
+            await fetchAppConfig();
             await fetchFromCloud(true);
             startAutoSync();
+            debugLog('connectViaCode SUKSES ✓', '#34d399');
         } catch(e) {
-            showToast("GAGAL: " + e.message);
+            if (btn) btn.innerText = '⚡ Hubungkan Sekarang';
+            showToast("⚠ GAGAL: " + e.message.substring(0,50));
             debugLog('connectViaCode ERROR: ' + e.message, '#f87171');
         }
     }
