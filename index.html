@@ -294,36 +294,31 @@
                 <div class="bg-slate-900/60 rounded-2xl p-4 border border-white/5">
                     <div class="flex items-center gap-2 mb-2"><span class="w-6 h-6 bg-amber-500 text-slate-950 rounded-full flex items-center justify-center font-black text-xs">2</span><span class="font-black text-white uppercase tracking-wide">Buat Table "offset_db"</span></div>
                     <p class="text-slate-400 ml-8 mb-2">Di dashboard Supabase → <span class="text-white font-bold">SQL Editor</span> → klik <span class="text-white font-bold">New query</span> → paste SQL berikut → klik <span class="text-emerald-400 font-bold">Run</span>:</p>
-                    <div class="bg-slate-950 rounded-xl p-3 font-mono text-[10px] text-emerald-300 border border-emerald-900/30 select-all" id="sqlPreview">-- 1. Buat table
+                    <div class="bg-slate-950 rounded-xl p-3 font-mono text-[10px] text-emerald-300 border border-emerald-900/30 select-all" id="sqlPreview">-- TABLE 1: Data offset
 CREATE TABLE IF NOT EXISTS offset_db (
   id text PRIMARY KEY,
   line integer NOT NULL,
-  type text,
-  op text,
-  tool text,
+  type text, op text, tool text,
   x numeric DEFAULT 0,
   z numeric DEFAULT 0,
   updated_at timestamptz DEFAULT now()
 );
-
--- 2. Aktifkan RLS
 ALTER TABLE offset_db ENABLE ROW LEVEL SECURITY;
+CREATE POLICY allow_select ON offset_db FOR SELECT USING (true);
+CREATE POLICY allow_insert ON offset_db FOR INSERT WITH CHECK (true);
+CREATE POLICY allow_delete ON offset_db FOR DELETE USING (true);
+CREATE POLICY allow_update ON offset_db FOR UPDATE USING (true) WITH CHECK (true);
 
--- 3. Izinkan SELECT
-CREATE POLICY allow_select ON offset_db
-  FOR SELECT USING (true);
-
--- 4. Izinkan INSERT
-CREATE POLICY allow_insert ON offset_db
-  FOR INSERT WITH CHECK (true);
-
--- 5. Izinkan DELETE
-CREATE POLICY allow_delete ON offset_db
-  FOR DELETE USING (true);
-
--- 6. Izinkan UPDATE
-CREATE POLICY allow_update ON offset_db
-  FOR UPDATE USING (true) WITH CHECK (true);</div>
+-- TABLE 2: Config aplikasi (password, kode koneksi, dll)
+CREATE TABLE IF NOT EXISTS app_config (
+  key text PRIMARY KEY,
+  value text
+);
+ALTER TABLE app_config ENABLE ROW LEVEL SECURITY;
+CREATE POLICY cfg_select ON app_config FOR SELECT USING (true);
+CREATE POLICY cfg_insert ON app_config FOR INSERT WITH CHECK (true);
+CREATE POLICY cfg_delete ON app_config FOR DELETE USING (true);
+CREATE POLICY cfg_update ON app_config FOR UPDATE USING (true) WITH CHECK (true);</div>
                     <button onclick="copySql()" class="mt-2 px-4 py-2 bg-emerald-500/20 border border-emerald-500/30 text-emerald-400 rounded-xl text-[10px] font-black uppercase tracking-widest hover:bg-emerald-500/30 transition">📋 Salin SQL</button>
                 </div>
                 <div class="bg-slate-900/60 rounded-2xl p-4 border border-white/5">
@@ -564,6 +559,22 @@ CREATE POLICY allow_update ON offset_db
                                 Tarik Data
                             </button>
                         </div>
+                        <!-- KONEK VIA KODE -->
+                        <div class="border-t border-white/5 pt-4 mt-1">
+                            <p class="text-[9px] text-slate-500 font-black uppercase tracking-widest mb-2">— atau konek device lain via kode —</p>
+                            <div class="flex gap-3">
+                                <div class="relative flex-1">
+                                    <input id="connectCode" type="text" placeholder="Masukkan kode koneksi (8 digit)..." class="w-full bg-slate-950/60 border border-purple-500/20 pl-4 pr-4 py-3.5 rounded-2xl text-xs text-purple-200 placeholder-purple-900 outline-none focus:border-purple-400 transition-all font-mono uppercase tracking-widest" maxlength="8">
+                                </div>
+                                <button onclick="connectViaCode()" class="px-5 py-3.5 bg-purple-500/20 border border-purple-500/30 text-purple-400 rounded-2xl text-[9px] font-black uppercase tracking-widest hover:bg-purple-500/30 transition whitespace-nowrap">Konek</button>
+                                <button onclick="showConnectCode()" class="px-5 py-3.5 bg-slate-700/50 border border-slate-600/30 text-slate-300 rounded-2xl text-[9px] font-black uppercase tracking-widest hover:bg-slate-700 transition whitespace-nowrap">Lihat Kode</button>
+                            </div>
+                            <div id="myConnectCode" class="hidden mt-3 bg-purple-500/10 border border-purple-500/20 rounded-2xl px-4 py-3 flex items-center gap-3">
+                                <span class="text-[9px] text-purple-400 font-black uppercase tracking-widest">Kode Device Ini:</span>
+                                <span id="myConnectCodeText" class="font-mono text-lg font-black text-white tracking-[0.3em]"></span>
+                                <button onclick="copyConnectCode()" class="ml-auto text-[9px] text-purple-400 font-black uppercase tracking-widest hover:text-purple-300">Salin</button>
+                            </div>
+                        </div>
                     </div>
                     <div id="syncInfo" class="hidden bg-slate-950/40 rounded-xl px-4 py-3 text-[10px] text-slate-400 font-mono border border-white/5 flex items-center gap-3">
                         <span id="syncInfoText">—</span>
@@ -692,12 +703,63 @@ CREATE POLICY allow_update ON offset_db
     }
     function sbReady() { return sbUrl && sbKey; }
 
+    // ═══════════════════════════════════════════════════
+    //  APP CONFIG — tersimpan di Supabase (lintas device)
+    // ═══════════════════════════════════════════════════
+    let appConfig = {
+        admin_password: localStorage.getItem('admin_password') || 'admin123',
+        sb_url: sbUrl,
+        sb_key: sbKey
+    };
+
     function getAdminPassword() {
-        return localStorage.getItem('admin_password') || 'admin123';
+        return appConfig.admin_password || localStorage.getItem('admin_password') || 'admin123';
     }
 
     function setAdminAuth(val) {
         adminAuthenticated = val;
+    }
+
+    // Ambil config dari Supabase → update lokal
+    async function fetchAppConfig() {
+        if (!sbReady()) return;
+        try {
+            const res = await fetch(`${sbUrl}/rest/v1/app_config?select=key,value`, {
+                headers: { 'apikey': sbKey, 'Authorization': 'Bearer ' + sbKey }
+            });
+            if (!res.ok) return;
+            const rows = await res.json();
+            if (!Array.isArray(rows)) return;
+            rows.forEach(r => {
+                appConfig[r.key] = r.value;
+                if (r.key === 'admin_password') localStorage.setItem('admin_password', r.value);
+            });
+            debugLog('App config loaded: ' + rows.map(r=>r.key).join(', '), '#60a5fa');
+        } catch(e) {
+            debugLog('fetchAppConfig error: ' + e.message, '#f87171');
+        }
+    }
+
+    // Simpan satu config key ke Supabase
+    async function saveAppConfig(key, value) {
+        if (!sbReady()) return;
+        try {
+            const res = await fetch(`${sbUrl}/rest/v1/app_config`, {
+                method: 'POST',
+                headers: {
+                    'apikey': sbKey,
+                    'Authorization': 'Bearer ' + sbKey,
+                    'Content-Type': 'application/json',
+                    'Prefer': 'resolution=merge-duplicates,return=minimal'
+                },
+                body: JSON.stringify({ key, value })
+            });
+            debugLog('saveAppConfig ' + key + ': HTTP ' + res.status, res.ok ? '#34d399' : '#f87171');
+            return res.ok;
+        } catch(e) {
+            debugLog('saveAppConfig error: ' + e.message, '#f87171');
+            return false;
+        }
     }
 
     // ═══════════════════════════════════════════════════
@@ -715,6 +777,7 @@ CREATE POLICY allow_update ON offset_db
                 showPendingSyncBadge(true);
             }
             showSyncBanner("Menghubungkan ke Supabase...", true);
+            await fetchAppConfig();       // Load config (password dll) dari cloud
             await fetchFromCloud(false);
             startAutoSync();
             await flushPendingSync();
@@ -926,8 +989,12 @@ CREATE POLICY allow_update ON offset_db
             debugLog('Config tersimpan. Memanggil fetchFromCloud...');
             checkSyncStatus('syncing');
             showSyncBanner("Menguji koneksi ke Supabase...", true);
+            await fetchAppConfig();
             await fetchFromCloud(true);
-            debugLog('fetchFromCloud selesai. Mulai autoSync...');
+            // Simpan URL & key ke Supabase — device lain tinggal pakai key yang sama
+            await saveAppConfig('sb_url', sbUrl);
+            await saveAppConfig('sb_key', sbKey);
+            debugLog('Config cloud tersimpan. Mulai autoSync...');
             startAutoSync();
         } catch(err) {
             debugLog('saveScriptUrl ERROR: ' + err.message, '#f87171');
@@ -970,6 +1037,102 @@ CREATE POLICY allow_update ON offset_db
     function copySql() {
         const text = document.getElementById('sqlPreview').innerText;
         navigator.clipboard.writeText(text).then(() => showToast("SQL TERSALIN!"));
+    }
+
+    // ═══════════════════════════════════════════════════
+    //  CONNECT VIA CODE — Kode 8 digit untuk konek device baru
+    //  Kode = 4 char dari sb_url + 4 char hash dari sb_key
+    //  Disimpan di app_config key='connect_code' di Supabase
+    // ═══════════════════════════════════════════════════
+    function generateConnectCode(url, key) {
+        // Buat kode 8 karakter deterministik dari URL + key
+        const src = url + '|' + key;
+        let h = 0;
+        for (let i = 0; i < src.length; i++) {
+            h = Math.imul(31, h) + src.charCodeAt(i) | 0;
+        }
+        const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+        let code = '';
+        let n = Math.abs(h);
+        for (let i = 0; i < 8; i++) {
+            code += chars[n % chars.length];
+            n = Math.floor(n / chars.length) || (n + 7919);
+        }
+        return code;
+    }
+
+    async function showConnectCode() {
+        if (!sbReady()) { showToast("HUBUNGKAN SUPABASE DULU"); return; }
+        const code = generateConnectCode(sbUrl, sbKey);
+        // Simpan kode + credentials ke Supabase
+        await saveAppConfig('connect_code', code);
+        await saveAppConfig('sb_url', sbUrl);
+        await saveAppConfig('sb_key', sbKey);
+        document.getElementById('myConnectCodeText').innerText = code;
+        document.getElementById('myConnectCode').classList.remove('hidden');
+        showToast("KODE SIAP DIGUNAKAN");
+    }
+
+    function copyConnectCode() {
+        const code = document.getElementById('myConnectCodeText').innerText;
+        navigator.clipboard.writeText(code).then(() => showToast("KODE TERSALIN: " + code));
+    }
+
+    async function connectViaCode() {
+        const code = document.getElementById('connectCode').value.trim().toUpperCase();
+        if (code.length !== 8) { showToast("KODE HARUS 8 KARAKTER"); return; }
+
+        // Cari kode di app_config menggunakan Supabase URL sementara dari field input
+        const tempUrl = document.getElementById('scriptUrl').value.trim().replace(/\/+$/, '');
+        const tempKey = document.getElementById('anonKey').value.trim();
+
+        let lookupUrl = tempUrl;
+        let lookupKey = tempKey;
+
+        // Jika field kosong tapi sbReady, pakai config yang ada
+        if (!lookupUrl || !lookupKey) {
+            if (sbReady()) { lookupUrl = sbUrl; lookupKey = sbKey; }
+            else { showToast("ISI URL & KEY DULU ATAU SUDAH KONEK"); return; }
+        }
+
+        showToast("⟳ MENCARI KODE...");
+        try {
+            const res = await fetch(`${lookupUrl}/rest/v1/app_config?key=eq.connect_code&select=value`, {
+                headers: { 'apikey': lookupKey, 'Authorization': 'Bearer ' + lookupKey }
+            });
+            if (!res.ok) throw new Error('HTTP ' + res.status);
+            const rows = await res.json();
+            if (!rows.length || rows[0].value !== code) {
+                showToast("KODE TIDAK VALID / TIDAK DITEMUKAN"); return;
+            }
+
+            // Ambil sb_url dan sb_key dari app_config
+            const cfgRes = await fetch(`${lookupUrl}/rest/v1/app_config?key=in.(sb_url,sb_key,admin_password)&select=key,value`, {
+                headers: { 'apikey': lookupKey, 'Authorization': 'Bearer ' + lookupKey }
+            });
+            const cfgRows = await cfgRes.json();
+            let newUrl = lookupUrl, newKey = lookupKey;
+            cfgRows.forEach(r => {
+                if (r.key === 'sb_url') newUrl = r.value;
+                if (r.key === 'sb_key') newKey = r.value;
+                if (r.key === 'admin_password') { appConfig.admin_password = r.value; localStorage.setItem('admin_password', r.value); }
+            });
+
+            // Simpan dan koneksikan
+            sbUrl = newUrl; sbKey = newKey;
+            localStorage.setItem('sb_url', sbUrl);
+            localStorage.setItem('sb_key', sbKey);
+            document.getElementById('scriptUrl').value = sbUrl;
+            document.getElementById('anonKey').value = sbKey;
+            document.getElementById('connectCode').value = '';
+
+            showToast("✓ KODE VALID — MENGHUBUNGKAN...");
+            await fetchFromCloud(true);
+            startAutoSync();
+        } catch(e) {
+            showToast("GAGAL: " + e.message);
+            debugLog('connectViaCode ERROR: ' + e.message, '#f87171');
+        }
     }
 
     // ═══════════════════════════════════════════════════
@@ -1437,13 +1600,18 @@ CREATE POLICY allow_update ON offset_db
             errEl.innerText = 'Konfirmasi password tidak cocok!'; errEl.style.opacity = '1'; return;
         }
 
+        appConfig.admin_password = newPwd;
         localStorage.setItem('admin_password', newPwd);
+        // Simpan ke Supabase agar berlaku di semua device
+        saveAppConfig('admin_password', newPwd).then(ok => {
+            if (ok) showToast("✓ PASSWORD DIUBAH & SYNC KE CLOUD");
+            else showToast("✓ PASSWORD DIUBAH (tersimpan lokal)");
+        });
         document.getElementById('changePwdModal').classList.add('hidden');
         document.getElementById('oldPwd').value = '';
         document.getElementById('newPwd').value = '';
         document.getElementById('confirmPwd').value = '';
         errEl.style.opacity = '0';
-        showToast("✓ PASSWORD BERHASIL DIUBAH");
     }
 
     // ═══════════════════════════════════════════════════
