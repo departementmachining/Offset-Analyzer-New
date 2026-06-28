@@ -1781,8 +1781,8 @@ CREATE POLICY usr_update ON app_users FOR UPDATE USING (true) WITH CHECK (true);
         data1.forEach(m1 => {
             const m2 = data2.find(x => x.tool === m1.tool && x.op === m1.op);
             if (m2) {
-                const dx = (m1.x - m2.x).toFixed(3);
-                const dz = (m1.z - m2.z).toFixed(3);
+                const dx = (m2.x - m1.x).toFixed(3);
+                const dz = (m2.z - m1.z).toFixed(3);
                 const isDiff = parseFloat(dx) !== 0 || parseFloat(dz) !== 0;
                 const formattedDx = parseFloat(dx) > 0 ? `+${dx}` : dx;
                 const formattedDz = parseFloat(dz) > 0 ? `+${dz}` : dz;
