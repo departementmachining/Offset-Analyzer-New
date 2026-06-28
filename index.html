@@ -465,7 +465,10 @@ CREATE POLICY usr_update ON app_users FOR UPDATE USING (true) WITH CHECK (true);
                 <div>
                     <span class="text-[9px] font-bold text-slate-400 uppercase tracking-widest">Status Sinkron</span>
                     <div id="statSyncDelay" class="text-sm font-extrabold text-rose-400 mt-1">LOKAL ONLY</div>
-                    <div id="userInfo" class="text-[9px] text-slate-500 font-bold mt-0.5 truncate max-w-[120px]"></div>
+                    <div class="flex items-center gap-2 mt-0.5">
+                        <div id="userInfo" class="text-[9px] text-slate-500 font-bold truncate max-w-[100px]"></div>
+                        <button id="refreshRoleBtn" onclick="refreshMyRole()" class="hidden text-[8px] font-black text-purple-400 border border-purple-500/30 rounded-lg px-1.5 py-0.5 hover:bg-purple-500/10 transition whitespace-nowrap" title="Refresh Role dari Server">↺</button>
+                    </div>
                 </div>
                 <div class="p-2.5 bg-indigo-500/10 rounded-xl text-indigo-400">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
@@ -992,9 +995,11 @@ CREATE POLICY usr_update ON app_users FOR UPDATE USING (true) WITH CHECK (true);
         const name = localStorage.getItem('sb_name') || currentUser?.email || 'User';
         const roleLabel = userRole === 'admin' ? '👑 Admin' : '👤 Operator';
         showToast(`✓ SELAMAT DATANG, ${name.toUpperCase()}`);
-        // Update user info di header jika ada
+        // Update user info
         const userInfoEl = document.getElementById('userInfo');
         if (userInfoEl) userInfoEl.innerText = `${name} · ${roleLabel}`;
+        // Tampilkan tombol refresh role selalu (agar operator bisa refresh setelah di-upgrade)
+        document.getElementById('refreshRoleBtn')?.classList.remove('hidden');
 
         // Sembunyikan tombol admin jika bukan admin
         updateAdminVisibility();
@@ -1039,17 +1044,19 @@ CREATE POLICY usr_update ON app_users FOR UPDATE USING (true) WITH CHECK (true);
 
     async function refreshMyRole() {
         if (!currentUser) { showToast("BELUM LOGIN"); return; }
-        showToast("⟳ MEMUAT ULANG ROLE...");
+        const btn = document.getElementById('refreshRoleBtn');
+        if (btn) btn.innerText = '...';
         await fetchUserRole(currentUser.id);
         updateAdminVisibility();
         const name = localStorage.getItem('sb_name') || currentUser?.email || '';
         const roleLabel = userRole === 'admin' ? '👑 Admin' : '👤 Operator';
         const userInfoEl = document.getElementById('userInfo');
         if (userInfoEl) userInfoEl.innerText = `${name} · ${roleLabel}`;
+        if (btn) btn.innerText = '↺';
         if (userRole === 'admin') {
-            showToast("✓ ROLE: ADMIN — TOMBOL ADMIN AKTIF");
+            showToast("✓ ROLE ADMIN — TOMBOL ADMIN AKTIF");
         } else {
-            showToast("ROLE: OPERATOR — BELUM DISET ADMIN");
+            showToast("ROLE: OPERATOR");
         }
     }
 
@@ -1106,6 +1113,7 @@ CREATE POLICY usr_update ON app_users FOR UPDATE USING (true) WITH CHECK (true);
             const roleLabel = userRole === 'admin' ? '👑 Admin' : '👤 Operator';
             const userInfoEl = document.getElementById('userInfo');
             if (userInfoEl && name) userInfoEl.innerText = `${name} · ${roleLabel}`;
+            document.getElementById('refreshRoleBtn')?.classList.remove('hidden');
             if (localStorage.getItem('offset_pending_sync') === '1') showPendingSyncBadge(true);
             showSyncBanner("Menghubungkan ke Supabase...", true);
             await fetchAppConfig();
