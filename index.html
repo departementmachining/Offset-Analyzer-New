@@ -413,7 +413,7 @@ CREATE POLICY usr_update ON app_users FOR UPDATE USING (true) WITH CHECK (true);
                     <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path></svg>
                     DASHBOARD
                 </button>
-                <button onclick="requestAdminAccess()" id="nav-admin" class="px-8 py-3.5 rounded-xl text-xs font-black transition-all text-slate-400 hover:text-white flex items-center gap-2">
+                <button onclick="openAdminPanel()" id="adminNavBtn" class="hidden px-8 py-3.5 rounded-xl text-xs font-black transition-all text-slate-400 hover:text-white flex items-center gap-2">
                     <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4"></path></svg>
                     ADMIN PANEL
                 </button>
@@ -950,6 +950,9 @@ CREATE POLICY usr_update ON app_users FOR UPDATE USING (true) WITH CHECK (true);
     }
 
     async function fetchUserRole(uid) {
+        // Reset dulu ke operator sebelum fetch — hindari nilai lama di localStorage
+        userRole = 'operator';
+        localStorage.setItem('sb_role', 'operator');
         try {
             const res = await fetch(`${SB_URL}/rest/v1/app_users?id=eq.${uid}&select=role,name`, {
                 headers: { 'apikey': SB_ANON, 'Authorization': 'Bearer ' + (accessToken || SB_ANON) }
@@ -957,12 +960,26 @@ CREATE POLICY usr_update ON app_users FOR UPDATE USING (true) WITH CHECK (true);
             if (res.ok) {
                 const rows = await res.json();
                 if (rows.length > 0) {
-                    userRole = rows[0].role || 'operator';
+                    // Gunakan role dari DB, default operator jika kosong/null
+                    userRole = (rows[0].role === 'admin') ? 'admin' : 'operator';
                     localStorage.setItem('sb_role', userRole);
                     localStorage.setItem('sb_name', rows[0].name || '');
+                } else {
+                    // User belum ada di app_users — insert dengan role operator
+                    const email = currentUser?.email || '';
+                    const name  = currentUser?.user_metadata?.name || email.split('@')[0] || 'User';
+                    await saveUserProfile(uid, name, email, 'operator');
+                    localStorage.setItem('sb_name', name);
+                    userRole = 'operator';
+                    localStorage.setItem('sb_role', 'operator');
                 }
             }
-        } catch(e) { console.error('fetchUserRole:', e); }
+        } catch(e) {
+            // Jika error, pastikan tetap operator
+            userRole = 'operator';
+            localStorage.setItem('sb_role', 'operator');
+            console.error('fetchUserRole:', e);
+        }
     }
 
     async function onAuthSuccess() {
@@ -986,12 +1003,34 @@ CREATE POLICY usr_update ON app_users FOR UPDATE USING (true) WITH CHECK (true);
     }
 
     function updateAdminVisibility() {
-        // Tombol "Admin" di nav hanya tampil untuk admin
+        const admin = isAdmin();
+        // Tombol Admin di navbar
         const adminNavBtn = document.getElementById('adminNavBtn');
         if (adminNavBtn) {
-            if (isAdmin()) adminNavBtn.classList.remove('hidden');
-            else adminNavBtn.classList.add('hidden');
+            adminNavBtn.classList.toggle('hidden', !admin);
         }
+        // Jika sedang di halaman admin dan bukan admin, kembali ke dashboard
+        if (!admin && adminAuthenticated) {
+            adminAuthenticated = false;
+            switchMenu('dashboard');
+        }
+    }
+
+    // Override openAdminPanel — cek role dulu
+    const _origOpenAdminPanel = typeof openAdminPanel !== 'undefined' ? openAdminPanel : null;
+    function openAdminPanel() {
+        if (!isLoggedIn()) { showToast("LOGIN DULU"); return; }
+        if (!isAdmin()) {
+            showToast("⛔ AKSES DITOLAK — BUKAN ADMIN");
+            return;
+        }
+        // Jika sudah login sebagai admin, langsung masuk
+        if (adminAuthenticated) {
+            switchMenu('admin');
+            return;
+        }
+        document.getElementById('passwordModal').classList.remove('hidden');
+        setTimeout(() => document.getElementById('adminPasswordInput').focus(), 100);
     }
 
     async function doLogout() {
@@ -1041,7 +1080,12 @@ CREATE POLICY usr_update ON app_users FOR UPDATE USING (true) WITH CHECK (true);
         const hasSession = await checkExistingSession();
         if (hasSession) {
             document.getElementById('authModal').classList.add('hidden');
+            // updateAdminVisibility dipanggil SETELAH checkExistingSession yang sudah fetch role
             updateAdminVisibility();
+            const name = localStorage.getItem('sb_name') || currentUser?.email || '';
+            const roleLabel = userRole === 'admin' ? '👑 Admin' : '👤 Operator';
+            const userInfoEl = document.getElementById('userInfo');
+            if (userInfoEl && name) userInfoEl.innerText = `${name} · ${roleLabel}`;
             if (localStorage.getItem('offset_pending_sync') === '1') showPendingSyncBadge(true);
             showSyncBanner("Menghubungkan ke Supabase...", true);
             await fetchAppConfig();
@@ -1787,23 +1831,7 @@ CREATE POLICY usr_update ON app_users FOR UPDATE USING (true) WITH CHECK (true);
     //  PASSWORD & ADMIN ACCESS
     // ═══════════════════════════════════════════════════
     function requestAdminAccess() {
-        if (adminAuthenticated) {
-            switchMenu('admin');
-            return;
-        }
-        // Check lockout
-        if (Date.now() < lockoutUntil) {
-            const remaining = Math.ceil((lockoutUntil - Date.now()) / 1000);
-            showToast(`TERKUNCI — TUNGGU ${remaining} DETIK`);
-            return;
-        }
-        // Reset input
-        document.getElementById('adminPasswordInput').value = '';
-        document.getElementById('pwdError').style.opacity = '0';
-        document.getElementById('attemptWarning').classList.add('hidden');
-        updatePinDots('');
-        document.getElementById('passwordModal').classList.remove('hidden');
-        setTimeout(() => document.getElementById('adminPasswordInput').focus(), 100);
+        openAdminPanel();
     }
 
     function checkAdminPassword() {
