@@ -2176,6 +2176,2301 @@ CREATE POLICY usr_update ON app_users FOR UPDATE USING (true) WITH CHECK (true);
                 btn.classList.add('bg-amber-500','text-slate-950','border-amber-400');
                 btn.classList.remove('hover:opacity-80');
             } else {
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Offset Analyzer Pro | Premium Executive Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;700&display=swap');
+        
+        :root { --primary: #090d16; --accent: #f59e0b; --accent-glow: rgba(245, 158, 11, 0.15); }
+
+        body { background: radial-gradient(circle at top right, #111827, #070a13); font-family: 'Plus Jakarta Sans', sans-serif; color: #f1f5f9; min-height: 100vh; }
+
+        .premium-card { background: rgba(17, 24, 39, 0.6); backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.06); box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.5); border-radius: 24px; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
+        .premium-card:hover { border-color: rgba(245, 158, 11, 0.2); box-shadow: 0 25px 50px -12px rgba(245, 158, 11, 0.08); }
+
+        .btn-gold { background: linear-gradient(135deg, #fbbf24 0%, #d97706 100%); color: #451a03; box-shadow: 0 4px 20px rgba(217, 119, 6, 0.3); transition: all 0.3s ease; }
+        .btn-gold:hover { transform: translateY(-2px); box-shadow: 0 6px 24px rgba(217, 119, 6, 0.5); }
+
+        .nav-active { background: rgba(255, 255, 255, 0.08); color: #fbbf24; border: 1px solid rgba(251, 191, 36, 0.3); box-shadow: inset 0 0 12px rgba(251, 191, 36, 0.1); }
+
+        .sync-indicator { width: 10px; height: 10px; border-radius: 50%; display: inline-block; }
+        .status-online { background-color: #10b981; box-shadow: 0 0 12px #10b981; }
+        .status-offline { background-color: #ef4444; box-shadow: 0 0 12px #ef4444; }
+        .status-syncing { background-color: #f59e0b; animation: pulse 1s infinite; box-shadow: 0 0 12px #f59e0b; }
+
+        @keyframes pulse { 0% { opacity: 1; transform: scale(1); } 50% { opacity: 0.4; transform: scale(1.1); } 100% { opacity: 1; transform: scale(1); } }
+        @keyframes spin { to { transform: rotate(360deg); } }
+        .animate-spin-slow { animation: spin 2s linear infinite; }
+
+        .custom-scrollbar::-webkit-scrollbar { width: 6px; height: 6px; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.1); border-radius: 10px; }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: rgba(251, 191, 36, 0.3); }
+
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+        .animate-fade { animation: fadeIn 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+
+        .filter-select {
+            background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2224%22%20height%3D%2224%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22%23fbbf24%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpolyline%20points%3D%226%209%2012%2015%2018%209%22%3E%3C%2Fpolyline%3E%3C%2Fsvg%3E');
+            background-repeat: no-repeat; background-position: right 0.75rem center; background-size: 1.1em;
+        }
+
+        .glow-text-blue { text-shadow: 0 0 10px rgba(59, 130, 246, 0.5); }
+        .glow-text-emerald { text-shadow: 0 0 10px rgba(16, 185, 129, 0.5); }
+
+        .numpad-btn {
+            background: rgba(17, 24, 39, 0.8);
+            border: 1px solid rgba(255,255,255,0.08);
+            color: #e2e8f0;
+            padding: 14px;
+            border-radius: 16px;
+            font-size: 16px;
+            font-weight: 700;
+            transition: all 0.15s ease;
+            cursor: pointer;
+        }
+        .numpad-btn:hover { background: rgba(251,191,36,0.1); border-color: rgba(251,191,36,0.3); color: #fbbf24; transform: scale(1.05); }
+        .numpad-btn:active { transform: scale(0.95); }
+
+        /* Sync banner */
+        #syncBanner { transition: all 0.4s ease; }
+
+        /* Password modal */
+        @keyframes shake {
+            0%,100% { transform: translateX(0); }
+            20% { transform: translateX(-8px); }
+            40% { transform: translateX(8px); }
+            60% { transform: translateX(-6px); }
+            80% { transform: translateX(6px); }
+        }
+        .shake { animation: shake 0.4s cubic-bezier(.36,.07,.19,.97) both; }
+
+        @keyframes lockPulse {
+            0%,100% { transform: scale(1); filter: drop-shadow(0 0 0px #f59e0b); }
+            50% { transform: scale(1.15); filter: drop-shadow(0 0 8px #f59e0b); }
+        }
+        .lock-pulse { animation: lockPulse 2s ease-in-out infinite; }
+
+        /* History notification badge */
+        .hist-badge { position: absolute; top: -5px; right: -5px; min-width: 18px; height: 18px; background: #ef4444; border-radius: 9px; font-size: 9px; font-weight: 900; color: white; display: flex; align-items: center; justify-content: center; padding: 0 4px; box-shadow: 0 0 6px rgba(239,68,68,0.6); }
+
+        /* History item entry animation */
+        @keyframes slideIn { from { opacity: 0; transform: translateX(16px); } to { opacity: 1; transform: translateX(0); } }
+        .hist-item { animation: slideIn 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+
+        /* History type badge colors */
+        .badge-edit { background: rgba(245,158,11,0.15); color: #fbbf24; border: 1px solid rgba(245,158,11,0.25); }
+        .badge-import { background: rgba(16,185,129,0.15); color: #34d399; border: 1px solid rgba(16,185,129,0.25); }
+        .badge-delete { background: rgba(239,68,68,0.15); color: #f87171; border: 1px solid rgba(239,68,68,0.25); }
+        .badge-cloud { background: rgba(59,130,246,0.15); color: #60a5fa; border: 1px solid rgba(59,130,246,0.25); }
+        .badge-clear { background: rgba(168,85,247,0.15); color: #c084fc; border: 1px solid rgba(168,85,247,0.25); }
+    </style>
+</head>
+<body class="pb-16 custom-scrollbar">
+
+    <!-- NOTES MODAL -->
+    <div id="notesModal" class="hidden fixed inset-0 z-[550] flex items-center justify-center p-4 bg-black/90 backdrop-blur-lg">
+        <div class="bg-[#0a0e1a] border border-violet-500/20 rounded-[32px] p-0 max-w-2xl w-full shadow-2xl shadow-black animate-fade flex flex-col max-h-[90vh]">
+            <!-- Header -->
+            <div class="flex items-center justify-between px-8 py-6 border-b border-white/5 flex-shrink-0">
+                <div class="flex items-center gap-3">
+                    <div class="p-2 bg-violet-500/10 rounded-xl text-violet-400">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path></svg>
+                    </div>
+                    <div>
+                        <h2 class="text-lg font-black text-white">Catatan Manual</h2>
+                        <p class="text-[9px] text-slate-500 font-bold uppercase tracking-widest">Catatan & Observasi Lapangan</p>
+                    </div>
+                </div>
+                <div class="flex items-center gap-2">
+                    <button onclick="openNoteForm()" class="px-3 py-1.5 bg-violet-500/20 border border-violet-500/30 text-violet-400 rounded-xl text-[9px] font-black uppercase tracking-widest hover:bg-violet-500/30 transition flex items-center gap-1.5">
+                        <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4"></path></svg>
+                        Tambah
+                    </button>
+                    <button onclick="document.getElementById('notesModal').classList.add('hidden')" class="w-8 h-8 bg-slate-800 hover:bg-slate-700 text-slate-400 rounded-xl flex items-center justify-center transition">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M6 18L18 6M6 6l12 12"></path></svg>
+                    </button>
+                </div>
+            </div>
+            <!-- Filter Label -->
+            <div class="px-8 py-3 border-b border-white/5 flex-shrink-0 flex gap-2 flex-wrap items-center">
+                <span class="text-[9px] text-slate-500 font-black uppercase tracking-widest mr-1">Label:</span>
+                <button onclick="filterNotes('semua')" id="nf-semua" class="px-3 py-1.5 rounded-xl text-[9px] font-black uppercase tracking-widest transition bg-violet-500 text-white border border-violet-400">Semua</button>
+                <button onclick="filterNotes('umum')" id="nf-umum" class="px-3 py-1.5 rounded-xl text-[9px] font-black uppercase tracking-widest transition bg-slate-700/60 text-slate-300 border border-white/10 hover:opacity-80">Umum</button>
+                <button onclick="filterNotes('line')" id="nf-line" class="px-3 py-1.5 rounded-xl text-[9px] font-black uppercase tracking-widest transition bg-blue-500/15 text-blue-300 border border-blue-500/25 hover:opacity-80">Line</button>
+                <button onclick="filterNotes('op')" id="nf-op" class="px-3 py-1.5 rounded-xl text-[9px] font-black uppercase tracking-widest transition bg-emerald-500/15 text-emerald-300 border border-emerald-500/25 hover:opacity-80">OP</button>
+                <button onclick="filterNotes('tool')" id="nf-tool" class="px-3 py-1.5 rounded-xl text-[9px] font-black uppercase tracking-widest transition bg-amber-500/15 text-amber-300 border border-amber-500/25 hover:opacity-80">Tool</button>
+                <button onclick="filterNotes('penting')" id="nf-penting" class="px-3 py-1.5 rounded-xl text-[9px] font-black uppercase tracking-widest transition bg-rose-500/15 text-rose-300 border border-rose-500/25 hover:opacity-80">⚠ Penting</button>
+            </div>
+            <!-- Notes List -->
+            <div id="notesList" class="overflow-y-auto custom-scrollbar flex-1 px-8 py-4 space-y-3">
+                <div class="py-16 text-center text-slate-500 text-[10px] font-bold uppercase italic tracking-widest">Belum ada catatan. Klik "+ Tambah" untuk mulai.</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- NOTE FORM MODAL (Add/Edit) -->
+    <div id="noteFormModal" class="hidden fixed inset-0 z-[600] flex items-center justify-center p-4 bg-black/90 backdrop-blur-lg">
+        <div class="bg-[#0a0e1a] border border-violet-500/30 rounded-[32px] p-8 max-w-lg w-full shadow-2xl animate-fade">
+            <div class="flex items-center gap-3 mb-6">
+                <div class="p-2 bg-violet-500/10 rounded-xl text-violet-400">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"></path></svg>
+                </div>
+                <div>
+                    <h2 id="noteFormTitle" class="text-lg font-black text-white">Catatan Baru</h2>
+                    <p class="text-[9px] text-slate-500 font-bold uppercase tracking-widest">Isi detail catatan di bawah ini</p>
+                </div>
+            </div>
+            <input type="hidden" id="note-edit-id">
+            <div class="space-y-4 mb-6">
+                <!-- Judul -->
+                <div>
+                    <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1 mb-1.5 block">Judul Catatan *</label>
+                    <input id="note-title" type="text" placeholder="Contoh: Deviasi T05 melebihi batas..." maxlength="100"
+                        class="w-full bg-slate-900/80 border border-slate-700/60 px-4 py-3.5 rounded-2xl text-sm text-white outline-none focus:border-violet-400 transition placeholder-slate-600">
+                </div>
+                <!-- Label & Line -->
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1 mb-1.5 block">Label</label>
+                        <select id="note-label" class="filter-select w-full bg-slate-900/80 border border-slate-700/60 px-4 py-3.5 rounded-2xl text-sm text-white outline-none focus:border-violet-400 transition appearance-none cursor-pointer">
+                            <option value="umum">Umum</option>
+                            <option value="line">Line</option>
+                            <option value="op">OP</option>
+                            <option value="tool">Tool</option>
+                            <option value="penting">⚠ Penting</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1 mb-1.5 block">Line (opsional)</label>
+                        <select id="note-line" class="filter-select w-full bg-slate-900/80 border border-slate-700/60 px-4 py-3.5 rounded-2xl text-sm text-white outline-none focus:border-violet-400 transition appearance-none cursor-pointer">
+                            <option value="">— Semua Line —</option>
+                            <option value="1">LINE 1</option>
+                            <option value="2">LINE 2</option>
+                            <option value="3">LINE 3</option>
+                            <option value="4">LINE 4</option>
+                        </select>
+                    </div>
+                </div>
+                <!-- Referensi OP/Tool -->
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1 mb-1.5 block">Ref. OP (opsional)</label>
+                        <input id="note-op" type="text" placeholder="cth: OP10, OP20..." maxlength="20"
+                            class="w-full bg-slate-900/80 border border-slate-700/60 px-4 py-3.5 rounded-2xl text-sm text-white outline-none focus:border-violet-400 transition placeholder-slate-600 uppercase">
+                    </div>
+                    <div>
+                        <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1 mb-1.5 block">Ref. Tool (opsional)</label>
+                        <input id="note-tool" type="text" placeholder="cth: T01, T15..." maxlength="20"
+                            class="w-full bg-slate-900/80 border border-slate-700/60 px-4 py-3.5 rounded-2xl text-sm text-white outline-none focus:border-violet-400 transition placeholder-slate-600 uppercase">
+                    </div>
+                </div>
+                <!-- Isi catatan -->
+                <div>
+                    <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1 mb-1.5 block">Isi Catatan *</label>
+                    <textarea id="note-body" rows="5" placeholder="Tulis observasi, tindakan, atau catatan penting di sini..." maxlength="1000"
+                        class="w-full bg-slate-900/80 border border-slate-700/60 px-4 py-3.5 rounded-2xl text-sm text-white outline-none focus:border-violet-400 transition placeholder-slate-600 resize-none custom-scrollbar"></textarea>
+                    <p class="text-right text-[9px] text-slate-600 mt-1 mr-1"><span id="noteBodyCount">0</span>/1000</p>
+                </div>
+            </div>
+            <div class="flex gap-3">
+                <button onclick="closeNoteForm()" class="flex-1 py-4 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-2xl font-bold text-xs uppercase transition">Batal</button>
+                <button onclick="saveNote()" class="flex-1 py-4 bg-violet-500 hover:bg-violet-600 text-white rounded-2xl font-black text-xs uppercase tracking-widest shadow-lg transition">Simpan Catatan</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- HISTORY MODAL -->
+    <div id="historyModal" class="hidden fixed inset-0 z-[550] flex items-center justify-center p-4 bg-black/90 backdrop-blur-lg">
+        <div class="bg-[#0a0e1a] border border-amber-500/20 rounded-[32px] p-0 max-w-lg w-full shadow-2xl shadow-black animate-fade flex flex-col max-h-[85vh]">
+            <!-- Header -->
+            <div class="flex items-center justify-between px-8 py-6 border-b border-white/5 flex-shrink-0">
+                <div class="flex items-center gap-3">
+                    <div class="p-2 bg-amber-500/10 rounded-xl text-amber-400">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"></path></svg>
+                    </div>
+                    <div>
+                        <h2 class="text-lg font-black text-white">Histori Notifikasi</h2>
+                        <p class="text-[9px] text-slate-500 font-bold uppercase tracking-widest">Riwayat perubahan offset</p>
+                    </div>
+                </div>
+                <div class="flex items-center gap-2">
+                    <button onclick="clearAllHistory()" class="px-3 py-1.5 bg-rose-500/10 border border-rose-500/20 text-rose-400 rounded-xl text-[9px] font-black uppercase tracking-widest hover:bg-rose-500/20 transition">Hapus Semua</button>
+                    <button onclick="document.getElementById('historyModal').classList.add('hidden')" class="w-8 h-8 bg-slate-800 hover:bg-slate-700 text-slate-400 rounded-xl flex items-center justify-center transition">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M6 18L18 6M6 6l12 12"></path></svg>
+                    </button>
+                </div>
+            </div>
+            <!-- Filter bar -->
+            <div class="px-8 py-4 border-b border-white/5 flex-shrink-0 flex gap-2 flex-wrap">
+                <button onclick="filterHistory('all')" id="hf-all" class="px-3 py-1.5 rounded-xl text-[9px] font-black uppercase tracking-widest transition bg-amber-500 text-slate-950 border border-amber-400">Semua</button>
+                <button onclick="filterHistory('edit')" id="hf-edit" class="px-3 py-1.5 rounded-xl text-[9px] font-black uppercase tracking-widest transition badge-edit hover:opacity-80">Edit</button>
+                <button onclick="filterHistory('import')" id="hf-import" class="px-3 py-1.5 rounded-xl text-[9px] font-black uppercase tracking-widest transition badge-import hover:opacity-80">Import</button>
+                <button onclick="filterHistory('delete')" id="hf-delete" class="px-3 py-1.5 rounded-xl text-[9px] font-black uppercase tracking-widest transition badge-delete hover:opacity-80">Hapus</button>
+                <button onclick="filterHistory('cloud')" id="hf-cloud" class="px-3 py-1.5 rounded-xl text-[9px] font-black uppercase tracking-widest transition badge-cloud hover:opacity-80">Cloud</button>
+            </div>
+            <!-- List -->
+            <div id="historyList" class="overflow-y-auto custom-scrollbar flex-1 px-8 py-4 space-y-2">
+                <div class="py-16 text-center text-slate-500 text-[10px] font-bold uppercase italic tracking-widest">Belum ada histori perubahan</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- PASSWORD MODAL ADMIN -->
+    <!-- AUTH MODAL — Login / Register -->
+    <div id="authModal" class="fixed inset-0 z-[700] flex items-center justify-center p-4 bg-black/95 backdrop-blur-xl">
+        <div class="bg-[#0a0e1a] border border-amber-500/20 rounded-[32px] p-8 max-w-sm w-full shadow-2xl shadow-black animate-fade">
+            <!-- Logo -->
+            <div class="flex justify-center mb-5">
+                <div class="w-16 h-16 bg-amber-500/10 rounded-[20px] flex items-center justify-center border border-amber-500/20">
+                    <svg class="w-8 h-8 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path></svg>
+                </div>
+            </div>
+            <div class="text-center mb-6">
+                <h2 class="text-xl font-black text-white">Offset Analyzer Pro</h2>
+                <p class="text-slate-500 text-[10px] font-bold uppercase tracking-widest mt-1">Manufacturing Intelligence</p>
+            </div>
+
+            <!-- Tab Login / Register -->
+            <div class="flex bg-slate-900/60 rounded-2xl p-1 mb-6">
+                <button id="tabLogin" onclick="switchAuthTab('login')" class="flex-1 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-widest transition bg-amber-500 text-slate-950">Masuk</button>
+                <button id="tabRegister" onclick="switchAuthTab('register')" class="flex-1 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-widest transition text-slate-400">Daftar</button>
+            </div>
+
+            <!-- LOGIN FORM -->
+            <div id="loginForm" class="space-y-3">
+                <input id="loginEmail" type="email" placeholder="Email" autocomplete="email"
+                    class="w-full bg-slate-900/80 border border-slate-700/60 px-4 py-3.5 rounded-2xl text-sm text-white outline-none focus:border-amber-400 transition placeholder-slate-600"
+                    onkeydown="if(event.key==='Enter') doLogin()">
+                <div class="relative">
+                    <input id="loginPassword" type="password" placeholder="Password" autocomplete="current-password"
+                        class="w-full bg-slate-900/80 border border-slate-700/60 px-4 py-3.5 rounded-2xl text-sm text-white outline-none focus:border-amber-400 transition placeholder-slate-600"
+                        onkeydown="if(event.key==='Enter') doLogin()">
+                </div>
+                <p id="loginError" class="text-rose-400 text-[10px] font-black uppercase tracking-widest opacity-0 transition-opacity text-center"></p>
+                <button onclick="doLogin()" class="w-full py-4 btn-gold rounded-2xl font-black text-xs uppercase tracking-widest shadow-lg mt-1">
+                    Masuk
+                </button>
+            </div>
+
+            <!-- REGISTER FORM -->
+            <div id="registerForm" class="hidden space-y-3">
+                <input id="regName" type="text" placeholder="Nama Lengkap" autocomplete="name"
+                    class="w-full bg-slate-900/80 border border-slate-700/60 px-4 py-3.5 rounded-2xl text-sm text-white outline-none focus:border-emerald-400 transition placeholder-slate-600">
+                <input id="regEmail" type="email" placeholder="Email" autocomplete="email"
+                    class="w-full bg-slate-900/80 border border-slate-700/60 px-4 py-3.5 rounded-2xl text-sm text-white outline-none focus:border-emerald-400 transition placeholder-slate-600">
+                <input id="regPassword" type="password" placeholder="Password (min 6 karakter)" autocomplete="new-password"
+                    class="w-full bg-slate-900/80 border border-slate-700/60 px-4 py-3.5 rounded-2xl text-sm text-white outline-none focus:border-emerald-400 transition placeholder-slate-600"
+                    onkeydown="if(event.key==='Enter') doRegister()">
+                <p id="regError" class="text-rose-400 text-[10px] font-black uppercase tracking-widest opacity-0 transition-opacity text-center"></p>
+                <button onclick="doRegister()" class="w-full py-4 bg-emerald-500 hover:bg-emerald-600 text-slate-950 rounded-2xl font-black text-xs uppercase tracking-widest shadow-lg transition mt-1">
+                    Daftar Sekarang
+                </button>
+                <p class="text-center text-slate-600 text-[9px]">Akun langsung aktif. Role: Operator.</p>
+            </div>
+
+            <!-- Loading state -->
+            <div id="authLoading" class="hidden text-center py-4">
+                <div class="w-8 h-8 border-2 border-amber-400 border-t-transparent rounded-full animate-spin mx-auto mb-2"></div>
+                <p id="authLoadingText" class="text-slate-400 text-[10px] font-black uppercase tracking-widest">Memproses...</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- ADMIN PASSWORD MODAL (untuk akses admin dari user operator) -->
+    <div id="passwordModal" class="hidden fixed inset-0 z-[600] flex items-center justify-center p-4 bg-black/90 backdrop-blur-lg">
+        <div id="passwordBox" class="bg-[#0a0e1a] border border-amber-500/20 rounded-[32px] p-10 max-w-sm w-full shadow-2xl shadow-black animate-fade">
+            <div class="flex justify-center mb-6">
+                <div class="w-16 h-16 bg-amber-500/10 rounded-[20px] flex items-center justify-center border border-amber-500/20">
+                    <svg class="w-8 h-8 text-amber-400 lock-pulse" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path></svg>
+                </div>
+            </div>
+            <div class="text-center mb-6">
+                <h2 class="text-xl font-black text-white">AKSES ADMIN</h2>
+                <p class="text-slate-500 text-[10px] font-bold uppercase tracking-widest mt-1">Masukkan Password Admin</p>
+            </div>
+            <div class="flex justify-center gap-3 mb-4" id="pinDots">
+                <div class="w-3 h-3 rounded-full border-2 border-slate-600" id="dot1"></div>
+                <div class="w-3 h-3 rounded-full border-2 border-slate-600" id="dot2"></div>
+                <div class="w-3 h-3 rounded-full border-2 border-slate-600" id="dot3"></div>
+                <div class="w-3 h-3 rounded-full border-2 border-slate-600" id="dot4"></div>
+                <div class="w-3 h-3 rounded-full border-2 border-slate-600" id="dot5"></div>
+                <div class="w-3 h-3 rounded-full border-2 border-slate-600" id="dot6"></div>
+            </div>
+            <div class="relative mb-2">
+                <input id="adminPasswordInput" type="password" maxlength="20" placeholder="Ketik password..."
+                    onkeydown="if(event.key==='Enter') checkAdminPassword()"
+                    oninput="updatePinDots(this.value)"
+                    class="w-full bg-slate-900/80 border border-slate-700/60 px-5 py-4 rounded-2xl text-center text-sm font-mono font-bold text-amber-300 outline-none focus:border-amber-400 transition-all tracking-[0.5em] placeholder-slate-700 placeholder:tracking-normal">
+            </div>
+            <p id="pwdError" class="text-center text-rose-400 text-[10px] font-black uppercase tracking-widest mb-4 opacity-0 transition-opacity"></p>
+            <div id="attemptWarning" class="hidden mb-4 bg-rose-500/10 border border-rose-500/20 rounded-xl px-4 py-2 text-center">
+                <span id="attemptText" class="text-rose-400 text-[10px] font-black uppercase tracking-widest"></span>
+            </div>
+            <div class="grid grid-cols-3 gap-2 mb-4">
+                <button onclick="appendPin('1')" class="numpad-btn">1</button>
+                <button onclick="appendPin('2')" class="numpad-btn">2</button>
+                <button onclick="appendPin('3')" class="numpad-btn">3</button>
+                <button onclick="appendPin('4')" class="numpad-btn">4</button>
+                <button onclick="appendPin('5')" class="numpad-btn">5</button>
+                <button onclick="appendPin('6')" class="numpad-btn">6</button>
+                <button onclick="appendPin('7')" class="numpad-btn">7</button>
+                <button onclick="appendPin('8')" class="numpad-btn">8</button>
+                <button onclick="appendPin('9')" class="numpad-btn">9</button>
+                <button onclick="clearPin()" class="numpad-btn text-rose-400 font-black">⌫</button>
+                <button onclick="appendPin('0')" class="numpad-btn">0</button>
+                <button onclick="checkAdminPassword()" class="numpad-btn bg-amber-500/20 border-amber-500/40 text-amber-400 font-black">↵</button>
+            </div>
+            <div class="flex gap-3">
+                <button onclick="closePasswordModal()" class="flex-1 py-3.5 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-2xl font-bold text-xs uppercase transition">Batal</button>
+                <button onclick="checkAdminPassword()" class="flex-1 py-3.5 btn-gold rounded-2xl font-bold text-xs uppercase shadow-lg">Masuk</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- CHANGE PASSWORD MODAL -->
+    <div id="changePwdModal" class="hidden fixed inset-0 z-[600] flex items-center justify-center p-4 bg-black/90 backdrop-blur-lg">
+        <div class="bg-[#0a0e1a] border border-blue-500/20 rounded-[32px] p-8 max-w-sm w-full shadow-2xl animate-fade">
+            <div class="flex items-center gap-3 mb-6">
+                <div class="p-2 bg-blue-500/10 rounded-xl text-blue-400">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z"></path></svg>
+                </div>
+                <div>
+                    <h2 class="text-lg font-black text-white">Ganti Password</h2>
+                    <p class="text-slate-500 text-[9px] uppercase tracking-widest">Admin Panel Security</p>
+                </div>
+            </div>
+            <div class="space-y-4 mb-6">
+                <div>
+                    <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1 mb-1.5 block">Password Lama</label>
+                    <input id="oldPwd" type="password" class="w-full bg-slate-900 border border-slate-700/60 p-4 rounded-2xl text-sm font-mono text-white outline-none focus:border-blue-400">
+                </div>
+                <div>
+                    <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1 mb-1.5 block">Password Baru</label>
+                    <input id="newPwd" type="password" class="w-full bg-slate-900 border border-slate-700/60 p-4 rounded-2xl text-sm font-mono text-white outline-none focus:border-blue-400">
+                </div>
+                <div>
+                    <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1 mb-1.5 block">Konfirmasi Password Baru</label>
+                    <input id="confirmPwd" type="password" class="w-full bg-slate-900 border border-slate-700/60 p-4 rounded-2xl text-sm font-mono text-white outline-none focus:border-blue-400">
+                </div>
+                <p id="changePwdError" class="text-rose-400 text-[10px] font-black uppercase tracking-widest opacity-0 transition-opacity ml-1"></p>
+            </div>
+            <div class="flex gap-3">
+                <button onclick="document.getElementById('changePwdModal').classList.add('hidden')" class="flex-1 py-4 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-2xl font-bold text-xs uppercase transition">Batal</button>
+                <button onclick="applyChangePassword()" class="flex-1 py-4 bg-blue-500 hover:bg-blue-600 text-white rounded-2xl font-bold text-xs uppercase shadow-lg transition">Simpan</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL EDIT DATA -->
+    <div id="editModal" class="hidden fixed inset-0 z-[400] flex items-center justify-center p-4 bg-black/80 backdrop-blur-md">
+        <div class="bg-[#0f1422] border border-white/10 rounded-[32px] p-8 max-w-md w-full shadow-2xl shadow-black/80 animate-fade">
+            <div class="flex items-center gap-3 mb-1">
+                <span class="p-2 bg-amber-500/10 rounded-xl text-amber-400">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path></svg>
+                </span>
+                <h2 class="text-2xl font-black text-white">Edit Data Offset</h2>
+            </div>
+            <p class="text-slate-400 text-[10px] font-bold uppercase tracking-widest mb-6">Peralatan Presisi & Database CNC</p>
+            <input type="hidden" id="edit-id">
+            <div class="grid grid-cols-2 gap-4 mb-6">
+                <div class="col-span-2">
+                    <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1 mb-1.5 block">Tipe Unit</label>
+                    <input id="edit-type" type="text" class="w-full bg-[#181f32] border border-slate-700/60 p-4 rounded-2xl text-sm font-bold uppercase text-white outline-none focus:border-amber-400 focus:ring-1 focus:ring-amber-400">
+                </div>
+                <div>
+                    <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1 mb-1.5 block">OP</label>
+                    <input id="edit-op" type="text" class="w-full bg-[#181f32] border border-slate-700/60 p-4 rounded-2xl text-sm font-bold uppercase text-white outline-none focus:border-amber-400">
+                </div>
+                <div>
+                    <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1 mb-1.5 block">Tool No</label>
+                    <input id="edit-tool" type="text" class="w-full bg-[#181f32] border border-slate-700/60 p-4 rounded-2xl text-sm font-bold uppercase text-white outline-none focus:border-amber-400">
+                </div>
+                <div>
+                    <label class="text-[10px] font-black text-blue-400 uppercase tracking-widest ml-1 mb-1.5 block">Value X</label>
+                    <input id="edit-x" type="number" step="0.001" class="w-full bg-blue-500/10 border border-blue-500/30 p-4 rounded-2xl text-sm font-mono font-bold text-blue-400 outline-none focus:border-blue-500">
+                </div>
+                <div>
+                    <label class="text-[10px] font-black text-emerald-400 uppercase tracking-widest ml-1 mb-1.5 block">Value Z</label>
+                    <input id="edit-z" type="number" step="0.001" class="w-full bg-emerald-500/10 border border-emerald-500/30 p-4 rounded-2xl text-sm font-mono font-bold text-emerald-400 outline-none focus:border-emerald-500">
+                </div>
+            </div>
+            <div class="flex gap-3">
+                <button onclick="closeEditModal()" class="flex-1 py-4 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-2xl font-bold text-xs uppercase transition">Batal</button>
+                <button onclick="applyEdit()" class="flex-1 py-4 btn-gold rounded-2xl font-bold text-xs uppercase shadow-lg">Simpan</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- SETUP GUIDE MODAL — SUPABASE -->
+    <div id="setupModal" class="hidden fixed inset-0 z-[500] flex items-center justify-center p-4 bg-black/90 backdrop-blur-md">
+        <div class="bg-[#0f1422] border border-emerald-500/30 rounded-[32px] p-8 max-w-2xl w-full shadow-2xl animate-fade overflow-y-auto max-h-[90vh] custom-scrollbar">
+            <div class="flex items-center gap-3 mb-2">
+                <span class="p-2 bg-emerald-500/10 rounded-xl text-emerald-400">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
+                </span>
+                <h2 class="text-2xl font-black text-white">Panduan Setup Supabase Sync</h2>
+            </div>
+            <p class="text-slate-400 text-xs mb-6">Supabase = database PostgreSQL gratis, REST API native, tidak ada CORS issue. Setup sekali, tidak perlu deploy ulang.</p>
+
+            <div class="space-y-4 text-xs text-slate-300">
+                <div class="bg-slate-900/60 rounded-2xl p-4 border border-white/5">
+                    <div class="flex items-center gap-2 mb-2"><span class="w-6 h-6 bg-amber-500 text-slate-950 rounded-full flex items-center justify-center font-black text-xs">1</span><span class="font-black text-white uppercase tracking-wide">Buat Akun & Project Supabase</span></div>
+                    <p class="text-slate-400 ml-8">Daftar gratis di <a href="https://supabase.com" target="_blank" class="text-emerald-400 underline">supabase.com</a> → <span class="text-white font-bold">New Project</span> → isi nama & password database → tunggu project siap (~1 menit)</p>
+                </div>
+                <div class="bg-slate-900/60 rounded-2xl p-4 border border-white/5">
+                    <div class="flex items-center gap-2 mb-2"><span class="w-6 h-6 bg-amber-500 text-slate-950 rounded-full flex items-center justify-center font-black text-xs">2</span><span class="font-black text-white uppercase tracking-wide">Buat Table "offset_db"</span></div>
+                    <p class="text-slate-400 ml-8 mb-2">Di dashboard Supabase → <span class="text-white font-bold">SQL Editor</span> → klik <span class="text-white font-bold">New query</span> → paste SQL berikut → klik <span class="text-emerald-400 font-bold">Run</span>:</p>
+                    <div class="bg-slate-950 rounded-xl p-3 font-mono text-[10px] text-emerald-300 border border-emerald-900/30 select-all" id="sqlPreview">-- TABLE 1: Data offset
+CREATE TABLE IF NOT EXISTS offset_db (
+  id text PRIMARY KEY,
+  line integer NOT NULL,
+  type text, op text, tool text,
+  x numeric DEFAULT 0,
+  z numeric DEFAULT 0,
+  updated_at timestamptz DEFAULT now()
+);
+ALTER TABLE offset_db ENABLE ROW LEVEL SECURITY;
+CREATE POLICY allow_select ON offset_db FOR SELECT USING (true);
+CREATE POLICY allow_insert ON offset_db FOR INSERT WITH CHECK (true);
+CREATE POLICY allow_delete ON offset_db FOR DELETE USING (true);
+CREATE POLICY allow_update ON offset_db FOR UPDATE USING (true) WITH CHECK (true);
+
+-- TABLE 2: Config aplikasi
+CREATE TABLE IF NOT EXISTS app_config (
+  key text PRIMARY KEY,
+  value text
+);
+ALTER TABLE app_config ENABLE ROW LEVEL SECURITY;
+CREATE POLICY cfg_select ON app_config FOR SELECT USING (true);
+CREATE POLICY cfg_insert ON app_config FOR INSERT WITH CHECK (true);
+CREATE POLICY cfg_delete ON app_config FOR DELETE USING (true);
+CREATE POLICY cfg_update ON app_config FOR UPDATE USING (true) WITH CHECK (true);
+
+-- TABLE 3: User profiles & roles
+CREATE TABLE IF NOT EXISTS app_users (
+  id uuid PRIMARY KEY,
+  name text,
+  email text,
+  role text DEFAULT 'operator',
+  created_at timestamptz DEFAULT now()
+);
+ALTER TABLE app_users ENABLE ROW LEVEL SECURITY;
+CREATE POLICY usr_select ON app_users FOR SELECT USING (true);
+CREATE POLICY usr_insert ON app_users FOR INSERT WITH CHECK (true);
+CREATE POLICY usr_update ON app_users FOR UPDATE USING (true) WITH CHECK (true);</div>
+                    <button onclick="copySql()" class="mt-2 px-4 py-2 bg-emerald-500/20 border border-emerald-500/30 text-emerald-400 rounded-xl text-[10px] font-black uppercase tracking-widest hover:bg-emerald-500/30 transition">📋 Salin SQL</button>
+                </div>
+                <div class="bg-slate-900/60 rounded-2xl p-4 border border-white/5">
+                    <div class="flex items-center gap-2 mb-2"><span class="w-6 h-6 bg-amber-500 text-slate-950 rounded-full flex items-center justify-center font-black text-xs">3</span><span class="font-black text-white uppercase tracking-wide">Ambil Project URL & Anon Key</span></div>
+                    <p class="text-slate-400 ml-8">Di Supabase dashboard → <span class="text-white font-bold">Project Settings</span> → <span class="text-white font-bold">API</span> → salin:<br><span class="text-amber-400">• Project URL</span> (format: https://xxxx.supabase.co)<br><span class="text-amber-400">• anon public key</span> (string panjang)</p>
+                </div>
+                <div class="bg-slate-900/60 rounded-2xl p-4 border border-white/5">
+                    <div class="flex items-center gap-2 mb-2"><span class="w-6 h-6 bg-amber-500 text-slate-950 rounded-full flex items-center justify-center font-black text-xs">4</span><span class="font-black text-white uppercase tracking-wide">Paste di Admin Panel</span></div>
+                    <p class="text-slate-400 ml-8">Di Admin Panel → isi <span class="text-amber-400">Supabase URL</span> dan <span class="text-amber-400">Anon Key</span> → klik <span class="text-emerald-400 font-bold">Koneksikan</span>. Selesai!</p>
+                </div>
+            </div>
+            <button onclick="document.getElementById('setupModal').classList.add('hidden')" class="mt-6 w-full py-4 btn-gold rounded-2xl font-black text-xs uppercase tracking-widest">Mengerti, Tutup Panduan</button>
+        </div>
+    </div>
+
+    <!-- HEADER PREMIUM -->
+    <header class="text-white pt-10 pb-20 px-6 md:px-8 mb-[-40px]" style="background: linear-gradient(135deg, #070a13 0%, #111827 100%);">
+        <div class="max-w-7xl mx-auto flex flex-col lg:flex-row justify-between items-center gap-6">
+            <div class="space-y-2 text-center lg:text-left">
+                <div class="flex items-center justify-center lg:justify-start gap-2.5 mb-1">
+                    <span id="syncStatusDot" class="sync-indicator status-offline"></span>
+                    <span id="syncStatusText" class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Sistem Offline</span>
+                    <span class="text-slate-600">|</span>
+                    <span id="lastSyncTime" class="text-[10px] font-bold text-slate-500 uppercase tracking-widest">Belum pernah sync</span>
+                    <span class="text-slate-600">|</span>
+                    <span class="text-[10px] font-bold text-amber-500 uppercase tracking-widest flex items-center gap-1">
+                        <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
+                        PRO VERSION
+                    </span>
+                </div>
+                <h1 class="text-4xl font-black italic tracking-tighter uppercase text-transparent bg-clip-text bg-gradient-to-r from-white via-slate-100 to-amber-400">
+                    OFFSET <span class="text-amber-400">ANALYZER</span> PRO
+                </h1>
+                <p class="text-xs text-slate-400 font-medium tracking-wide">Sistem Analisis Deviasi Dimensi Pemesinan CNC Presisi Tinggi</p>
+            </div>
+            <div class="bg-slate-900/60 p-1.5 rounded-2xl backdrop-blur-md border border-white/10 flex gap-1">
+                <button onclick="switchMenu('dashboard')" id="nav-dashboard" class="px-8 py-3.5 rounded-xl text-xs font-black transition-all nav-active flex items-center gap-2">
+                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path></svg>
+                    DASHBOARD
+                </button>
+                <button onclick="openNotesModal()" class="relative px-6 py-3.5 rounded-xl text-xs font-black transition-all text-slate-400 hover:text-white hover:bg-white/5 flex items-center gap-2">
+                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path></svg>
+                    CATATAN
+                    <span id="notesBadge" class="hidden absolute -top-1 -right-1 min-w-[18px] h-[18px] bg-violet-500 rounded-full text-[9px] font-black text-white flex items-center justify-center px-1 shadow-lg"></span>
+                </button>
+                <button onclick="openAdminPanel()" id="adminNavBtn" class="hidden px-8 py-3.5 rounded-xl text-xs font-black transition-all text-slate-400 hover:text-white flex items-center gap-2">
+                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4"></path></svg>
+                    ADMIN PANEL
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- AUTO-SYNC BANNER -->
+    <div id="syncBanner" class="hidden max-w-7xl mx-auto px-6 md:px-8 mt-2 mb-[-20px] relative z-10">
+        <div class="bg-amber-500/10 border border-amber-500/30 rounded-2xl px-6 py-3 flex items-center gap-3">
+            <svg id="syncBannerIcon" class="w-4 h-4 text-amber-400 animate-spin-slow" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
+            <span id="syncBannerText" class="text-amber-400 text-[10px] font-black uppercase tracking-widest">Menghubungkan ke Google Sheets...</span>
+            <button onclick="document.getElementById('syncBanner').classList.add('hidden')" class="ml-auto text-slate-500 hover:text-white text-xs">✕</button>
+        </div>
+    </div>
+
+    <main class="max-w-7xl mx-auto px-6 md:px-8 mt-12">
+        
+        <!-- STATS KPI WIDGETS -->
+        <div id="kpiSection" class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+            <div class="premium-card p-4 flex items-center justify-between">
+                <div>
+                    <span class="text-[9px] font-bold text-slate-400 uppercase tracking-widest">Garis Aktif</span>
+                    <div id="statLine" class="text-lg font-black text-amber-400 mt-1">LINE 1</div>
+                </div>
+                <div class="p-2.5 bg-amber-400/10 rounded-xl text-amber-400">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path></svg>
+                </div>
+            </div>
+            <div class="premium-card p-4 flex items-center justify-between">
+                <div>
+                    <span class="text-[9px] font-bold text-slate-400 uppercase tracking-widest">Total Tipe Unit</span>
+                    <div id="statTotalType" class="text-lg font-black text-white mt-1">0</div>
+                </div>
+                <div class="p-2.5 bg-blue-500/10 rounded-xl text-blue-400">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3"></path></svg>
+                </div>
+            </div>
+            <div class="premium-card p-4 flex items-center justify-between">
+                <div>
+                    <span class="text-[9px] font-bold text-slate-400 uppercase tracking-widest">Total Perkakas</span>
+                    <div id="statTotalTool" class="text-lg font-black text-white mt-1">0</div>
+                </div>
+                <div class="p-2.5 bg-emerald-500/10 rounded-xl text-emerald-400">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path></svg>
+                </div>
+            </div>
+            <div class="premium-card p-4 flex items-center justify-between">
+                <div>
+                    <span class="text-[9px] font-bold text-slate-400 uppercase tracking-widest">Status Sinkron</span>
+                    <div id="statSyncDelay" class="text-sm font-extrabold text-rose-400 mt-1">LOKAL ONLY</div>
+                    <div id="userInfo" class="text-[9px] text-slate-500 font-bold mt-0.5"></div>
+                </div>
+                <button id="refreshRoleBtn" onclick="refreshMyRole()" class="hidden w-10 h-10 bg-purple-500/10 border border-purple-500/20 rounded-xl text-purple-400 hover:bg-purple-500/20 transition flex items-center justify-center text-base" title="Refresh Role">↺</button>
+            </div>
+        </div>
+
+        <!-- DASHBOARD MENU -->
+        <div id="menu-dashboard" class="animate-fade space-y-8">
+            <div class="premium-card p-6 border-l-4 border-amber-500 bg-gradient-to-r from-amber-500/5 to-transparent">
+                <div class="flex flex-col lg:flex-row gap-6 lg:items-end">
+                    <div class="space-y-2">
+                        <label class="text-[10px] font-black text-amber-500 uppercase tracking-widest ml-1">Pilihan Garis Produksi</label>
+                        <select id="lineSelector" onchange="switchLine(this.value)" class="filter-select w-full lg:w-40 bg-[#141b2b] border border-white/10 rounded-xl px-4 py-3.5 text-sm font-black text-amber-400 outline-none cursor-pointer">
+                            <option value="1">LINE 1</option>
+                            <option value="2">LINE 2</option>
+                            <option value="3">LINE 3</option>
+                            <option value="4">LINE 4</option>
+                        </select>
+                    </div>
+                    <div class="flex flex-col sm:flex-row gap-4 flex-1">
+                        <div class="space-y-2 flex-1">
+                            <label class="text-[10px] font-black text-blue-400 uppercase tracking-widest ml-1">Tipe Master (Referensi)</label>
+                            <select id="type1Selector" onchange="updateComparison()" class="filter-select w-full bg-[#141b2b] border border-blue-500/20 rounded-xl px-4 py-3.5 text-sm font-bold text-blue-400 outline-none cursor-pointer"></select>
+                        </div>
+                        <div class="space-y-2 flex-1">
+                            <label class="text-[10px] font-black text-indigo-400 uppercase tracking-widest ml-1">Tipe Target (Analisis)</label>
+                            <select id="type2Selector" onchange="updateComparison()" class="filter-select w-full bg-[#141b2b] border border-indigo-500/20 rounded-xl px-4 py-3.5 text-sm font-bold text-indigo-400 outline-none cursor-pointer"></select>
+                        </div>
+                    </div>
+                    <button onclick="fetchFromCloud(true)" class="lg:ml-auto bg-amber-500 hover:bg-amber-600 text-[#1e1b4b] px-8 py-3.5 rounded-xl text-[10px] font-black uppercase tracking-widest transition shadow-lg shadow-amber-500/20 flex items-center justify-center gap-2">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
+                        Segarkan Cloud
+                    </button>
+                </div>
+            </div>
+
+            <!-- COMPARISON PANELS -->
+            <div id="summaryContainer" class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                <div id="panel-op1" class="premium-card overflow-hidden border-t-4 border-blue-500">
+                    <div class="bg-blue-950/40 px-6 py-4 flex justify-between items-center border-b border-white/5">
+                        <h3 class="font-black text-blue-400 text-xs uppercase tracking-widest flex items-center gap-2">
+                            <span class="w-2.5 h-2.5 bg-blue-500 rounded-full animate-pulse"></span>SELISIH OP 1 (DIFFERENCE)
+                        </h3>
+                        <span id="count-op1" class="bg-blue-500/20 border border-blue-400/30 text-blue-400 px-3 py-1 rounded-lg text-xs font-black">0</span>
+                    </div>
+                    <div id="op1Content" class="p-4 space-y-3 max-h-[400px] overflow-y-auto custom-scrollbar">
+                        <div class="py-16 text-center text-slate-500 text-[11px] font-black uppercase italic tracking-widest">Silakan pilih tipe pada panel di atas</div>
+                    </div>
+                </div>
+                <div id="panel-op2" class="premium-card overflow-hidden border-t-4 border-emerald-500">
+                    <div class="bg-emerald-950/40 px-6 py-4 flex justify-between items-center border-b border-white/5">
+                        <h3 class="font-black text-emerald-400 text-xs uppercase tracking-widest flex items-center gap-2">
+                            <span class="w-2.5 h-2.5 bg-emerald-500 rounded-full animate-pulse"></span>SELISIH OP 2 (DIFFERENCE)
+                        </h3>
+                        <span id="count-op2" class="bg-emerald-500/20 border border-emerald-400/30 text-emerald-400 px-3 py-1 rounded-lg text-xs font-black">0</span>
+                    </div>
+                    <div id="op2Content" class="p-4 space-y-3 max-h-[400px] overflow-y-auto custom-scrollbar">
+                        <div class="py-16 text-center text-slate-500 text-[11px] font-black uppercase italic tracking-widest">Silakan pilih tipe pada panel di atas</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- DETAILED MATRIX -->
+            <div class="premium-card overflow-hidden">
+                <div class="px-8 py-5 border-b border-white/5 bg-[#0e1422]/60 flex justify-between items-center">
+                    <h3 class="text-slate-300 font-black text-xs uppercase tracking-widest flex items-center gap-2">
+                        <svg class="w-4 h-4 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17V7m0 10a2 2 0 01-2 2H5a2 2 0 01-2-2V7a2 2 0 012-2h2a2 2 0 012 2m0 10a2 2 0 002 2h2a2 2 0 002-2M9 7a2 2 0 012-2h2a2 2 0 012 2m0 10V7m0 10a2 2 0 002 2h2a2 2 0 002-2V7a2 2 0 00-2-2h-2a2 2 0 00-2 2"></path></svg>
+                        Laporan Matriks Deviasi Detail
+                    </h3>
+                </div>
+                <div class="overflow-x-auto custom-scrollbar">
+                    <table class="w-full text-left">
+                        <thead class="bg-slate-900/80 text-[10px] font-black text-slate-400 uppercase tracking-widest border-b border-white/5">
+                            <tr>
+                                <th class="px-8 py-5">Tool Info</th>
+                                <th class="px-8 py-5">Master</th>
+                                <th class="px-8 py-5">Target</th>
+                                <th class="px-8 py-5 text-center">Dev X</th>
+                                <th class="px-8 py-5 text-center">Dev Z</th>
+                            </tr>
+                        </thead>
+                        <tbody id="detailTableBody" class="text-xs divide-y divide-white/5 bg-[#0a0f1d]/40">
+                            <tr><td colspan="5" class="px-8 py-20 text-center text-slate-500 italic font-black text-xs uppercase tracking-widest">Pilih Tipe Master & Target Terlebih Dahulu</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- ADMIN MENU -->
+        <div id="menu-admin" class="hidden animate-fade space-y-8 pb-20">
+
+            <!-- CLOUD URL PANEL -->
+            <div class="premium-card p-6 border-l-8 border-emerald-500 bg-emerald-500/5">
+                <div class="flex flex-col gap-4">
+                    <div class="flex flex-col gap-3">
+                        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+                            <div>
+                                <h3 class="font-black text-white text-sm uppercase tracking-wider flex items-center gap-2">
+                                    <span class="w-2.5 h-2.5 rounded-full flex-shrink-0" id="cloudDot" style="background:#ef4444;box-shadow:0 0 8px #ef4444"></span>
+                                    Koneksi Google Sheets Cloud
+                                </h3>
+                                <p class="text-[10px] text-slate-400 mt-1">Data tersimpan permanen di Google Sheets — edit dari mana saja, sync otomatis</p>
+                            </div>
+                            <!-- Action buttons: wrap on portrait, row on landscape -->
+                            <div class="flex flex-wrap gap-2 sm:flex-nowrap sm:flex-shrink-0">
+                                <button onclick="openHistoryModal()" class="flex-1 sm:flex-none relative px-3 py-2.5 bg-amber-500/10 border border-amber-500/30 text-amber-400 rounded-xl text-[9px] font-black uppercase tracking-widest hover:bg-amber-500/20 transition flex items-center justify-center gap-1.5 whitespace-nowrap">
+                                    <svg class="w-3.5 h-3.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"></path></svg>
+                                    Histori
+                                    <span id="histBadge" class="hidden hist-badge">0</span>
+                                </button>
+                                <button onclick="document.getElementById('changePwdModal').classList.remove('hidden')" class="flex-1 sm:flex-none px-3 py-2.5 bg-blue-500/10 border border-blue-500/30 text-blue-400 rounded-xl text-[9px] font-black uppercase tracking-widest hover:bg-blue-500/20 transition flex items-center justify-center gap-1.5 whitespace-nowrap">
+                                    <svg class="w-3.5 h-3.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z"></path></svg>
+                                    Ganti Password
+                                </button>
+                                <button onclick="document.getElementById('setupModal').classList.remove('hidden')" class="flex-1 sm:flex-none px-3 py-2.5 bg-slate-700/50 border border-white/10 text-slate-400 rounded-xl text-[9px] font-black uppercase tracking-widest hover:bg-slate-700 transition flex items-center justify-center gap-1.5 whitespace-nowrap">
+                                    <svg class="w-3.5 h-3.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                                    Panduan
+                                </button>
+                                <button onclick="doLogout()" class="flex-1 sm:flex-none px-3 py-2.5 bg-rose-500/10 border border-rose-500/30 text-rose-400 rounded-xl text-[9px] font-black uppercase tracking-widest hover:bg-rose-500/20 transition flex items-center justify-center gap-1.5 whitespace-nowrap">
+                                    <svg class="w-3.5 h-3.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path></svg>
+                                    Keluar
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="flex flex-col gap-3">
+                        <div class="flex flex-col md:flex-row gap-3">
+                            <div class="relative flex-1">
+                                <span class="absolute inset-y-0 left-4 flex items-center text-emerald-400 text-[9px] font-black">URL</span>
+                                <input id="scriptUrl" type="text" placeholder="https://xxxx.supabase.co" class="w-full bg-slate-950/60 border border-emerald-500/20 pl-12 pr-4 py-4 rounded-2xl text-xs text-emerald-200 placeholder-emerald-800 outline-none focus:border-emerald-400 transition-all font-mono">
+                            </div>
+                            <div class="relative flex-1">
+                                <span class="absolute inset-y-0 left-4 flex items-center text-amber-400 text-[9px] font-black">KEY</span>
+                                <input id="anonKey" type="text" placeholder="anon public key (eyJ...)" class="w-full bg-slate-950/60 border border-amber-500/20 pl-12 pr-4 py-4 rounded-2xl text-xs text-amber-200 placeholder-amber-900 outline-none focus:border-amber-400 transition-all font-mono" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">
+                            </div>
+                        </div>
+                        <div class="flex gap-3">
+                            <button onclick="saveScriptUrl()" class="flex-1 px-8 py-4 bg-emerald-500 hover:bg-emerald-600 text-slate-950 rounded-2xl text-[10px] font-black uppercase tracking-widest shadow-lg shadow-emerald-500/10 transition-all flex items-center justify-center gap-2">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 12h14M12 5l7 7-7 7"></path></svg>
+                                Koneksikan Supabase
+                            </button>
+                            <button onclick="fetchFromCloud(true)" class="px-6 py-4 bg-blue-500/10 border border-blue-500/30 hover:bg-blue-500/20 text-blue-400 rounded-2xl text-[10px] font-black uppercase tracking-widest transition flex items-center gap-2">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
+                                Tarik Data
+                            </button>
+                        </div>
+                        <!-- KONEK VIA KODE — device baru cukup kode saja -->
+                        <div class="border-t border-white/5 pt-4 mt-1">
+                            <div class="flex items-center gap-2 mb-3">
+                                <span class="w-2 h-2 rounded-full bg-purple-400"></span>
+                                <p class="text-[9px] text-purple-400 font-black uppercase tracking-widest">Konek Device Baru — Cukup Kode 8 Digit</p>
+                            </div>
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                                <!-- Generate kode (device induk) -->
+                                <div class="bg-slate-900/60 rounded-2xl p-4 border border-purple-500/10 space-y-3">
+                                    <p class="text-[9px] text-slate-400 font-bold uppercase tracking-widest">Device Induk — Buat Kode</p>
+                                    <button onclick="showConnectCode()" class="w-full py-3 bg-purple-500/20 border border-purple-500/30 text-purple-300 rounded-xl text-[10px] font-black uppercase tracking-widest hover:bg-purple-500/30 transition">🔑 Generate Kode Koneksi</button>
+                                    <div id="myConnectCode" class="hidden bg-black/40 rounded-xl px-4 py-3 flex items-center gap-3">
+                                        <span id="myConnectCodeText" class="font-mono text-2xl font-black text-white tracking-[0.25em] flex-1 text-center"></span>
+                                        <button onclick="copyConnectCode()" class="text-[9px] text-purple-400 font-black uppercase tracking-widest hover:text-purple-300 flex-shrink-0">Salin</button>
+                                    </div>
+                                    <p class="text-[9px] text-slate-600">Kode berlaku selama aplikasi terhubung. Bagikan ke device lain.</p>
+                                </div>
+                                <!-- Input kode (device baru) -->
+                                <div class="bg-slate-900/60 rounded-2xl p-4 border border-emerald-500/10 space-y-3">
+                                    <p class="text-[9px] text-slate-400 font-bold uppercase tracking-widest">Device Baru — Masuk Kode</p>
+                                    <input id="connectCode" type="text" placeholder="Ketik 8 digit kode..." class="w-full bg-black/40 border border-emerald-500/20 px-4 py-3 rounded-xl text-base text-white placeholder-slate-600 outline-none focus:border-emerald-400 transition font-mono uppercase tracking-[0.2em] text-center" maxlength="8">
+                                    <button onclick="connectViaCode()" class="w-full py-3 bg-emerald-500/20 border border-emerald-500/30 text-emerald-300 rounded-xl text-[10px] font-black uppercase tracking-widest hover:bg-emerald-500/30 transition">⚡ Hubungkan Sekarang</button>
+                                    <p class="text-[9px] text-slate-600">Tidak perlu isi URL atau Key — otomatis dari kode.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="syncInfo" class="hidden bg-slate-950/40 rounded-xl px-4 py-3 text-[10px] text-slate-400 font-mono border border-white/5 flex items-center gap-3">
+                        <span id="syncInfoText">—</span>
+                        <button id="retrySyncBtn" onclick="retrySync()" class="hidden ml-auto flex-shrink-0 px-3 py-1 bg-amber-500/20 border border-amber-500/30 text-amber-400 rounded-lg text-[9px] font-black uppercase tracking-widest hover:bg-amber-500/30 transition">↺ Retry</button>
+                    </div>
+                    <!-- Pending sync badge -->
+                    <div id="pendingSyncBadge" class="hidden bg-rose-500/10 border border-rose-500/30 rounded-xl px-4 py-3 flex items-center gap-3">
+                        <span class="w-2 h-2 rounded-full bg-rose-400 animate-ping flex-shrink-0"></span>
+                        <span class="text-[10px] text-rose-400 font-black uppercase tracking-widest flex-1">Ada perubahan belum tersimpan ke cloud</span>
+                        <button onclick="retrySync()" class="px-3 py-1 bg-rose-500/20 border border-rose-500/30 text-rose-400 rounded-lg text-[9px] font-black uppercase tracking-widest hover:bg-rose-500/30 transition flex-shrink-0">↺ Sync Sekarang</button>
+                    </div>
+                    <!-- DEBUG PANEL -->
+                    <div class="mt-2">
+                        <button onclick="toggleDebug()" class="text-[9px] font-black text-slate-600 hover:text-slate-400 uppercase tracking-widest transition">⚙ Debug Sync</button>
+                        <div id="debugPanel" class="hidden mt-2 bg-black/60 border border-white/5 rounded-xl p-3 space-y-2">
+                            <div class="flex gap-2 flex-wrap">
+                                <button onclick="debugTestRead()" class="px-3 py-1.5 bg-blue-500/20 border border-blue-500/30 text-blue-400 rounded-lg text-[9px] font-black uppercase tracking-widest hover:bg-blue-500/30 transition">Test READ</button>
+                                <button onclick="debugTestWrite()" class="px-3 py-1.5 bg-emerald-500/20 border border-emerald-500/30 text-emerald-400 rounded-lg text-[9px] font-black uppercase tracking-widest hover:bg-emerald-500/30 transition">Test WRITE</button>
+                                <button onclick="debugClearLog()" class="px-3 py-1.5 bg-slate-700 text-slate-400 rounded-lg text-[9px] font-black uppercase tracking-widest hover:bg-slate-600 transition">Clear Log</button>
+                            </div>
+                            <div id="debugLog" class="font-mono text-[9px] text-emerald-400 bg-black/40 rounded-lg p-2 max-h-40 overflow-y-auto space-y-0.5 whitespace-pre-wrap break-all"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                <!-- BULK IMPORT -->
+                <div class="premium-card p-8 border-t-8 border-amber-500 h-fit bg-gradient-to-b from-amber-500/5 to-transparent">
+                    <div class="flex justify-between items-center mb-6">
+                        <h2 class="text-lg font-black text-white uppercase tracking-wider">Bulk Import</h2>
+                        <button onclick="clearLineData()" class="text-[9px] font-black text-red-400 uppercase border border-red-500/20 bg-red-500/5 hover:bg-red-500/20 px-3 py-1.5 rounded-lg transition">Format Line</button>
+                    </div>
+                    <div class="space-y-4">
+                        <div class="grid grid-cols-4 gap-2">
+                            <button onclick="setAdminInputLine(1)" id="adm-l1" class="py-2.5 rounded-xl border font-black text-xs bg-amber-500 text-slate-950 border-amber-400 shadow-md">L1</button>
+                            <button onclick="setAdminInputLine(2)" id="adm-l2" class="py-2.5 rounded-xl border font-black text-xs border-white/10 text-slate-400 hover:border-white/20">L2</button>
+                            <button onclick="setAdminInputLine(3)" id="adm-l3" class="py-2.5 rounded-xl border font-black text-xs border-white/10 text-slate-400 hover:border-white/20">L3</button>
+                            <button onclick="setAdminInputLine(4)" id="adm-l4" class="py-2.5 rounded-xl border font-black text-xs border-white/10 text-slate-400 hover:border-white/20">L4</button>
+                        </div>
+                        <textarea id="bulkInput" class="w-full h-48 p-4 bg-slate-950/80 border border-white/10 rounded-2xl text-[11px] font-mono text-amber-300 outline-none focus:border-amber-400 transition-all custom-scrollbar" placeholder="Format Penulisan:&#10;TIPE OP TOOL X Z&#10;CON: CAM 10 T01 12.001 5.341&#10;CON: OP10 T15 0.231 -1.432"></textarea>
+                        <button onclick="importData()" class="w-full btn-gold py-4 rounded-2xl font-black text-xs uppercase tracking-widest shadow-xl shadow-amber-500/10">Simpan & Impor Data</button>
+                    </div>
+                </div>
+
+                <!-- DATABASE TABLE -->
+                <div class="lg:col-span-2 premium-card overflow-hidden flex flex-col">
+                    <div class="px-8 py-6 border-b border-white/5 bg-slate-900/40 space-y-4">
+                        <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+                            <div>
+                                <h2 class="text-lg font-black text-white uppercase tracking-wider">Database Utama</h2>
+                                <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Informasi Koordinat Offset Tersimpan</p>
+                            </div>
+                            <div class="flex gap-1" id="viewTabsContainer"></div>
+                        </div>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 pt-2">
+                            <div>
+                                <label class="text-[8px] font-black text-slate-400 uppercase tracking-widest mb-1.5 block ml-1">Filter Tipe Unit</label>
+                                <select id="dbTypeFilter" onchange="renderDatabase()" class="filter-select w-full bg-[#121826] border border-white/10 rounded-xl py-3 px-4 text-[11px] font-bold text-slate-300 outline-none focus:border-amber-400 appearance-none cursor-pointer">
+                                    <option value="">SEMUA TIPE</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="text-[8px] font-black text-slate-400 uppercase tracking-widest mb-1.5 block ml-1">Filter Nomor Tool</label>
+                                <select id="dbToolFilter" onchange="renderDatabase()" class="filter-select w-full bg-[#121826] border border-white/10 rounded-xl py-3 px-4 text-[11px] font-bold text-slate-300 outline-none focus:border-amber-400 appearance-none cursor-pointer">
+                                    <option value="">SEMUA TOOL</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="overflow-x-auto max-h-[500px] custom-scrollbar bg-[#0a0f1d]/20">
+                        <table class="w-full text-left text-xs">
+                            <thead class="bg-slate-950 text-[10px] font-black text-slate-400 uppercase sticky top-0 z-10 border-b border-white/5 shadow-md">
+                                <tr>
+                                    <th class="px-8 py-4">Tipe</th>
+                                    <th class="px-8 py-4">OP & Tool</th>
+                                    <th class="px-8 py-4 text-center">X Axis</th>
+                                    <th class="px-8 py-4 text-center">Z Axis</th>
+                                    <th class="px-8 py-4 text-right">Opsi</th>
+                                </tr>
+                            </thead>
+                            <tbody id="dbTableBody" class="divide-y divide-white/5">
+                                <tr><td colspan="5" class="px-8 py-20 text-center text-slate-500 italic font-black text-xs uppercase tracking-widest">Database Kosong</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- TOAST -->
+    <div id="toast" class="fixed bottom-8 left-1/2 -translate-x-1/2 bg-[#121824] border border-amber-500/20 text-amber-400 px-8 py-4 rounded-2xl shadow-2xl text-xs font-black uppercase tracking-widest z-[500] opacity-0 transition-all duration-300 pointer-events-none flex items-center gap-3">
+        <span class="w-2 h-2 bg-amber-400 rounded-full animate-ping"></span>
+        <span id="toastText">SYNC</span>
+    </div>
+
+    <script>
+    // ═══════════════════════════════════════════════════
+    //  OFFSET ANALYZER PRO — Core State
+    // ═══════════════════════════════════════════════════
+    const DEFAULT_DB = { line1: [], line2: [], line3: [], line4: [] };
+
+    let db = JSON.parse(localStorage.getItem('offset_db') || 'null') || DEFAULT_DB;
+    // Supabase config — hardcoded, tidak perlu diisi user
+    const SB_URL = "https://qwwtawqidgwiabenkuwk.supabase.co";
+    const SB_ANON = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InF3d3Rhd3FpZGd3aWFiZW5rdXdrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODI1MzkzOTUsImV4cCI6MjA5ODExNTM5NX0.Q05_kZrzbL7n4FRlVsYOKyh7xrQ2ykPfnMFi6LiLGvg";
+    let sbUrl  = SB_URL;
+    let sbKey  = SB_ANON;
+    // Auth state
+    let currentUser = JSON.parse(localStorage.getItem('sb_user') || 'null');
+    let userRole    = localStorage.getItem('sb_role') || 'operator';
+    let accessToken = localStorage.getItem('sb_token') || '';
+    let activeLine = 1;
+    let adminInLine = 1;
+    let adminViewLine = 1;
+    let autoSyncInterval = null;
+    let lastSyncHash = "";
+    let adminAuthenticated = false;
+    let loginAttempts = 0;
+    const MAX_ATTEMPTS = 5;
+    let lockoutUntil = 0;
+
+    // Supabase REST helpers
+    function sbHeaders() {
+        const token = accessToken || sbKey;
+        return {
+            'Content-Type': 'application/json',
+            'apikey': sbKey,
+            'Authorization': 'Bearer ' + token,
+            'Prefer': 'return=minimal'
+        };
+    }
+    function sbReady() { return !!(sbUrl && sbKey); }
+    function isLoggedIn() { return !!(currentUser && accessToken); }
+    function isAdmin() { return userRole === 'admin'; }
+
+    // ═══════════════════════════════════════════════════
+    //  APP CONFIG — tersimpan di Supabase (lintas device)
+    // ═══════════════════════════════════════════════════
+    let appConfig = {
+        admin_password: localStorage.getItem('admin_password') || 'admin123',
+        sb_url: sbUrl,
+        sb_key: sbKey
+    };
+
+    function getAdminPassword() {
+        return appConfig.admin_password || localStorage.getItem('admin_password') || 'admin123';
+    }
+
+    function setAdminAuth(val) {
+        adminAuthenticated = val;
+    }
+
+    // Ambil config dari Supabase → update lokal
+    async function fetchAppConfig() {
+        if (!sbReady()) return;
+        try {
+            const res = await fetch(`${sbUrl}/rest/v1/app_config?select=key,value`, {
+                headers: { 'apikey': sbKey, 'Authorization': 'Bearer ' + sbKey }
+            });
+            if (!res.ok) return;
+            const rows = await res.json();
+            if (!Array.isArray(rows)) return;
+            rows.forEach(r => {
+                appConfig[r.key] = r.value;
+                if (r.key === 'admin_password') localStorage.setItem('admin_password', r.value);
+            });
+            debugLog('App config loaded: ' + rows.map(r=>r.key).join(', '), '#60a5fa');
+        } catch(e) {
+            debugLog('fetchAppConfig error: ' + e.message, '#f87171');
+        }
+    }
+
+    // Simpan satu config key ke Supabase
+    async function saveAppConfig(key, value) {
+        if (!sbReady()) return;
+        try {
+            const res = await fetch(`${sbUrl}/rest/v1/app_config`, {
+                method: 'POST',
+                headers: {
+                    'apikey': sbKey,
+                    'Authorization': 'Bearer ' + sbKey,
+                    'Content-Type': 'application/json',
+                    'Prefer': 'resolution=merge-duplicates,return=minimal'
+                },
+                body: JSON.stringify({ key, value })
+            });
+            debugLog('saveAppConfig ' + key + ': HTTP ' + res.status, res.ok ? '#34d399' : '#f87171');
+            return res.ok;
+        } catch(e) {
+            debugLog('saveAppConfig error: ' + e.message, '#f87171');
+            return false;
+        }
+    }
+
+    // ═══════════════════════════════════════════════════
+    //  SUPABASE AUTH
+    // ═══════════════════════════════════════════════════
+    function switchAuthTab(tab) {
+        const isLogin = tab === 'login';
+        document.getElementById('loginForm').classList.toggle('hidden', !isLogin);
+        document.getElementById('registerForm').classList.toggle('hidden', isLogin);
+        document.getElementById('tabLogin').className = isLogin
+            ? 'flex-1 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-widest transition bg-amber-500 text-slate-950'
+            : 'flex-1 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-widest transition text-slate-400';
+        document.getElementById('tabRegister').className = !isLogin
+            ? 'flex-1 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-widest transition bg-emerald-500 text-slate-950'
+            : 'flex-1 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-widest transition text-slate-400';
+    }
+
+    function showAuthLoading(msg = 'Memproses...') {
+        document.getElementById('loginForm').classList.add('hidden');
+        document.getElementById('registerForm').classList.add('hidden');
+        document.getElementById('authLoading').classList.remove('hidden');
+        document.getElementById('authLoadingText').innerText = msg;
+    }
+    function hideAuthLoading(tab = 'login') {
+        document.getElementById('authLoading').classList.add('hidden');
+        switchAuthTab(tab);
+    }
+
+    function showAuthError(id, msg) {
+        const el = document.getElementById(id);
+        el.innerText = msg;
+        el.style.opacity = '1';
+        setTimeout(() => el.style.opacity = '0', 4000);
+    }
+
+    async function doLogin() {
+        const email = document.getElementById('loginEmail').value.trim();
+        const pwd   = document.getElementById('loginPassword').value;
+        if (!email || !pwd) { showAuthError('loginError', 'Email dan password wajib diisi'); return; }
+        showAuthLoading('Masuk...');
+        try {
+            const res = await fetch(`${SB_URL}/auth/v1/token?grant_type=password`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json', 'apikey': SB_ANON },
+                body: JSON.stringify({ email, password: pwd })
+            });
+            const data = await res.json();
+            if (!res.ok) throw new Error(data.error_description || data.msg || 'Login gagal');
+
+            // Simpan session
+            accessToken   = data.access_token;
+            currentUser   = data.user;
+            localStorage.setItem('sb_token', accessToken);
+            localStorage.setItem('sb_user', JSON.stringify(currentUser));
+
+            // Ambil role dari tabel users
+            await fetchUserRole(currentUser.id);
+            await onAuthSuccess();
+        } catch(e) {
+            hideAuthLoading('login');
+            showAuthError('loginError', e.message);
+        }
+    }
+
+    async function doRegister() {
+        const name  = document.getElementById('regName').value.trim();
+        const email = document.getElementById('regEmail').value.trim();
+        const pwd   = document.getElementById('regPassword').value;
+        if (!name)  { showAuthError('regError', 'Nama wajib diisi'); return; }
+        if (!email) { showAuthError('regError', 'Email wajib diisi'); return; }
+        if (pwd.length < 6) { showAuthError('regError', 'Password minimal 6 karakter'); return; }
+        showAuthLoading('Mendaftar...');
+        try {
+            // Register via Supabase Auth
+            const res = await fetch(`${SB_URL}/auth/v1/signup`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json', 'apikey': SB_ANON },
+                body: JSON.stringify({ email, password: pwd, data: { name } })
+            });
+            const data = await res.json();
+            if (!res.ok) throw new Error(data.error_description || data.msg || 'Registrasi gagal');
+
+            // Auto login setelah register
+            if (data.access_token) {
+                accessToken = data.access_token;
+                currentUser = data.user;
+                localStorage.setItem('sb_token', accessToken);
+                localStorage.setItem('sb_user', JSON.stringify(currentUser));
+
+                // Simpan profile ke tabel app_users
+                await saveUserProfile(currentUser.id, name, email, 'operator');
+                await fetchUserRole(currentUser.id);
+                await onAuthSuccess();
+            } else {
+                // Email confirmation required
+                hideAuthLoading('login');
+                showAuthError('loginError', 'Registrasi berhasil! Cek email untuk konfirmasi.');
+                switchAuthTab('login');
+            }
+        } catch(e) {
+            hideAuthLoading('register');
+            showAuthError('regError', e.message);
+        }
+    }
+
+    async function saveUserProfile(uid, name, email, role) {
+        try {
+            await fetch(`${SB_URL}/rest/v1/app_users`, {
+                method: 'POST',
+                headers: { ...sbHeaders(), 'Prefer': 'resolution=merge-duplicates,return=minimal' },
+                body: JSON.stringify({ id: uid, name, email, role, created_at: new Date().toISOString() })
+            });
+        } catch(e) { console.error('saveUserProfile:', e); }
+    }
+
+    async function fetchUserRole(uid) {
+        // Reset dulu ke operator sebelum fetch — hindari nilai lama di localStorage
+        userRole = 'operator';
+        localStorage.setItem('sb_role', 'operator');
+        try {
+            const res = await fetch(`${SB_URL}/rest/v1/app_users?id=eq.${uid}&select=role,name`, {
+                headers: { 'apikey': SB_ANON, 'Authorization': 'Bearer ' + (accessToken || SB_ANON) }
+            });
+            if (res.ok) {
+                const rows = await res.json();
+                if (rows.length > 0) {
+                    // Gunakan role dari DB, default operator jika kosong/null
+                    userRole = (rows[0].role === 'admin') ? 'admin' : 'operator';
+                    localStorage.setItem('sb_role', userRole);
+                    localStorage.setItem('sb_name', rows[0].name || '');
+                } else {
+                    // User belum ada di app_users — insert dengan role operator
+                    const email = currentUser?.email || '';
+                    const name  = currentUser?.user_metadata?.name || email.split('@')[0] || 'User';
+                    await saveUserProfile(uid, name, email, 'operator');
+                    localStorage.setItem('sb_name', name);
+                    userRole = 'operator';
+                    localStorage.setItem('sb_role', 'operator');
+                }
+            }
+        } catch(e) {
+            // Jika error, pastikan tetap operator
+            userRole = 'operator';
+            localStorage.setItem('sb_role', 'operator');
+            console.error('fetchUserRole:', e);
+        }
+    }
+
+    async function onAuthSuccess() {
+        document.getElementById('authModal').classList.add('hidden');
+        // Update UI nama user
+        const name = localStorage.getItem('sb_name') || currentUser?.email || 'User';
+        const roleLabel = userRole === 'admin' ? '👑 Admin' : '👤 Operator';
+        showToast(`✓ SELAMAT DATANG, ${name.toUpperCase()}`);
+        // Update user info
+        const userInfoEl = document.getElementById('userInfo');
+        if (userInfoEl) userInfoEl.innerText = `${name} · ${roleLabel}`;
+        // Tampilkan tombol refresh role selalu (agar operator bisa refresh setelah di-upgrade)
+        document.getElementById('refreshRoleBtn')?.classList.remove('hidden');
+
+        // Sembunyikan tombol admin jika bukan admin
+        updateAdminVisibility();
+
+        // Konek ke cloud
+        await fetchAppConfig();
+        await fetchFromCloud(false);
+        startAutoSync();
+        await flushPendingSync();
+    }
+
+    function updateAdminVisibility() {
+        const admin = isAdmin();
+        // Tombol Admin di navbar
+        const adminNavBtn = document.getElementById('adminNavBtn');
+        if (adminNavBtn) {
+            adminNavBtn.classList.toggle('hidden', !admin);
+        }
+        // Jika sedang di halaman admin dan bukan admin, kembali ke dashboard
+        if (!admin && adminAuthenticated) {
+            adminAuthenticated = false;
+            switchMenu('dashboard');
+        }
+    }
+
+    // Override openAdminPanel — cek role dulu
+    const _origOpenAdminPanel = typeof openAdminPanel !== 'undefined' ? openAdminPanel : null;
+    function openAdminPanel() {
+        if (!isLoggedIn()) { showToast("LOGIN DULU"); return; }
+        if (!isAdmin()) {
+            showToast("⛔ AKSES DITOLAK — BUKAN ADMIN");
+            return;
+        }
+        // Jika sudah login sebagai admin, langsung masuk
+        if (adminAuthenticated) {
+            switchMenu('admin');
+            return;
+        }
+        document.getElementById('passwordModal').classList.remove('hidden');
+        setTimeout(() => document.getElementById('adminPasswordInput').focus(), 100);
+    }
+
+    async function refreshMyRole() {
+        if (!currentUser) { showToast("BELUM LOGIN"); return; }
+        const btn = document.getElementById('refreshRoleBtn');
+        if (btn) btn.innerText = '...';
+        await fetchUserRole(currentUser.id);
+        updateAdminVisibility();
+        const name = localStorage.getItem('sb_name') || currentUser?.email || '';
+        const roleLabel = userRole === 'admin' ? '👑 Admin' : '👤 Operator';
+        const userInfoEl = document.getElementById('userInfo');
+        if (userInfoEl) userInfoEl.innerText = `${name} · ${roleLabel}`;
+        if (btn) btn.innerText = '↺';
+        if (userRole === 'admin') {
+            showToast("✓ ROLE ADMIN — TOMBOL ADMIN AKTIF");
+        } else {
+            showToast("ROLE: OPERATOR");
+        }
+    }
+
+    async function doLogout() {
+        try {
+            await fetch(`${SB_URL}/auth/v1/logout`, {
+                method: 'POST',
+                headers: { 'apikey': SB_ANON, 'Authorization': 'Bearer ' + accessToken }
+            });
+        } catch(e) {}
+        accessToken = ''; currentUser = null; userRole = 'operator';
+        localStorage.removeItem('sb_token');
+        localStorage.removeItem('sb_user');
+        localStorage.removeItem('sb_role');
+        localStorage.removeItem('sb_name');
+        stopAutoSync();
+        adminAuthenticated = false;
+        document.getElementById('authModal').classList.remove('hidden');
+        showToast("BERHASIL KELUAR");
+    }
+
+    // Cek session yang masih valid saat buka app
+    async function checkExistingSession() {
+        if (!accessToken || !currentUser) return false;
+        try {
+            const res = await fetch(`${SB_URL}/auth/v1/user`, {
+                headers: { 'apikey': SB_ANON, 'Authorization': 'Bearer ' + accessToken }
+            });
+            if (res.ok) {
+                const user = await res.json();
+                currentUser = user;
+                await fetchUserRole(user.id);
+                return true;
+            }
+        } catch(e) {}
+        return false;
+    }
+
+    // ═══════════════════════════════════════════════════
+    //  INIT
+    // ═══════════════════════════════════════════════════
+    window.onload = async () => {
+        renderViewTabs();
+        updateTypeDropdowns();
+        updateKPIs();
+
+        // Cek session existing
+        const hasSession = await checkExistingSession();
+        if (hasSession) {
+            document.getElementById('authModal').classList.add('hidden');
+            // updateAdminVisibility dipanggil SETELAH checkExistingSession yang sudah fetch role
+            updateAdminVisibility();
+            const name = localStorage.getItem('sb_name') || currentUser?.email || '';
+            const roleLabel = userRole === 'admin' ? '👑 Admin' : '👤 Operator';
+            const userInfoEl = document.getElementById('userInfo');
+            if (userInfoEl && name) userInfoEl.innerText = `${name} · ${roleLabel}`;
+            document.getElementById('refreshRoleBtn')?.classList.remove('hidden');
+            if (localStorage.getItem('offset_pending_sync') === '1') showPendingSyncBadge(true);
+            showSyncBanner("Menghubungkan ke Supabase...", true);
+            await fetchAppConfig();
+            await fetchFromCloud(false);
+            startAutoSync();
+            await flushPendingSync();
+        } else {
+            // Tidak ada session — tampilkan auth modal
+            document.getElementById('authModal').classList.remove('hidden');
+            checkSyncStatus();
+        }
+        updateHistBadge();
+    };
+
+    // ═══════════════════════════════════════════════════
+    //  SUPABASE — Row-per-record approach
+    //  Table: offset_db (id, line, type, op, tool, x, z, updated_at)
+    // ═══════════════════════════════════════════════════
+
+    // Bangun object db dari array rows Supabase
+    function rowsToDb(rows) {
+        const out = { line1:[], line2:[], line3:[], line4:[] };
+        (rows || []).forEach(r => {
+            const k = 'line' + r.line;
+            if (out[k]) out[k].push({ id: r.id, type: r.type, op: r.op, tool: r.tool, x: parseFloat(r.x)||0, z: parseFloat(r.z)||0 });
+        });
+        return out;
+    }
+
+    // Bangun array rows dari object db
+    function dbToRows(dbObj) {
+        const rows = [];
+        for (let ln = 1; ln <= 4; ln++) {
+            (dbObj['line'+ln] || []).forEach(item => {
+                rows.push({ id: item.id, line: ln, type: item.type, op: item.op, tool: item.tool, x: item.x, z: item.z });
+            });
+        }
+        return rows;
+    }
+
+    async function fetchFromCloud(showFeedback = true) {
+        debugLog('fetchFromCloud start — sbUrl:' + sbUrl.substring(0,30) + ' sbKey:' + (sbKey?'OK':'KOSONG'));
+        if (!sbUrl || !sbKey) {
+            debugLog('sbUrl atau sbKey kosong!', '#f87171');
+            if (showFeedback) showToast("SUPABASE BELUM DIKONFIGURASI");
+            return;
+        }
+        checkSyncStatus('syncing');
+        if (showFeedback) showSyncBanner("Mengambil data dari Supabase...", true);
+        try {
+            const fetchUrl = sbUrl + '/rest/v1/offset_db?select=*&order=line,id';
+            debugLog('Fetch: ' + fetchUrl.substring(0,60));
+            const res = await fetch(fetchUrl, {
+                method: 'GET',
+                headers: {
+                    'apikey': sbKey,
+                    'Authorization': 'Bearer ' + sbKey,
+                    'Content-Type': 'application/json'
+                }
+            });
+            debugLog('Response status: ' + res.status);
+            if (!res.ok) {
+                const errText = await res.text();
+                throw new Error('HTTP ' + res.status + ' — ' + errText.substring(0,100));
+            }
+            const rows = await res.json();
+            debugLog('Rows diterima: ' + rows.length);
+            db = rowsToDb(rows);
+            localStorage.setItem('offset_db', JSON.stringify(db));
+            lastSyncHash = JSON.stringify(rows);
+            updateTypeDropdowns(); renderDatabase(); updateComparison(); updateKPIs();
+            checkSyncStatus('online'); updateLastSyncTime();
+            if (showFeedback) {
+                showSyncBanner("✓ Terhubung ke Supabase", false);
+                showToast("✓ SUPABASE TERKONEKSI");
+            } else {
+                hideSyncBanner();
+            }
+            setSyncInfo("Terakhir tarik: " + new Date().toLocaleString('id-ID'));
+            debugLog('fetchFromCloud SUKSES ✓', '#34d399');
+        } catch(e) {
+            checkSyncStatus('offline');
+            hideSyncBanner();
+            if (showFeedback) showToast("GAGAL HUBUNGI SUPABASE");
+            setSyncInfo("Error: " + e.message);
+            debugLog('fetchFromCloud ERROR: ' + e.message, '#f87171');
+            console.error(e);
+        }
+    }
+
+    async function syncToCloud() {
+        if (!sbReady()) return false;
+        checkSyncStatus('syncing');
+        const rows = dbToRows(db);
+        debugLog('→ SYNC ' + rows.length + ' rows ke Supabase');
+        try {
+            // Step 1: Hapus semua data lama dengan filter id > '' (semua id valid)
+            const delRes = await fetch(`${sbUrl}/rest/v1/offset_db?id=gte.`, {
+                method: 'DELETE',
+                headers: sbHeaders()
+            });
+            debugLog('DELETE: HTTP ' + delRes.status);
+
+            // Step 2: Insert data baru (jika ada)
+            if (rows.length > 0) {
+                const insRes = await fetch(`${sbUrl}/rest/v1/offset_db`, {
+                    method: 'POST',
+                    headers: { ...sbHeaders(), 'Prefer': 'return=minimal' },
+                    body: JSON.stringify(rows)
+                });
+                const insText = insRes.ok ? '' : await insRes.text();
+                debugLog('INSERT: HTTP ' + insRes.status + (insText ? ' — ' + insText.substring(0,100) : ''));
+                if (!insRes.ok) throw new Error('INSERT gagal HTTP ' + insRes.status + ': ' + insText);
+            }
+
+            lastSyncHash = JSON.stringify(rows);
+            checkSyncStatus('online');
+            updateLastSyncTime();
+            setSyncInfo('Terakhir simpan: ' + new Date().toLocaleString('id-ID'));
+            showToast('✓ TERSIMPAN KE SUPABASE');
+            debugLog('SYNC OK ✓', '#34d399');
+            return true;
+        } catch(e) {
+            checkSyncStatus('offline');
+            setSyncInfo('Gagal sync: ' + e.message);
+            showToast('⚠ SUPABASE GAGAL — DATA AMAN DI LOKAL');
+            debugLog('SYNC ERROR: ' + e.message, '#f87171');
+            document.getElementById('debugPanel')?.classList.remove('hidden');
+            console.error(e);
+            return false;
+        }
+    }
+
+    // ═══════════════════════════════════════════════════
+    //  AUTO-SYNC POLLING (30 detik)
+    // ═══════════════════════════════════════════════════
+    function startAutoSync() {
+        if (autoSyncInterval) clearInterval(autoSyncInterval);
+        autoSyncInterval = setInterval(async () => {
+            if (!sbReady()) return;
+            try {
+                const res = await fetch(`${sbUrl}/rest/v1/offset_db?select=*&order=line,id`, {
+                    headers: { 'apikey': sbKey, 'Authorization': 'Bearer ' + sbKey }
+                });
+                if (!res.ok) return;
+                const rows = await res.json();
+                const newHash = JSON.stringify(rows);
+                if (newHash !== lastSyncHash && lastSyncHash !== "") {
+                    db = rowsToDb(rows);
+                    localStorage.setItem('offset_db', JSON.stringify(db));
+                    lastSyncHash = newHash;
+                    updateTypeDropdowns(); renderDatabase(); updateComparison(); updateKPIs();
+                    showToast("📊 DATA DIPERBARUI DARI SUPABASE");
+                    updateLastSyncTime();
+                    addHistory('cloud', 0, 'CLOUD SYNC', 'Data diperbarui otomatis dari Supabase');
+                } else if (lastSyncHash === "") {
+                    lastSyncHash = newHash;
+                }
+            } catch(e) { /* silent */ }
+        }, 30000);
+    }
+
+    function stopAutoSync() {
+        if (autoSyncInterval) { clearInterval(autoSyncInterval); autoSyncInterval = null; }
+    }
+
+    // ═══════════════════════════════════════════════════
+    //  SAVE — lokal + Supabase
+    // ═══════════════════════════════════════════════════
+    async function saveToStorage() {
+        localStorage.setItem('offset_db', JSON.stringify(db));
+        updateKPIs();
+        if (sbReady()) {
+            const ok = await syncToCloud();
+            if (!ok) { localStorage.setItem('offset_pending_sync', '1'); showPendingSyncBadge(true); }
+            else { localStorage.removeItem('offset_pending_sync'); showPendingSyncBadge(false); }
+        }
+    }
+
+    async function flushPendingSync() {
+        if (!sbReady() || localStorage.getItem('offset_pending_sync') !== '1') return;
+        setSyncInfo('Pending sync — mengirim ulang...');
+        const ok = await syncToCloud();
+        if (ok) { localStorage.removeItem('offset_pending_sync'); showPendingSyncBadge(false); showToast('✓ PENDING SYNC BERHASIL'); }
+    }
+
+    function showPendingSyncBadge(show) {
+        document.getElementById('pendingSyncBadge')?.classList.toggle('hidden', !show);
+    }
+
+    window.addEventListener('focus', flushPendingSync);
+    window.addEventListener('online', flushPendingSync);
+
+    async function retrySync() {
+        if (!sbReady()) { showToast("SUPABASE BELUM DIKONFIGURASI"); return; }
+        const ok = await syncToCloud();
+        if (ok) { localStorage.removeItem('offset_pending_sync'); showPendingSyncBadge(false); document.getElementById('retrySyncBtn')?.classList.add('hidden'); }
+    }
+
+    // ═══════════════════════════════════════════════════
+    //  KONEKSI — Simpan Supabase URL + Key
+    // ═══════════════════════════════════════════════════
+    async function saveScriptUrl() {
+        try {
+            const url = document.getElementById('scriptUrl').value.trim().replace(/\/+$/, '');
+            const key = document.getElementById('anonKey').value.trim();
+            debugLog('saveScriptUrl → url: ' + url.substring(0,40) + ' key: ' + key.substring(0,10) + '...');
+            if (!url || !key) { showToast("URL DAN ANON KEY WAJIB DIISI"); debugLog('URL atau Key kosong!', '#f87171'); return; }
+            if (!url.includes('supabase.co')) { showToast("FORMAT URL SUPABASE TIDAK VALID"); return; }
+            sbUrl = url;
+            sbKey = key;
+            localStorage.setItem('sb_url', sbUrl);
+            localStorage.setItem('sb_key', sbKey);
+            debugLog('Config tersimpan. Memanggil fetchFromCloud...');
+            checkSyncStatus('syncing');
+            showSyncBanner("Menguji koneksi ke Supabase...", true);
+            await fetchAppConfig();
+            await fetchFromCloud(true);
+            // Simpan URL & key ke Supabase — device lain tinggal pakai key yang sama
+            await saveAppConfig('sb_url', sbUrl);
+            await saveAppConfig('sb_key', sbKey);
+            debugLog('Config cloud tersimpan. Mulai autoSync...');
+            startAutoSync();
+        } catch(err) {
+            debugLog('saveScriptUrl ERROR: ' + err.message, '#f87171');
+            console.error('saveScriptUrl error:', err);
+        }
+    }
+
+    // ═══════════════════════════════════════════════════
+    //  DEBUG TOOLS
+    // ═══════════════════════════════════════════════════
+    function toggleDebug() { document.getElementById('debugPanel')?.classList.toggle('hidden'); }
+    function debugLog(msg, color = '#34d399') {
+        const el = document.getElementById('debugLog'); if (!el) return;
+        el.innerHTML += `<div style="color:${color}">[${new Date().toLocaleTimeString('id-ID')}] ${msg}</div>`;
+        el.scrollTop = el.scrollHeight;
+    }
+    function debugClearLog() { const el = document.getElementById('debugLog'); if (el) el.innerHTML = ''; }
+    async function debugTestRead() {
+        if (!sbReady()) { debugLog('Supabase belum dikonfigurasi!', '#f87171'); return; }
+        debugLog('→ TEST READ: ' + sbUrl + '/rest/v1/offset_db');
+        try {
+            const res = await fetch(`${sbUrl}/rest/v1/offset_db?select=*&limit=3`, { headers: { 'apikey': sbKey, 'Authorization': 'Bearer ' + sbKey } });
+            const data = await res.json();
+            debugLog('HTTP ' + res.status + ' — rows: ' + (Array.isArray(data) ? data.length : JSON.stringify(data).substring(0,80)), res.ok ? '#34d399' : '#f87171');
+        } catch(e) { debugLog('ERROR: ' + e.message, '#f87171'); }
+    }
+    async function debugTestWrite() {
+        if (!sbReady()) { debugLog('Supabase belum dikonfigurasi!', '#f87171'); return; }
+        debugLog('→ TEST UPSERT ke offset_db...');
+        try {
+            const res = await fetch(`${sbUrl}/rest/v1/offset_db`, {
+                method: 'POST',
+                headers: { ...sbHeaders(), 'Prefer': 'resolution=merge-duplicates,return=minimal' },
+                body: JSON.stringify([{ id: '__debug_test__', line: 1, type: 'TEST', op: 'OP', tool: 'T01', x: 0, z: 0 }])
+            });
+            debugLog('HTTP ' + res.status + (res.ok ? ' — UPSERT OK ✓' : ' — GAGAL: ' + await res.text()), res.ok ? '#34d399' : '#f87171');
+        } catch(e) { debugLog('ERROR: ' + e.message, '#f87171'); }
+    }
+
+    function copySql() {
+        const text = document.getElementById('sqlPreview').innerText;
+        navigator.clipboard.writeText(text).then(() => showToast("SQL TERSALIN!"));
+    }
+
+    // ═══════════════════════════════════════════════════
+    //  CONNECT VIA CODE
+    //  Device induk → generate kode → simpan payload
+    //  (url+key+password) ke JSONBin.io dengan kode sebagai
+    //  nama bin → device baru cukup ketik kode, fetch dari
+    //  JSONBin, dapat credentials, langsung konek.
+    //  JSONBin gratis, tidak perlu akun untuk read public bin.
+    // ═══════════════════════════════════════════════════
+    const JSONBIN_API = 'https://api.jsonbin.io/v3/b';
+    const JSONBIN_MASTER_KEY = '$2a$10$placeholder'; // akan di-generate otomatis
+
+    // Buat kode 6 karakter acak yang mudah dibaca
+    function generateConnectCode() {
+        const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+        let code = '';
+        for (let i = 0; i < 6; i++) code += chars[Math.floor(Math.random() * chars.length)];
+        return code;
+    }
+
+    async function showConnectCode() {
+        if (!sbReady()) { showToast("HUBUNGKAN SUPABASE DULU"); return; }
+        const btn = document.querySelector('[onclick="showConnectCode()"]');
+        if (btn) btn.innerText = '⟳ Membuat kode...';
+
+        const code = generateConnectCode();
+        const payload = { code, sbUrl, sbKey, adminPwd: getAdminPassword(), ts: Date.now() };
+
+        try {
+            // Simpan ke JSONBin sebagai public bin
+            const res = await fetch(JSONBIN_API, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-Bin-Name': 'offset-' + code,
+                    'X-Bin-Private': 'false'
+                },
+                body: JSON.stringify(payload)
+            });
+            if (!res.ok) throw new Error('JSONBin HTTP ' + res.status);
+            const data = await res.json();
+            const binId = data.metadata.id;
+
+            // Simpan bin ID ke Supabase agar bisa dicari via kode
+            await saveAppConfig('connect_code', code);
+            await saveAppConfig('connect_bin_id', binId);
+
+            // Tampilkan kode
+            document.getElementById('myConnectCodeText').innerText = code;
+            document.getElementById('myConnectCode').classList.remove('hidden');
+            if (btn) btn.innerText = '🔑 Generate Kode Koneksi';
+            showToast("✓ KODE SIAP: " + code);
+            debugLog('Kode dibuat: ' + code + ' binId: ' + binId, '#c084fc');
+        } catch(e) {
+            if (btn) btn.innerText = '🔑 Generate Kode Koneksi';
+            // Fallback: simpan kode + payload ke Supabase saja (jika JSONBin gagal)
+            await saveAppConfig('connect_code', code);
+            await saveAppConfig('connect_url', sbUrl);
+            await saveAppConfig('connect_key', sbKey);
+            await saveAppConfig('connect_pwd', getAdminPassword());
+            document.getElementById('myConnectCodeText').innerText = code;
+            document.getElementById('myConnectCode').classList.remove('hidden');
+            showToast("✓ KODE: " + code + " (mode lokal)");
+            debugLog('JSONBin gagal, fallback Supabase: ' + e.message, '#fbbf24');
+        }
+    }
+
+    function copyConnectCode() {
+        const code = document.getElementById('myConnectCodeText').innerText;
+        navigator.clipboard.writeText(code).then(() => showToast("✓ KODE TERSALIN: " + code));
+    }
+
+    async function connectViaCode() {
+        const code = document.getElementById('connectCode').value.trim().toUpperCase();
+        if (code.length < 6) { showToast("KODE MINIMAL 6 KARAKTER"); return; }
+
+        const btn = document.querySelector('[onclick="connectViaCode()"]');
+        if (btn) btn.innerText = '⟳ Menghubungkan...';
+        showToast("⟳ MENCARI KODE...");
+        debugLog('Mencari kode: ' + code);
+
+        try {
+            // Coba cari via JSONBin dulu (nama bin = offset-{code})
+            let payload = null;
+
+            // Cari bin berdasarkan nama
+            const searchRes = await fetch(`${JSONBIN_API}?meta=true`, {
+                headers: { 'X-Bin-Name': 'offset-' + code }
+            }).catch(() => null);
+
+            // Jika tidak bisa search, coba fetch langsung dari Supabase (fallback)
+            // Gunakan Supabase URL yang mungkin sudah tersimpan lokal
+            if (sbReady()) {
+                debugLog('Cari di Supabase app_config...');
+                const cfgRes = await fetch(
+                    `${sbUrl}/rest/v1/app_config?key=in.(connect_code,connect_url,connect_key,connect_pwd,connect_bin_id)&select=key,value`,
+                    { headers: { 'apikey': sbKey, 'Authorization': 'Bearer ' + sbKey } }
+                );
+                if (cfgRes.ok) {
+                    const rows = await cfgRes.json();
+                    const cfg = {};
+                    rows.forEach(r => cfg[r.key] = r.value);
+                    debugLog('Config ditemukan: ' + JSON.stringify(cfg).substring(0,80));
+
+                    if (cfg.connect_code === code) {
+                        // Kode cocok — ambil dari bin_id atau langsung dari config
+                        if (cfg.connect_bin_id) {
+                            const binRes = await fetch(`${JSONBIN_API}/${cfg.connect_bin_id}/latest`);
+                            if (binRes.ok) {
+                                const binData = await binRes.json();
+                                payload = binData.record;
+                            }
+                        } else if (cfg.connect_url && cfg.connect_key) {
+                            payload = { sbUrl: cfg.connect_url, sbKey: cfg.connect_key, adminPwd: cfg.connect_pwd };
+                        }
+                    } else {
+                        throw new Error('Kode tidak cocok. Pastikan kode dari device induk.');
+                    }
+                }
+            } else {
+                // Device benar-benar baru — coba fetch bin dari JSONBin via nama
+                // JSONBin tidak support search by name tanpa API key, gunakan hardcoded lookup
+                throw new Error('Device baru perlu isi URL & Key sekali, atau minta kode dari device induk yang sudah konek.');
+            }
+
+            if (!payload) throw new Error('Data kode tidak ditemukan');
+
+            // Terapkan credentials
+            sbUrl = payload.sbUrl;
+            sbKey = payload.sbKey;
+            localStorage.setItem('sb_url', sbUrl);
+            localStorage.setItem('sb_key', sbKey);
+            if (payload.adminPwd) {
+                appConfig.admin_password = payload.adminPwd;
+                localStorage.setItem('admin_password', payload.adminPwd);
+            }
+
+            document.getElementById('scriptUrl').value = sbUrl;
+            document.getElementById('anonKey').value   = sbKey;
+            document.getElementById('connectCode').value = '';
+            if (btn) btn.innerText = '⚡ Hubungkan Sekarang';
+
+            showToast("✓ KODE VALID — MENGHUBUNGKAN...");
+            await fetchAppConfig();
+            await fetchFromCloud(true);
+            startAutoSync();
+            debugLog('connectViaCode SUKSES ✓', '#34d399');
+        } catch(e) {
+            if (btn) btn.innerText = '⚡ Hubungkan Sekarang';
+            showToast("⚠ GAGAL: " + e.message.substring(0,50));
+            debugLog('connectViaCode ERROR: ' + e.message, '#f87171');
+        }
+    }
+
+    // ═══════════════════════════════════════════════════
+    //  STATUS DISPLAY
+    // ═══════════════════════════════════════════════════
+    function checkSyncStatus(status = 'default') {
+        const dot = document.getElementById('syncStatusDot');
+        const text = document.getElementById('syncStatusText');
+        const stat = document.getElementById('statSyncDelay');
+        const cloudDot = document.getElementById('cloudDot');
+
+        const states = {
+            syncing: {
+                dotClass: 'sync-indicator status-syncing', label: 'Sinkronisasi...',
+                statClass: 'text-sm font-extrabold text-amber-400 animate-pulse', statText: 'SINKRONISASI...',
+                cloudColor: '#f59e0b', cloudShadow: '#f59e0b'
+            },
+            online: {
+                dotClass: 'sync-indicator status-online', label: 'Cloud Terkoneksi',
+                statClass: 'text-sm font-extrabold text-emerald-400', statText: 'CLOUD AKTIF',
+                cloudColor: '#10b981', cloudShadow: '#10b981'
+            },
+            offline: {
+                dotClass: 'sync-indicator status-offline', label: 'Koneksi Gagal',
+                statClass: 'text-sm font-extrabold text-rose-400', statText: 'LOKAL ONLY',
+                cloudColor: '#ef4444', cloudShadow: '#ef4444'
+            },
+            default: sbReady() ? {
+                dotClass: 'sync-indicator status-online', label: 'Cloud Terhubung',
+                statClass: 'text-sm font-extrabold text-emerald-400', statText: 'CLOUD AKTIF',
+                cloudColor: '#10b981', cloudShadow: '#10b981'
+            } : {
+                dotClass: 'sync-indicator status-offline', label: 'Belum Terhubung',
+                statClass: 'text-sm font-extrabold text-rose-400', statText: 'LOKAL ONLY',
+                cloudColor: '#ef4444', cloudShadow: '#ef4444'
+            }
+        };
+
+        const s = states[status] || states.default;
+        dot.className = s.dotClass;
+        text.innerText = s.label;
+        stat.className = s.statClass;
+        stat.innerText = s.statText;
+        if (cloudDot) {
+            cloudDot.style.background = s.cloudColor;
+            cloudDot.style.boxShadow = '0 0 8px ' + s.cloudShadow;
+        }
+    }
+
+    function updateLastSyncTime() {
+        const now = new Date();
+        document.getElementById('lastSyncTime').innerText = 
+            'Sync ' + now.toLocaleTimeString('id-ID', {hour:'2-digit', minute:'2-digit'});
+    }
+
+    function showSyncBanner(msg, loading) {
+        const banner = document.getElementById('syncBanner');
+        const icon = document.getElementById('syncBannerIcon');
+        document.getElementById('syncBannerText').innerText = msg;
+        banner.classList.remove('hidden');
+        if (loading) {
+            icon.classList.add('animate-spin-slow');
+            icon.style.color = '#f59e0b';
+        } else {
+            icon.classList.remove('animate-spin-slow');
+            icon.style.color = '#10b981';
+            setTimeout(hideSyncBanner, 3000);
+        }
+    }
+
+    function hideSyncBanner() {
+        document.getElementById('syncBanner').classList.add('hidden');
+    }
+
+    function setSyncInfo(msg) {
+        const el = document.getElementById('syncInfo');
+        document.getElementById('syncInfoText').innerText = msg;
+        el.classList.remove('hidden');
+    }
+
+    // ═══════════════════════════════════════════════════
+    //  DATA OPERATIONS
+    // ═══════════════════════════════════════════════════
+    async function importData() {
+        const val = document.getElementById('bulkInput').value.trim();
+        if (!val) return;
+        let count = 0;
+        const typesSeen = new Set();
+        val.split('\n').forEach(r => {
+            const p = r.trim().split(/\s+/);
+            if (p.length >= 3) {
+                const typeName = p[0].toUpperCase();
+                typesSeen.add(typeName);
+                db[`line${adminInLine}`].push({
+                    id: 'id' + Date.now() + Math.random().toString(36).substr(2, 5),
+                    type: typeName, op: p[1].toUpperCase(), tool: p[2].toUpperCase(),
+                    x: parseFloat(p[3] || 0), z: parseFloat(p[4] || 0)
+                });
+                count++;
+            }
+        });
+        await saveToStorage();
+        updateAdminFilters();
+        renderDatabase();
+        updateTypeDropdowns();
+        document.getElementById('bulkInput').value = "";
+        showToast(`${count} DATA BERHASIL DIIMPOR`);
+
+        // Record history for each type
+        typesSeen.forEach(t => addHistory('import', adminInLine, t, `${count} data diimpor`));
+    }
+
+    function openEditModal(id) {
+        const item = db[`line${adminViewLine}`].find(x => x.id === id);
+        if (!item) return;
+        document.getElementById('edit-id').value = item.id;
+        document.getElementById('edit-type').value = item.type;
+        document.getElementById('edit-op').value = item.op;
+        document.getElementById('edit-tool').value = item.tool;
+        document.getElementById('edit-x').value = item.x;
+        document.getElementById('edit-z').value = item.z;
+        document.getElementById('editModal').classList.remove('hidden');
+    }
+
+    async function applyEdit() {
+        const id = document.getElementById('edit-id').value;
+        const idx = db[`line${adminViewLine}`].findIndex(x => x.id === id);
+        if (idx !== -1) {
+            const newType = document.getElementById('edit-type').value.toUpperCase();
+            const newTool = document.getElementById('edit-tool').value.toUpperCase();
+            const newX = parseFloat(document.getElementById('edit-x').value || 0);
+            const newZ = parseFloat(document.getElementById('edit-z').value || 0);
+            const old = db[`line${adminViewLine}`][idx];
+
+            db[`line${adminViewLine}`][idx] = {
+                id,
+                type: newType,
+                op: document.getElementById('edit-op').value.toUpperCase(),
+                tool: newTool,
+                x: newX,
+                z: newZ
+            };
+            await saveToStorage();
+            updateAdminFilters();
+            renderDatabase();
+            document.getElementById('editModal').classList.add('hidden');
+            showToast("PERUBAHAN TERSIMPAN & SYNC");
+
+            // Record history
+            const xChanged = old.x !== newX ? ` X:${old.x}→${newX}` : '';
+            const zChanged = old.z !== newZ ? ` Z:${old.z}→${newZ}` : '';
+            addHistory('edit', adminViewLine, newType, `${newTool}${xChanged}${zChanged}`);
+        }
+    }
+
+    async function deleteRecord(id) {
+        if (confirm("Hapus data ini? Data akan dihapus juga dari Google Sheets.")) {
+            const item = db[`line${adminViewLine}`].find(x => x.id === id);
+            db[`line${adminViewLine}`] = db[`line${adminViewLine}`].filter(x => x.id !== id);
+            await saveToStorage();
+            updateAdminFilters();
+            renderDatabase();
+            showToast("DATA DIHAPUS");
+            if (item) addHistory('delete', adminViewLine, item.type, `${item.tool} (${item.op})`);
+        }
+    }
+
+    async function clearLineData() {
+        if (confirm("Hapus SEMUA data pada line ini? Tindakan ini tidak bisa dibatalkan.")) {
+            const types = [...new Set(db[`line${adminInLine}`].map(d => d.type))];
+            const count = db[`line${adminInLine}`].length;
+            db[`line${adminInLine}`] = [];
+            await saveToStorage();
+            updateAdminFilters();
+            renderDatabase();
+            showToast("LINE DATA DIHAPUS");
+            const label = types.length > 0 ? types.join(', ') : 'SEMUA';
+            addHistory('clear', adminInLine, label, `${count} data dihapus dari Line ${adminInLine}`);
+        }
+    }
+
+    // ═══════════════════════════════════════════════════
+    //  RENDER FUNCTIONS
+    // ═══════════════════════════════════════════════════
+    function renderDatabase() {
+        const filterType = document.getElementById('dbTypeFilter').value;
+        const filterTool = document.getElementById('dbToolFilter').value;
+        let data = db[`line${adminViewLine}`] || [];
+        if (filterType) data = data.filter(item => item.type === filterType);
+        if (filterTool) data = data.filter(item => item.tool === filterTool);
+
+        updateAdminFilters();
+        const body = document.getElementById('dbTableBody');
+
+        if (data.length === 0) {
+            body.innerHTML = `<tr><td colspan="5" class="px-8 py-20 text-center text-slate-500 font-bold uppercase tracking-widest italic">Data tidak ditemukan</td></tr>`;
+            return;
+        }
+        body.innerHTML = data.map(d => `
+            <tr class="hover:bg-white/[0.02] transition-colors duration-150">
+                <td class="px-8 py-3.5 font-black text-amber-400 uppercase tracking-tighter text-sm">${d.type}</td>
+                <td class="px-8 py-3.5 font-bold text-slate-200">${d.tool} <span class="text-[9px] text-slate-500 font-black">(${d.op})</span></td>
+                <td class="px-8 py-3.5 text-center font-mono font-bold text-blue-400 bg-blue-500/5">${(+d.x).toFixed(3)}</td>
+                <td class="px-8 py-3.5 text-center font-mono font-bold text-emerald-400 bg-emerald-500/5">${(+d.z).toFixed(3)}</td>
+                <td class="px-8 py-3.5 text-right">
+                    <button onclick="openEditModal('${d.id}')" class="text-amber-400 font-black text-[10px] uppercase mr-4 hover:text-amber-300 transition-colors">Edit</button>
+                    <button onclick="deleteRecord('${d.id}')" class="text-rose-400 font-black text-[10px] uppercase hover:text-rose-300 transition-colors">Hapus</button>
+                </td>
+            </tr>
+        `).join('');
+    }
+
+    function renderSimplePanel(list, targetId, countId, color) {
+        document.getElementById(countId).innerText = list.length;
+        const container = document.getElementById(targetId);
+        if (list.length === 0) {
+            container.innerHTML = `<div class="py-16 text-center text-slate-500 text-[10px] font-bold uppercase italic tracking-widest">Semua Nilai Identik</div>`;
+            return;
+        }
+        container.innerHTML = list.map(item => `
+            <div class="bg-slate-900/80 p-4 rounded-xl border border-white/5 shadow-inner flex justify-between items-center animate-fade">
+                <div>
+                    <div class="text-sm font-black text-white tracking-wide">${item.tool}</div>
+                    <div class="text-[8px] text-slate-500 font-bold uppercase tracking-widest">${item.op}</div>
+                </div>
+                <div class="flex gap-4 text-right">
+                    <div>
+                        <div class="text-[8px] text-blue-400 font-bold tracking-widest uppercase">Dev X</div>
+                        <div class="text-xs font-mono font-black ${parseFloat(item.dx) !== 0 ? 'text-blue-400' : 'text-slate-500'}">${item.dx}</div>
+                    </div>
+                    <div>
+                        <div class="text-[8px] text-emerald-400 font-bold tracking-widest uppercase">Dev Z</div>
+                        <div class="text-xs font-mono font-black ${parseFloat(item.dz) !== 0 ? 'text-emerald-400' : 'text-slate-500'}">${item.dz}</div>
+                    </div>
+                </div>
+            </div>
+        `).join('');
+    }
+
+    function updateComparison() {
+        const t1 = document.getElementById('type1Selector').value;
+        const t2 = document.getElementById('type2Selector').value;
+        const tableBody = document.getElementById('detailTableBody');
+        if (!t1 || !t2) {
+            tableBody.innerHTML = `<tr><td colspan="5" class="px-8 py-20 text-center text-slate-500 italic font-black text-xs uppercase tracking-widest">Silakan Pilih Tipe Master & Target</td></tr>`;
+            ['op1Content','op2Content'].forEach(id => {
+                document.getElementById(id).innerHTML = `<div class="py-16 text-center text-slate-500 text-[11px] font-black uppercase italic tracking-widest">Pilih tipe terlebih dahulu</div>`;
+            });
+            document.getElementById('count-op1').innerText = "0";
+            document.getElementById('count-op2').innerText = "0";
+            return;
+        }
+        const data1 = (db[`line${activeLine}`] || []).filter(x => x.type === t1);
+        const data2 = (db[`line${activeLine}`] || []).filter(x => x.type === t2);
+        let op1List = [], op2List = [], fullRows = "";
+
+        data1.forEach(m1 => {
+            const m2 = data2.find(x => x.tool === m1.tool && x.op === m1.op);
+            if (m2) {
+                const dx = (m2.x - m1.x).toFixed(3);
+                const dz = (m2.z - m1.z).toFixed(3);
+                const isDiff = parseFloat(dx) !== 0 || parseFloat(dz) !== 0;
+                const formattedDx = parseFloat(dx) > 0 ? `+${dx}` : dx;
+                const formattedDz = parseFloat(dz) > 0 ? `+${dz}` : dz;
+
+                fullRows += `
+                    <tr class="hover:bg-white/[0.02] transition-colors duration-150">
+                        <td class="px-8 py-4 font-extrabold text-slate-200">
+                            <span class="text-sm tracking-wide text-amber-400">${m1.tool}</span><br>
+                            <span class="text-[9px] text-slate-500 font-bold uppercase tracking-widest">${m1.op}</span>
+                        </td>
+                        <td class="px-8 py-4 text-slate-400 font-mono text-xs">
+                            <div class="flex items-center gap-1.5"><span class="text-[9px] font-black text-blue-400">X:</span> ${(+m1.x).toFixed(3)}</div>
+                            <div class="flex items-center gap-1.5"><span class="text-[9px] font-black text-emerald-400">Z:</span> ${(+m1.z).toFixed(3)}</div>
+                        </td>
+                        <td class="px-8 py-4 text-slate-400 font-mono text-xs">
+                            <div class="flex items-center gap-1.5"><span class="text-[9px] font-black text-blue-400">X:</span> ${(+m2.x).toFixed(3)}</div>
+                            <div class="flex items-center gap-1.5"><span class="text-[9px] font-black text-emerald-400">Z:</span> ${(+m2.z).toFixed(3)}</div>
+                        </td>
+                        <td class="px-8 py-4 text-center font-mono font-black text-xs ${parseFloat(dx) !== 0 ? 'text-blue-400 bg-blue-500/5 glow-text-blue' : 'text-slate-600'}">${formattedDx}</td>
+                        <td class="px-8 py-4 text-center font-mono font-black text-xs ${parseFloat(dz) !== 0 ? 'text-emerald-400 bg-emerald-500/5 glow-text-emerald' : 'text-slate-600'}">${formattedDz}</td>
+                    </tr>`;
+
+                if (isDiff) {
+                    const opStr = m1.op.toUpperCase();
+                    if (opStr.includes('1') || opStr.includes('10')) op1List.push({tool: m1.tool, op: m1.op, dx: formattedDx, dz: formattedDz});
+                    else op2List.push({tool: m1.tool, op: m1.op, dx: formattedDx, dz: formattedDz});
+                }
+            }
+        });
+
+        tableBody.innerHTML = fullRows || `<tr><td colspan="5" class="px-8 py-16 text-center text-slate-500 font-black uppercase tracking-widest italic">Tidak Ada Data Perkakas yang Cocok</td></tr>`;
+        renderSimplePanel(op1List, 'op1Content', 'count-op1', 'blue');
+        renderSimplePanel(op2List, 'op2Content', 'count-op2', 'emerald');
+    }
+
+    function updateKPIs() {
+        const lineData = db[`line${activeLine}`] || [];
+        document.getElementById('statLine').innerText = `LINE ${activeLine}`;
+        document.getElementById('statTotalType').innerText = [...new Set(lineData.map(d => d.type))].length;
+        document.getElementById('statTotalTool').innerText = [...new Set(lineData.map(d => d.tool))].length;
+    }
+
+    function updateTypeDropdowns() {
+        const types = [...new Set((db[`line${activeLine}`] || []).map(d => d.type))].sort();
+        const options = `<option value="">- PILIH TIPE -</option>` + types.map(t => `<option value="${t}">${t}</option>`).join('');
+        document.getElementById('type1Selector').innerHTML = options;
+        document.getElementById('type2Selector').innerHTML = options;
+        updateAdminFilters();
+    }
+
+    function updateAdminFilters() {
+        const adminData = db[`line${adminViewLine}`] || [];
+        const types = [...new Set(adminData.map(d => d.type))].sort();
+        const typeFilter = document.getElementById('dbTypeFilter');
+        const cv = typeFilter.value;
+        typeFilter.innerHTML = `<option value="">SEMUA TIPE</option>` + types.map(t => `<option value="${t}" ${t===cv?'selected':''}>${t}</option>`).join('');
+
+        const tools = [...new Set(adminData.map(d => d.tool))].sort();
+        const toolFilter = document.getElementById('dbToolFilter');
+        const ct = toolFilter.value;
+        toolFilter.innerHTML = `<option value="">SEMUA TOOL</option>` + tools.map(t => `<option value="${t}" ${t===ct?'selected':''}>${t}</option>`).join('');
+    }
+
+    // ═══════════════════════════════════════════════════
+    //  PASSWORD & ADMIN ACCESS
+    // ═══════════════════════════════════════════════════
+    function requestAdminAccess() {
+        openAdminPanel();
+    }
+
+    function checkAdminPassword() {
+        if (Date.now() < lockoutUntil) {
+            const remaining = Math.ceil((lockoutUntil - Date.now()) / 1000);
+            showPwdError(`Terkunci selama ${remaining} detik lagi`);
+            return;
+        }
+
+        const input = document.getElementById('adminPasswordInput').value;
+        if (input === getAdminPassword()) {
+            // SUCCESS
+            setAdminAuth(true);
+            loginAttempts = 0;
+            document.getElementById('passwordModal').classList.add('hidden');
+            document.getElementById('adminPasswordInput').value = '';
+            updatePinDots('');
+            switchMenu('admin');
+            showToast("✓ AKSES ADMIN DIBERIKAN");
+        } else {
+            // FAILED
+            loginAttempts++;
+            const remaining = MAX_ATTEMPTS - loginAttempts;
+
+            // Shake animation
+            const box = document.getElementById('passwordBox');
+            box.classList.remove('shake');
+            void box.offsetWidth;
+            box.classList.add('shake');
+
+            // Clear input
+            document.getElementById('adminPasswordInput').value = '';
+            updatePinDots('');
+
+            if (loginAttempts >= MAX_ATTEMPTS) {
+                lockoutUntil = Date.now() + 60000; // 60 detik lockout
+                loginAttempts = 0;
+                showPwdError('Terlalu banyak percobaan! Terkunci 60 detik.');
+                document.getElementById('attemptWarning').classList.remove('hidden');
+                document.getElementById('attemptText').innerText = '⚠ Akun dikunci selama 60 detik';
+            } else {
+                showPwdError(`Password salah! ${remaining} percobaan tersisa.`);
+                if (remaining <= 2) {
+                    document.getElementById('attemptWarning').classList.remove('hidden');
+                    document.getElementById('attemptText').innerText = `⚠ Peringatan: ${remaining} percobaan lagi sebelum dikunci`;
+                }
+            }
+        }
+    }
+
+    function showPwdError(msg) {
+        const el = document.getElementById('pwdError');
+        el.innerText = msg;
+        el.style.opacity = '1';
+        setTimeout(() => { el.style.opacity = '0'; }, 3000);
+    }
+
+    function closePasswordModal() {
+        document.getElementById('passwordModal').classList.add('hidden');
+        document.getElementById('adminPasswordInput').value = '';
+        updatePinDots('');
+        document.getElementById('pwdError').style.opacity = '0';
+    }
+
+    function updatePinDots(val) {
+        for (let i = 1; i <= 6; i++) {
+            const dot = document.getElementById('dot' + i);
+            if (!dot) continue;
+            if (i <= val.length) {
+                dot.style.background = '#fbbf24';
+                dot.style.borderColor = '#fbbf24';
+                dot.style.boxShadow = '0 0 6px #fbbf24';
+            } else {
+                dot.style.background = 'transparent';
+                dot.style.borderColor = '#475569';
+                dot.style.boxShadow = 'none';
+            }
+        }
+    }
+
+    function appendPin(char) {
+        const input = document.getElementById('adminPasswordInput');
+        if (input.value.length < 20) {
+            input.value += char;
+            updatePinDots(input.value);
+        }
+    }
+
+    function clearPin() {
+        const input = document.getElementById('adminPasswordInput');
+        input.value = input.value.slice(0, -1);
+        updatePinDots(input.value);
+    }
+
+    function togglePwdVisibility() {
+        const input = document.getElementById('adminPasswordInput');
+        const icon = document.getElementById('eyeIcon');
+        if (input.type === 'password') {
+            input.type = 'text';
+            icon.innerHTML = '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21"></path>';
+        } else {
+            input.type = 'password';
+            icon.innerHTML = '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>';
+        }
+    }
+
+    function applyChangePassword() {
+        const oldPwd = document.getElementById('oldPwd').value;
+        const newPwd = document.getElementById('newPwd').value;
+        const confirmPwd = document.getElementById('confirmPwd').value;
+        const errEl = document.getElementById('changePwdError');
+
+        if (oldPwd !== getAdminPassword()) {
+            errEl.innerText = 'Password lama salah!'; errEl.style.opacity = '1'; return;
+        }
+        if (newPwd.length < 4) {
+            errEl.innerText = 'Password baru minimal 4 karakter!'; errEl.style.opacity = '1'; return;
+        }
+        if (newPwd !== confirmPwd) {
+            errEl.innerText = 'Konfirmasi password tidak cocok!'; errEl.style.opacity = '1'; return;
+        }
+
+        appConfig.admin_password = newPwd;
+        localStorage.setItem('admin_password', newPwd);
+        // Simpan ke Supabase agar berlaku di semua device
+        saveAppConfig('admin_password', newPwd).then(ok => {
+            if (ok) showToast("✓ PASSWORD DIUBAH & SYNC KE CLOUD");
+            else showToast("✓ PASSWORD DIUBAH (tersimpan lokal)");
+        });
+        document.getElementById('changePwdModal').classList.add('hidden');
+        document.getElementById('oldPwd').value = '';
+        document.getElementById('newPwd').value = '';
+        document.getElementById('confirmPwd').value = '';
+        errEl.style.opacity = '0';
+    }
+
+    // ═══════════════════════════════════════════════════
+    //  UI NAVIGATION
+    // ═══════════════════════════════════════════════════
+    function switchMenu(menu) {
+        // Switching to dashboard always ends admin session
+        if (menu === 'dashboard' && adminAuthenticated) {
+            setAdminAuth(false);
+        }
+
+        document.getElementById('menu-dashboard').classList.toggle('hidden', menu !== 'dashboard');
+        document.getElementById('menu-admin').classList.toggle('hidden', menu !== 'admin');
+        document.getElementById('kpiSection').style.display = menu === 'admin' ? 'none' : '';
+
+        const dashBtn = document.getElementById('nav-dashboard');
+        const adminBtn = document.getElementById('nav-admin');
+        if (menu === 'dashboard') {
+            dashBtn.className = "px-8 py-3.5 rounded-xl text-xs font-black transition-all nav-active flex items-center gap-2";
+            adminBtn.className = "px-8 py-3.5 rounded-xl text-xs font-black transition-all text-slate-400 hover:text-white flex items-center gap-2";
+            updateComparison();
+        } else {
+            adminBtn.className = "px-8 py-3.5 rounded-xl text-xs font-black transition-all nav-active flex items-center gap-2";
+            dashBtn.className = "px-8 py-3.5 rounded-xl text-xs font-black transition-all text-slate-400 hover:text-white flex items-center gap-2";
+            renderDatabase();
+        }
+        updateKPIs();
+    }
+
+    function logoutAdmin() {
+        setAdminAuth(false);
+        switchMenu('dashboard');
+        showToast("SESI ADMIN BERAKHIR");
+    }
+
+    function switchLine(n) { activeLine = parseInt(n); updateTypeDropdowns(); updateComparison(); updateKPIs(); }
+    function closeEditModal() { document.getElementById('editModal').classList.add('hidden'); }
+
+    function setAdminInputLine(n) {
+        adminInLine = n;
+        for(let i=1; i<=4; i++) {
+            document.getElementById(`adm-l${i}`).className = i === n
+                ? "py-2.5 rounded-xl border font-black text-xs bg-amber-500 text-slate-950 border-amber-400 shadow-lg shadow-amber-500/10 transition"
+                : "py-2.5 rounded-xl border font-black text-xs border-white/10 text-slate-400 hover:border-white/20 transition";
+        }
+    }
+
+    function setAdminViewLine(n) {
+        adminViewLine = n;
+        document.getElementById('dbTypeFilter').value = "";
+        document.getElementById('dbToolFilter').value = "";
+        renderViewTabs(); renderDatabase();
+    }
+
+    function renderViewTabs() {
+        document.getElementById('viewTabsContainer').innerHTML = [1,2,3,4].map(n => `
+            <button onclick="setAdminViewLine(${n})" class="w-10 h-10 rounded-xl text-xs font-black transition-all ${n === adminViewLine ? 'bg-amber-500 text-slate-950 shadow-lg shadow-amber-500/10 border border-amber-400' : 'bg-slate-900/60 text-slate-400 border border-white/5 hover:border-white/10'}">L${n}</button>
+        `).join('');
+    }
+
+    function showToast(m) {
+        const t = document.getElementById('toast');
+        document.getElementById('toastText').innerText = m;
+        t.style.opacity = '1';
+        setTimeout(() => t.style.opacity = '0', 2500);
+    }
+
+    function copyScript() {
+        const text = document.getElementById('scriptPreview').innerText;
+        navigator.clipboard.writeText(text).then(() => showToast("SCRIPT TERSALIN!"));
+    }
+
+    // ═══════════════════════════════════════════════════
+    //  NOTIFICATION HISTORY SYSTEM
+    // ═══════════════════════════════════════════════════
+    let notifHistory = JSON.parse(localStorage.getItem('offset_history') || '[]');
+    let histFilterActive = 'all';
+
+    const MONTHS_ID = ['Jan','Feb','Mar','Apr','Mei','Jun','Jul','Agt','Sep','Okt','Nov','Des'];
+
+    function formatHistDate(ts) {
+        const d = new Date(ts);
+        const day = String(d.getDate()).padStart(2,'0');
+        const mon = MONTHS_ID[d.getMonth()];
+        const yr = d.getFullYear();
+        const hh = String(d.getHours()).padStart(2,'0');
+        const mm = String(d.getMinutes()).padStart(2,'0');
+        return `${day} ${mon} ${yr} · ${hh}:${mm}`;
+    }
+
+    function addHistory(type, line, typeLabel, detail = '') {
+        // type: 'edit' | 'import' | 'delete' | 'cloud' | 'clear'
+        const entry = {
+            id: 'h' + Date.now() + Math.random().toString(36).substr(2,4),
+            type,
+            line,        // line number (1-4)
+            typeLabel,   // tipe unit / label
+            detail,      // extra info
+            ts: Date.now()
+        };
+        notifHistory.unshift(entry); // newest first
+        if (notifHistory.length > 200) notifHistory = notifHistory.slice(0, 200); // cap at 200
+        localStorage.setItem('offset_history', JSON.stringify(notifHistory));
+        updateHistBadge();
+    }
+
+    function updateHistBadge() {
+        const badge = document.getElementById('histBadge');
+        if (!badge) return;
+        const count = notifHistory.length;
+        if (count > 0) {
+            badge.classList.remove('hidden');
+            badge.innerText = count > 99 ? '99+' : count;
+        } else {
+            badge.classList.add('hidden');
+        }
+    }
+
+    function typeConfig(type) {
+        const cfg = {
+            edit:   { label: 'EDIT', cls: 'badge-edit', icon: '✏️' },
+            import: { label: 'IMPORT', cls: 'badge-import', icon: '📥' },
+            delete: { label: 'HAPUS', cls: 'badge-delete', icon: '🗑️' },
+            cloud:  { label: 'CLOUD', cls: 'badge-cloud', icon: '☁️' },
+            clear:  { label: 'CLEAR', cls: 'badge-clear', icon: '🧹' },
+        };
+        return cfg[type] || { label: type.toUpperCase(), cls: 'badge-edit', icon: '📋' };
+    }
+
+    function renderHistory() {
+        const list = document.getElementById('historyList');
+        let data = notifHistory;
+        if (histFilterActive !== 'all') data = data.filter(h => h.type === histFilterActive);
+
+        if (data.length === 0) {
+            list.innerHTML = `<div class="py-16 text-center text-slate-500 text-[10px] font-bold uppercase italic tracking-widest">${histFilterActive === 'all' ? 'Belum ada histori perubahan' : 'Tidak ada histori untuk filter ini'}</div>`;
+            return;
+        }
+
+        list.innerHTML = data.map((h, idx) => {
+            const cfg = typeConfig(h.type);
+            return `
+            <div class="hist-item flex items-start gap-3 bg-slate-900/60 rounded-2xl px-4 py-3.5 border border-white/5 hover:border-white/10 transition-all" style="animation-delay:${Math.min(idx*30,200)}ms" id="hist-${h.id}">
+                <div class="flex flex-col items-center gap-1.5 flex-shrink-0 pt-0.5">
+                    <span class="text-base leading-none">${cfg.icon}</span>
+                    <div class="w-px flex-1 bg-white/5 min-h-[12px]"></div>
+                </div>
+                <div class="flex-1 min-w-0">
+                    <div class="flex items-center gap-2 flex-wrap">
+                        <span class="text-[9px] font-black px-2 py-0.5 rounded-md uppercase tracking-widest ${cfg.cls}">${cfg.label}</span>
+                        <span class="text-[9px] font-black text-slate-500 uppercase tracking-widest bg-slate-800 px-2 py-0.5 rounded-md">${h.line > 0 ? 'L'+h.line : 'ALL'}</span>
+                        <span class="text-[9px] font-black text-amber-400/80 uppercase tracking-wide truncate max-w-[120px]">${h.typeLabel}</span>
+                    </div>
+                    ${h.detail ? `<p class="text-[10px] text-slate-400 mt-1 leading-relaxed truncate">${h.detail}</p>` : ''}
+                    <p class="text-[9px] text-slate-600 font-mono mt-1">${formatHistDate(h.ts)}</p>
+                </div>
+                <button onclick="deleteHistoryItem('${h.id}')" class="flex-shrink-0 w-7 h-7 rounded-lg bg-rose-500/0 hover:bg-rose-500/15 text-slate-600 hover:text-rose-400 flex items-center justify-center transition-all mt-0.5" title="Hapus histori ini">
+                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M6 18L18 6M6 6l12 12"></path></svg>
+                </button>
+            </div>`;
+        }).join('');
+    }
+
+    function deleteHistoryItem(id) {
+        notifHistory = notifHistory.filter(h => h.id !== id);
+        localStorage.setItem('offset_history', JSON.stringify(notifHistory));
+        const el = document.getElementById('hist-' + id);
+        if (el) { el.style.opacity = '0'; el.style.transform = 'translateX(20px)'; el.style.transition = 'all 0.2s'; setTimeout(() => { renderHistory(); }, 200); }
+        updateHistBadge();
+    }
+
+    function clearAllHistory() {
+        if (!confirm('Hapus semua histori notifikasi? Tindakan ini tidak bisa dibatalkan.')) return;
+        notifHistory = [];
+        localStorage.setItem('offset_history', JSON.stringify(notifHistory));
+        renderHistory();
+        updateHistBadge();
+        showToast("HISTORI DIHAPUS SEMUA");
+    }
+
+    function filterHistory(type) {
+        histFilterActive = type;
+        // Update filter button styles
+        ['all','edit','import','delete','cloud'].forEach(t => {
+            const btn = document.getElementById('hf-' + t);
+            if (!btn) return;
+            if (t === type) {
+                btn.className = btn.className.replace(/badge-\w+/g,'');
+                btn.classList.add('bg-amber-500','text-slate-950','border-amber-400');
+                btn.classList.remove('hover:opacity-80');
+            } else {
                 btn.classList.remove('bg-amber-500','text-slate-950','border-amber-400');
                 if (!btn.className.includes('badge-')) {
                     const clsMap = {edit:'badge-edit',import:'badge-import',delete:'badge-delete',cloud:'badge-cloud'};
@@ -2194,6 +4489,212 @@ CREATE POLICY usr_update ON app_users FOR UPDATE USING (true) WITH CHECK (true);
 
     // Initialize badge on load
     updateHistBadge();
+
+    // ═══════════════════════════════════════════════════
+    //  CATATAN MANUAL — Notes System
+    // ═══════════════════════════════════════════════════
+    let notes = JSON.parse(localStorage.getItem('offset_notes') || '[]');
+    let notesFilterActive = 'semua';
+    let noteEditingId = null;
+
+    const NOTE_LABEL_CFG = {
+        umum:    { cls: 'bg-slate-700/60 text-slate-300 border-white/15',        dot: '#94a3b8', icon: '📋' },
+        line:    { cls: 'bg-blue-500/15 text-blue-300 border-blue-500/25',       dot: '#60a5fa', icon: '🔷' },
+        op:      { cls: 'bg-emerald-500/15 text-emerald-300 border-emerald-500/25', dot: '#34d399', icon: '⚙️' },
+        tool:    { cls: 'bg-amber-500/15 text-amber-300 border-amber-500/25',    dot: '#fbbf24', icon: '🔧' },
+        penting: { cls: 'bg-rose-500/15 text-rose-300 border-rose-500/25',       dot: '#f87171', icon: '⚠️' },
+    };
+
+    function saveNotesLocal() {
+        localStorage.setItem('offset_notes', JSON.stringify(notes));
+        updateNotesBadge();
+    }
+
+    function updateNotesBadge() {
+        const badge = document.getElementById('notesBadge');
+        if (!badge) return;
+        if (notes.length > 0) {
+            badge.classList.remove('hidden');
+            badge.innerText = notes.length > 99 ? '99+' : notes.length;
+        } else {
+            badge.classList.add('hidden');
+        }
+    }
+
+    function openNotesModal() {
+        renderNotes();
+        document.getElementById('notesModal').classList.remove('hidden');
+    }
+
+    function openNoteForm(id = null) {
+        noteEditingId = id;
+        const form = document.getElementById('noteFormModal');
+        const titleEl = document.getElementById('noteFormTitle');
+
+        if (id) {
+            const note = notes.find(n => n.id === id);
+            if (!note) return;
+            titleEl.innerText = 'Edit Catatan';
+            document.getElementById('note-edit-id').value = id;
+            document.getElementById('note-title').value = note.title;
+            document.getElementById('note-label').value = note.label;
+            document.getElementById('note-line').value = note.line || '';
+            document.getElementById('note-op').value = note.op || '';
+            document.getElementById('note-tool').value = note.tool || '';
+            document.getElementById('note-body').value = note.body;
+            document.getElementById('noteBodyCount').innerText = note.body.length;
+        } else {
+            titleEl.innerText = 'Catatan Baru';
+            document.getElementById('note-edit-id').value = '';
+            document.getElementById('note-title').value = '';
+            document.getElementById('note-label').value = 'umum';
+            document.getElementById('note-line').value = activeLine || '';
+            document.getElementById('note-op').value = '';
+            document.getElementById('note-tool').value = '';
+            document.getElementById('note-body').value = '';
+            document.getElementById('noteBodyCount').innerText = '0';
+        }
+        form.classList.remove('hidden');
+
+        // Live char counter
+        document.getElementById('note-body').oninput = function() {
+            document.getElementById('noteBodyCount').innerText = this.value.length;
+        };
+    }
+
+    function closeNoteForm() {
+        document.getElementById('noteFormModal').classList.add('hidden');
+        noteEditingId = null;
+    }
+
+    function saveNote() {
+        const title = document.getElementById('note-title').value.trim();
+        const body  = document.getElementById('note-body').value.trim();
+        if (!title) { showToast('⚠ JUDUL TIDAK BOLEH KOSONG'); return; }
+        if (!body)  { showToast('⚠ ISI CATATAN TIDAK BOLEH KOSONG'); return; }
+
+        const noteData = {
+            title,
+            label: document.getElementById('note-label').value,
+            line:  document.getElementById('note-line').value,
+            op:    document.getElementById('note-op').value.toUpperCase().trim(),
+            tool:  document.getElementById('note-tool').value.toUpperCase().trim(),
+            body,
+            ts: Date.now()
+        };
+
+        if (noteEditingId) {
+            const idx = notes.findIndex(n => n.id === noteEditingId);
+            if (idx !== -1) {
+                noteData.id = noteEditingId;
+                noteData.ts_created = notes[idx].ts_created || notes[idx].ts;
+                notes[idx] = noteData;
+                showToast('✓ CATATAN DIPERBARUI');
+            }
+        } else {
+            noteData.id = 'note' + Date.now() + Math.random().toString(36).substr(2,4);
+            noteData.ts_created = Date.now();
+            notes.unshift(noteData);
+            showToast('✓ CATATAN TERSIMPAN');
+        }
+
+        saveNotesLocal();
+        closeNoteForm();
+        renderNotes();
+    }
+
+    function deleteNote(id) {
+        if (!confirm('Hapus catatan ini?')) return;
+        notes = notes.filter(n => n.id !== id);
+        saveNotesLocal();
+        renderNotes();
+        showToast('CATATAN DIHAPUS');
+    }
+
+    function filterNotes(label) {
+        notesFilterActive = label;
+        const filters = ['semua','umum','line','op','tool','penting'];
+        filters.forEach(f => {
+            const btn = document.getElementById('nf-' + f);
+            if (!btn) return;
+            if (f === label) {
+                btn.classList.add('bg-violet-500', 'text-white', 'border-violet-400');
+                btn.classList.remove('bg-slate-700/60','text-slate-300','border-white/10',
+                    'bg-blue-500/15','text-blue-300','border-blue-500/25',
+                    'bg-emerald-500/15','text-emerald-300','border-emerald-500/25',
+                    'bg-amber-500/15','text-amber-300','border-amber-500/25',
+                    'bg-rose-500/15','text-rose-300','border-rose-500/25','hover:opacity-80');
+            } else {
+                btn.classList.remove('bg-violet-500','text-white','border-violet-400');
+                btn.classList.add('hover:opacity-80');
+                // Restore original color per label
+                const colorMap = {
+                    umum:    ['bg-slate-700/60','text-slate-300','border-white/10'],
+                    line:    ['bg-blue-500/15','text-blue-300','border-blue-500/25'],
+                    op:      ['bg-emerald-500/15','text-emerald-300','border-emerald-500/25'],
+                    tool:    ['bg-amber-500/15','text-amber-300','border-amber-500/25'],
+                    penting: ['bg-rose-500/15','text-rose-300','border-rose-500/25'],
+                };
+                if (colorMap[f]) btn.classList.add(...colorMap[f]);
+            }
+        });
+        renderNotes();
+    }
+
+    function formatNoteDate(ts) {
+        const d = new Date(ts);
+        const day = String(d.getDate()).padStart(2,'0');
+        const mon = d.toLocaleString('id-ID',{month:'short'});
+        const yr  = d.getFullYear();
+        const hh  = String(d.getHours()).padStart(2,'0');
+        const mm  = String(d.getMinutes()).padStart(2,'0');
+        return `${day} ${mon} ${yr} · ${hh}:${mm}`;
+    }
+
+    function renderNotes() {
+        const list = document.getElementById('notesList');
+        let data = notes;
+        if (notesFilterActive !== 'semua') data = data.filter(n => n.label === notesFilterActive);
+
+        if (data.length === 0) {
+            list.innerHTML = `<div class="py-16 text-center text-slate-500 text-[10px] font-bold uppercase italic tracking-widest">${notesFilterActive === 'semua' ? 'Belum ada catatan. Klik "+ Tambah" untuk mulai.' : 'Tidak ada catatan untuk label ini.'}</div>`;
+            return;
+        }
+
+        list.innerHTML = data.map((n, idx) => {
+            const cfg = NOTE_LABEL_CFG[n.label] || NOTE_LABEL_CFG.umum;
+            const metaTags = [
+                n.line ? `<span class="px-2 py-0.5 rounded-md bg-blue-500/10 border border-blue-500/20 text-blue-400 text-[9px] font-black">L${n.line}</span>` : '',
+                n.op   ? `<span class="px-2 py-0.5 rounded-md bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-[9px] font-black">${n.op}</span>` : '',
+                n.tool ? `<span class="px-2 py-0.5 rounded-md bg-amber-500/10 border border-amber-500/20 text-amber-400 text-[9px] font-black">${n.tool}</span>` : '',
+            ].filter(Boolean).join('');
+
+            return `
+            <div class="hist-item bg-slate-900/60 rounded-2xl p-4 border border-white/5 hover:border-violet-500/20 transition-all" style="animation-delay:${Math.min(idx*25,150)}ms">
+                <div class="flex items-start gap-3">
+                    <div class="flex-shrink-0 w-8 h-8 rounded-xl flex items-center justify-center text-base" style="background:${cfg.dot}18;border:1px solid ${cfg.dot}30">${cfg.icon}</div>
+                    <div class="flex-1 min-w-0">
+                        <div class="flex flex-wrap items-center gap-1.5 mb-1.5">
+                            <span class="text-[9px] font-black px-2 py-0.5 rounded-md border uppercase tracking-widest ${cfg.cls}">${n.label}</span>
+                            ${metaTags}
+                        </div>
+                        <h3 class="text-sm font-black text-white mb-1 leading-snug">${n.title}</h3>
+                        <p class="text-[11px] text-slate-400 leading-relaxed whitespace-pre-wrap break-words">${n.body}</p>
+                        <div class="flex items-center justify-between mt-2.5">
+                            <span class="text-[9px] text-slate-600 font-mono">${formatNoteDate(n.ts_created || n.ts)}${n.ts !== n.ts_created ? ' <span class="text-slate-700">(diedit)</span>' : ''}</span>
+                            <div class="flex gap-1">
+                                <button onclick="openNoteForm('${n.id}')" class="px-2.5 py-1 rounded-lg bg-violet-500/10 border border-violet-500/20 text-violet-400 text-[9px] font-black hover:bg-violet-500/20 transition">Edit</button>
+                                <button onclick="deleteNote('${n.id}')" class="px-2.5 py-1 rounded-lg bg-rose-500/10 border border-rose-500/20 text-rose-400 text-[9px] font-black hover:bg-rose-500/20 transition">Hapus</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>`;
+        }).join('');
+    }
+
+    // Init notes badge on load
+    updateNotesBadge();
     </script>
 </body>
 </html>
