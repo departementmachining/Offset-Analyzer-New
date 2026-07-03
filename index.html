@@ -130,6 +130,78 @@
         </div>
     </div>
 
+    <!-- MAILBOX MODAL (User) -->
+    <div id="mailboxModal" class="hidden fixed inset-0 z-[550] flex items-center justify-center p-4 bg-black/90 backdrop-blur-lg">
+        <div class="bg-[#0a0e1a] border border-amber-500/20 rounded-[32px] p-0 max-w-lg w-full shadow-2xl shadow-black animate-fade flex flex-col max-h-[85vh]">
+            <!-- Header -->
+            <div class="flex items-center justify-between px-8 py-6 border-b border-white/5 flex-shrink-0">
+                <div class="flex items-center gap-3">
+                    <div class="p-2 bg-amber-500/10 rounded-xl text-amber-400">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg>
+                    </div>
+                    <div>
+                        <h2 class="text-lg font-black text-white">Kotak Pesan</h2>
+                        <p class="text-[9px] text-slate-500 font-bold uppercase tracking-widest">Pemberitahuan dari Admin</p>
+                    </div>
+                </div>
+                <div class="flex items-center gap-2">
+                    <button onclick="markAllMailRead()" class="px-3 py-1.5 bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 rounded-xl text-[9px] font-black uppercase tracking-widest hover:bg-emerald-500/20 transition">Tandai Semua Dibaca</button>
+                    <button onclick="document.getElementById('mailboxModal').classList.add('hidden')" class="w-8 h-8 bg-slate-800 hover:bg-slate-700 text-slate-400 rounded-xl flex items-center justify-center transition">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M6 18L18 6M6 6l12 12"></path></svg>
+                    </button>
+                </div>
+            </div>
+            <!-- Filter bar -->
+            <div class="px-8 py-4 border-b border-white/5 flex-shrink-0 flex gap-2 flex-wrap">
+                <button onclick="filterMailbox('all')" id="mf-all" class="px-3 py-1.5 rounded-xl text-[9px] font-black uppercase tracking-widest transition bg-amber-500 text-slate-950 border border-amber-400">Semua</button>
+                <button onclick="filterMailbox('unread')" id="mf-unread" class="px-3 py-1.5 rounded-xl text-[9px] font-black uppercase tracking-widest transition badge-cloud hover:opacity-80">Belum Dibaca</button>
+                <button onclick="filterMailbox('read')" id="mf-read" class="px-3 py-1.5 rounded-xl text-[9px] font-black uppercase tracking-widest transition badge-import hover:opacity-80">Sudah Dibaca</button>
+            </div>
+            <!-- List -->
+            <div id="mailboxList" class="overflow-y-auto custom-scrollbar flex-1 px-8 py-4 space-y-2">
+                <div class="py-16 text-center text-slate-500 text-[10px] font-bold uppercase italic tracking-widest">Belum ada pesan</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- MAILBOX MESSAGE DETAIL MODAL -->
+    <div id="mailDetailModal" class="hidden fixed inset-0 z-[560] flex items-center justify-center p-4 bg-black/90 backdrop-blur-lg">
+        <div class="bg-[#0a0e1a] border border-amber-500/20 rounded-[32px] p-8 max-w-md w-full shadow-2xl shadow-black animate-fade">
+            <div class="flex items-start justify-between gap-3 mb-4">
+                <div class="flex items-center gap-2 flex-wrap" id="mailDetailTypes"></div>
+                <button onclick="document.getElementById('mailDetailModal').classList.add('hidden')" class="w-8 h-8 flex-shrink-0 bg-slate-800 hover:bg-slate-700 text-slate-400 rounded-xl flex items-center justify-center transition">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M6 18L18 6M6 6l12 12"></path></svg>
+                </button>
+            </div>
+            <h3 id="mailDetailTitle" class="text-lg font-black text-white mb-2"></h3>
+            <p id="mailDetailBody" class="text-slate-300 text-sm leading-relaxed whitespace-pre-wrap mb-4"></p>
+            <p id="mailDetailMeta" class="text-[9px] text-slate-600 font-mono"></p>
+        </div>
+    </div>
+
+    <!-- SENT MESSAGES MODAL (Admin) -->
+    <div id="sentMessagesModal" class="hidden fixed inset-0 z-[550] flex items-center justify-center p-4 bg-black/90 backdrop-blur-lg">
+        <div class="bg-[#0a0e1a] border border-blue-500/20 rounded-[32px] p-0 max-w-lg w-full shadow-2xl shadow-black animate-fade flex flex-col max-h-[85vh]">
+            <div class="flex items-center justify-between px-8 py-6 border-b border-white/5 flex-shrink-0">
+                <div class="flex items-center gap-3">
+                    <div class="p-2 bg-blue-500/10 rounded-xl text-blue-400">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg>
+                    </div>
+                    <div>
+                        <h2 class="text-lg font-black text-white">Riwayat Pesan Terkirim</h2>
+                        <p class="text-[9px] text-slate-500 font-bold uppercase tracking-widest">Kelola pemberitahuan ke user</p>
+                    </div>
+                </div>
+                <button onclick="document.getElementById('sentMessagesModal').classList.add('hidden')" class="w-8 h-8 bg-slate-800 hover:bg-slate-700 text-slate-400 rounded-xl flex items-center justify-center transition">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M6 18L18 6M6 6l12 12"></path></svg>
+                </button>
+            </div>
+            <div id="sentMessagesList" class="overflow-y-auto custom-scrollbar flex-1 px-8 py-4 space-y-2">
+                <div class="py-16 text-center text-slate-500 text-[10px] font-bold uppercase italic tracking-widest">Belum ada pesan terkirim</div>
+            </div>
+        </div>
+    </div>
+
     <!-- PASSWORD MODAL ADMIN -->
     <!-- AUTH MODAL — Login / Register -->
     <div id="authModal" class="fixed inset-0 z-[700] flex items-center justify-center p-4 bg-black/95 backdrop-blur-xl">
@@ -372,7 +444,33 @@ CREATE TABLE IF NOT EXISTS app_users (
 ALTER TABLE app_users ENABLE ROW LEVEL SECURITY;
 CREATE POLICY usr_select ON app_users FOR SELECT USING (true);
 CREATE POLICY usr_insert ON app_users FOR INSERT WITH CHECK (true);
-CREATE POLICY usr_update ON app_users FOR UPDATE USING (true) WITH CHECK (true);</div>
+CREATE POLICY usr_update ON app_users FOR UPDATE USING (true) WITH CHECK (true);
+
+-- TABLE 4: Pesan/Notifikasi Mailbox (admin -> user)
+CREATE TABLE IF NOT EXISTS app_messages (
+  id text PRIMARY KEY,
+  title text NOT NULL,
+  body text,
+  types text,
+  sender text,
+  created_at timestamptz DEFAULT now()
+);
+ALTER TABLE app_messages ENABLE ROW LEVEL SECURITY;
+CREATE POLICY msg_select ON app_messages FOR SELECT USING (true);
+CREATE POLICY msg_insert ON app_messages FOR INSERT WITH CHECK (true);
+CREATE POLICY msg_delete ON app_messages FOR DELETE USING (true);
+
+-- TABLE 5: Status baca pesan per user
+CREATE TABLE IF NOT EXISTS app_message_reads (
+  message_id text NOT NULL,
+  user_id uuid NOT NULL,
+  read_at timestamptz DEFAULT now(),
+  PRIMARY KEY (message_id, user_id)
+);
+ALTER TABLE app_message_reads ENABLE ROW LEVEL SECURITY;
+CREATE POLICY mread_select ON app_message_reads FOR SELECT USING (true);
+CREATE POLICY mread_insert ON app_message_reads FOR INSERT WITH CHECK (true);
+CREATE POLICY mread_delete ON app_message_reads FOR DELETE USING (true);</div>
                     <button onclick="copySql()" class="mt-2 px-4 py-2 bg-emerald-500/20 border border-emerald-500/30 text-emerald-400 rounded-xl text-[10px] font-black uppercase tracking-widest hover:bg-emerald-500/30 transition">📋 Salin SQL</button>
                 </div>
                 <div class="bg-slate-900/60 rounded-2xl p-4 border border-white/5">
@@ -408,15 +506,21 @@ CREATE POLICY usr_update ON app_users FOR UPDATE USING (true) WITH CHECK (true);
                 </h1>
                 <p class="text-xs text-slate-400 font-medium tracking-wide">Sistem Analisis Deviasi Dimensi Pemesinan CNC Presisi Tinggi</p>
             </div>
-            <div class="bg-slate-900/60 p-1.5 rounded-2xl backdrop-blur-md border border-white/10 flex gap-1">
-                <button onclick="switchMenu('dashboard')" id="nav-dashboard" class="px-8 py-3.5 rounded-xl text-xs font-black transition-all nav-active flex items-center gap-2">
-                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path></svg>
-                    DASHBOARD
+            <div class="flex items-center gap-3">
+                <button onclick="openMailboxModal()" id="mailboxNavBtn" class="relative p-3.5 bg-slate-900/60 rounded-2xl backdrop-blur-md border border-white/10 text-slate-400 hover:text-amber-400 hover:border-amber-500/30 transition-all" title="Kotak Pesan">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg>
+                    <span id="mailBadge" class="hidden hist-badge">0</span>
                 </button>
-                <button onclick="openAdminPanel()" id="adminNavBtn" class="hidden px-8 py-3.5 rounded-xl text-xs font-black transition-all text-slate-400 hover:text-white flex items-center gap-2">
-                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4"></path></svg>
-                    ADMIN PANEL
-                </button>
+                <div class="bg-slate-900/60 p-1.5 rounded-2xl backdrop-blur-md border border-white/10 flex gap-1">
+                    <button onclick="switchMenu('dashboard')" id="nav-dashboard" class="px-8 py-3.5 rounded-xl text-xs font-black transition-all nav-active flex items-center gap-2">
+                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path></svg>
+                        DASHBOARD
+                    </button>
+                    <button onclick="openAdminPanel()" id="adminNavBtn" class="hidden px-8 py-3.5 rounded-xl text-xs font-black transition-all text-slate-400 hover:text-white flex items-center gap-2">
+                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4"></path></svg>
+                        ADMIN PANEL
+                    </button>
+                </div>
             </div>
         </div>
     </header>
@@ -661,6 +765,34 @@ CREATE POLICY usr_update ON app_users FOR UPDATE USING (true) WITH CHECK (true);
                             <div id="debugLog" class="font-mono text-[9px] text-emerald-400 bg-black/40 rounded-lg p-2 max-h-40 overflow-y-auto space-y-0.5 whitespace-pre-wrap break-all"></div>
                         </div>
                     </div>
+                </div>
+            </div>
+
+            <!-- BROADCAST MESSAGE PANEL -->
+            <div class="premium-card p-6 border-l-8 border-blue-500 bg-blue-500/5">
+                <div class="flex items-center justify-between mb-4 flex-wrap gap-3">
+                    <div>
+                        <h3 class="font-black text-white text-sm uppercase tracking-wider flex items-center gap-2">
+                            <svg class="w-4 h-4 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg>
+                            Kirim Pemberitahuan ke User
+                        </h3>
+                        <p class="text-[10px] text-slate-400 mt-1">Beri tahu semua user tentang tipe unit yang baru diupdate</p>
+                    </div>
+                    <button onclick="openSentMessagesModal()" class="px-3 py-2 bg-slate-700/50 border border-white/10 text-slate-400 rounded-xl text-[9px] font-black uppercase tracking-widest hover:bg-slate-700 transition flex items-center gap-1.5">
+                        📜 Riwayat Kirim
+                    </button>
+                </div>
+                <div class="space-y-3">
+                    <input id="msgTitle" type="text" placeholder="Judul pesan (cth: Update Data Tipe CON)" class="w-full bg-slate-950/60 border border-blue-500/20 px-4 py-3.5 rounded-2xl text-sm text-white placeholder-slate-600 outline-none focus:border-blue-400 transition-all">
+                    <textarea id="msgBody" class="w-full h-24 p-4 bg-slate-950/60 border border-blue-500/20 rounded-2xl text-xs text-slate-200 placeholder-slate-600 outline-none focus:border-blue-400 transition-all custom-scrollbar" placeholder="Isi pesan / keterangan perubahan..."></textarea>
+                    <div>
+                        <label class="text-[9px] font-black text-blue-400 uppercase tracking-widest ml-1 mb-1.5 block">Tipe Unit Terkait (opsional, pilih lebih dari satu)</label>
+                        <select id="msgTypes" multiple class="filter-select w-full bg-[#141b2b] border border-blue-500/20 rounded-xl px-4 py-3 text-xs font-bold text-blue-300 outline-none cursor-pointer h-28"></select>
+                    </div>
+                    <button onclick="sendBroadcastMessage()" class="w-full py-4 bg-blue-500 hover:bg-blue-600 text-slate-950 rounded-2xl font-black text-xs uppercase tracking-widest shadow-xl shadow-blue-500/10 transition flex items-center justify-center gap-2">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"></path></svg>
+                        Kirim Pemberitahuan
+                    </button>
                 </div>
             </div>
 
@@ -1000,6 +1132,8 @@ CREATE POLICY usr_update ON app_users FOR UPDATE USING (true) WITH CHECK (true);
         await fetchFromCloud(false);
         startAutoSync();
         await flushPendingSync();
+        await fetchMailbox(false);
+        startMailboxPolling();
     }
 
     function updateAdminVisibility() {
@@ -1111,6 +1245,8 @@ CREATE POLICY usr_update ON app_users FOR UPDATE USING (true) WITH CHECK (true);
             await fetchFromCloud(false);
             startAutoSync();
             await flushPendingSync();
+            await fetchMailbox(false);
+            startMailboxPolling();
         } else {
             // Tidak ada session — tampilkan auth modal
             document.getElementById('authModal').classList.remove('hidden');
@@ -2010,6 +2146,7 @@ CREATE POLICY usr_update ON app_users FOR UPDATE USING (true) WITH CHECK (true);
             adminBtn.className = "px-8 py-3.5 rounded-xl text-xs font-black transition-all nav-active flex items-center gap-2";
             dashBtn.className = "px-8 py-3.5 rounded-xl text-xs font-black transition-all text-slate-400 hover:text-white flex items-center gap-2";
             renderDatabase();
+            populateMsgTypesSelector();
         }
         updateKPIs();
     }
@@ -2194,6 +2331,265 @@ CREATE POLICY usr_update ON app_users FOR UPDATE USING (true) WITH CHECK (true);
 
     // Initialize badge on load
     updateHistBadge();
+
+    // ═══════════════════════════════════════════════════
+    //  MAILBOX SYSTEM — Pesan/Notifikasi Admin -> User
+    //  Table: app_messages (id,title,body,types,sender,created_at)
+    //  Table: app_message_reads (message_id,user_id,read_at)
+    // ═══════════════════════════════════════════════════
+    let mailboxMessages = [];      // seluruh pesan dari cloud
+    let mailboxReadIds  = new Set(); // id pesan yang sudah dibaca user ini
+    let mailFilterActive = 'all';
+    let mailboxPollInterval = null;
+
+    function genMsgId() { return 'm' + Date.now() + Math.random().toString(36).substr(2,6); }
+
+    // Ambil semua pesan + status baca milik user saat ini dari Supabase
+    async function fetchMailbox(showFeedback = false) {
+        if (!sbReady() || !isLoggedIn()) return;
+        try {
+            const [msgRes, readRes] = await Promise.all([
+                fetch(`${sbUrl}/rest/v1/app_messages?select=*&order=created_at.desc&limit=100`, {
+                    headers: { 'apikey': sbKey, 'Authorization': 'Bearer ' + (accessToken || sbKey) }
+                }),
+                fetch(`${sbUrl}/rest/v1/app_message_reads?select=message_id&user_id=eq.${currentUser.id}`, {
+                    headers: { 'apikey': sbKey, 'Authorization': 'Bearer ' + (accessToken || sbKey) }
+                })
+            ]);
+            if (msgRes.ok) mailboxMessages = await msgRes.json();
+            if (readRes.ok) {
+                const rows = await readRes.json();
+                mailboxReadIds = new Set(rows.map(r => r.message_id));
+            }
+            updateMailBadge();
+            if (!document.getElementById('mailboxModal').classList.contains('hidden')) renderMailbox();
+            if (showFeedback) showToast("KOTAK PESAN DIPERBARUI");
+        } catch(e) {
+            console.error('fetchMailbox:', e);
+        }
+    }
+
+    function updateMailBadge() {
+        const badge = document.getElementById('mailBadge');
+        if (!badge) return;
+        const unread = mailboxMessages.filter(m => !mailboxReadIds.has(m.id)).length;
+        if (unread > 0) {
+            badge.classList.remove('hidden');
+            badge.innerText = unread > 99 ? '99+' : unread;
+        } else {
+            badge.classList.add('hidden');
+        }
+    }
+
+    function openMailboxModal() {
+        if (!isLoggedIn()) { showToast("SILAKAN LOGIN TERLEBIH DAHULU"); return; }
+        renderMailbox();
+        document.getElementById('mailboxModal').classList.remove('hidden');
+        fetchMailbox(); // refresh saat dibuka
+    }
+
+    function typesArray(typesStr) {
+        return (typesStr || '').split(',').map(t => t.trim()).filter(Boolean);
+    }
+
+    function renderMailbox() {
+        const list = document.getElementById('mailboxList');
+        let data = mailboxMessages;
+        if (mailFilterActive === 'unread') data = data.filter(m => !mailboxReadIds.has(m.id));
+        if (mailFilterActive === 'read')   data = data.filter(m => mailboxReadIds.has(m.id));
+
+        if (data.length === 0) {
+            list.innerHTML = `<div class="py-16 text-center text-slate-500 text-[10px] font-bold uppercase italic tracking-widest">${mailFilterActive === 'all' ? 'Belum ada pesan' : (mailFilterActive === 'unread' ? 'Semua pesan sudah dibaca' : 'Belum ada pesan yang dibaca')}</div>`;
+            return;
+        }
+
+        list.innerHTML = data.map((m, idx) => {
+            const isRead = mailboxReadIds.has(m.id);
+            const types = typesArray(m.types);
+            return `
+            <div class="hist-item flex items-start gap-3 ${isRead ? 'bg-slate-900/40' : 'bg-amber-500/5 border-amber-500/20'} rounded-2xl px-4 py-3.5 border ${isRead ? 'border-white/5' : ''} hover:border-white/10 transition-all cursor-pointer" style="animation-delay:${Math.min(idx*30,200)}ms" onclick="openMailDetail('${m.id}')">
+                <div class="flex flex-col items-center gap-1.5 flex-shrink-0 pt-0.5">
+                    <span class="text-base leading-none">${isRead ? '📖' : '✉️'}</span>
+                    ${!isRead ? '<span class="w-1.5 h-1.5 rounded-full bg-amber-400 animate-pulse"></span>' : ''}
+                </div>
+                <div class="flex-1 min-w-0">
+                    <div class="flex items-center gap-2 flex-wrap">
+                        <span class="text-[10px] font-black ${isRead ? 'text-slate-400' : 'text-white'} truncate">${m.title || '(Tanpa judul)'}</span>
+                        ${!isRead ? '<span class="text-[8px] font-black px-1.5 py-0.5 rounded-md uppercase tracking-widest badge-import">BARU</span>' : ''}
+                    </div>
+                    ${m.body ? `<p class="text-[10px] text-slate-500 mt-1 leading-relaxed truncate">${m.body}</p>` : ''}
+                    ${types.length ? `<div class="flex gap-1 flex-wrap mt-1.5">${types.map(t => `<span class="text-[8px] font-black px-1.5 py-0.5 rounded-md uppercase tracking-widest badge-cloud">${t}</span>`).join('')}</div>` : ''}
+                    <p class="text-[9px] text-slate-600 font-mono mt-1">${formatHistDate(new Date(m.created_at).getTime())}</p>
+                </div>
+            </div>`;
+        }).join('');
+    }
+
+    function filterMailbox(type) {
+        mailFilterActive = type;
+        ['all','unread','read'].forEach(t => {
+            const btn = document.getElementById('mf-' + t);
+            if (!btn) return;
+            if (t === type) {
+                btn.className = btn.className.replace(/badge-\w+/g,'');
+                btn.classList.add('bg-amber-500','text-slate-950','border-amber-400');
+                btn.classList.remove('hover:opacity-80');
+            } else {
+                btn.classList.remove('bg-amber-500','text-slate-950','border-amber-400');
+                if (!btn.className.includes('badge-')) {
+                    const clsMap = { unread: 'badge-cloud', read: 'badge-import' };
+                    if (clsMap[t]) btn.classList.add(clsMap[t]);
+                }
+                btn.classList.add('hover:opacity-80');
+            }
+        });
+        renderMailbox();
+    }
+
+    async function openMailDetail(id) {
+        const m = mailboxMessages.find(x => x.id === id);
+        if (!m) return;
+        document.getElementById('mailDetailTitle').innerText = m.title || '(Tanpa judul)';
+        document.getElementById('mailDetailBody').innerText = m.body || '(Tidak ada isi pesan)';
+        document.getElementById('mailDetailMeta').innerText = `Dikirim ${formatHistDate(new Date(m.created_at).getTime())}${m.sender ? ' · oleh ' + m.sender : ''}`;
+        const types = typesArray(m.types);
+        document.getElementById('mailDetailTypes').innerHTML = types.length
+            ? types.map(t => `<span class="text-[9px] font-black px-2 py-0.5 rounded-md uppercase tracking-widest badge-cloud">${t}</span>`).join('')
+            : '<span class="text-[9px] font-black px-2 py-0.5 rounded-md uppercase tracking-widest badge-edit">UMUM</span>';
+        document.getElementById('mailDetailModal').classList.remove('hidden');
+
+        // Tandai dibaca (jika belum)
+        if (!mailboxReadIds.has(id)) {
+            mailboxReadIds.add(id);
+            updateMailBadge();
+            renderMailbox();
+            try {
+                await fetch(`${sbUrl}/rest/v1/app_message_reads`, {
+                    method: 'POST',
+                    headers: { ...sbHeaders(), 'Prefer': 'resolution=merge-duplicates,return=minimal' },
+                    body: JSON.stringify({ message_id: id, user_id: currentUser.id, read_at: new Date().toISOString() })
+                });
+            } catch(e) { console.error('mark read:', e); }
+        }
+    }
+
+    async function markAllMailRead() {
+        const unread = mailboxMessages.filter(m => !mailboxReadIds.has(m.id));
+        if (unread.length === 0) { showToast("SEMUA PESAN SUDAH DIBACA"); return; }
+        unread.forEach(m => mailboxReadIds.add(m.id));
+        updateMailBadge();
+        renderMailbox();
+        try {
+            const rows = unread.map(m => ({ message_id: m.id, user_id: currentUser.id, read_at: new Date().toISOString() }));
+            await fetch(`${sbUrl}/rest/v1/app_message_reads`, {
+                method: 'POST',
+                headers: { ...sbHeaders(), 'Prefer': 'resolution=merge-duplicates,return=minimal' },
+                body: JSON.stringify(rows)
+            });
+            showToast("SEMUA PESAN DITANDAI DIBACA");
+        } catch(e) { console.error('markAllMailRead:', e); }
+    }
+
+    // ── ADMIN: kirim pesan broadcast ──────────────────────
+    function populateMsgTypesSelector() {
+        const sel = document.getElementById('msgTypes');
+        if (!sel) return;
+        // Kumpulkan semua tipe unik dari seluruh line
+        const allTypes = new Set();
+        for (let ln = 1; ln <= 4; ln++) {
+            (db['line'+ln] || []).forEach(item => { if (item.type) allTypes.add(item.type); });
+        }
+        const sorted = [...allTypes].sort();
+        sel.innerHTML = sorted.map(t => `<option value="${t}">${t}</option>`).join('');
+    }
+
+    async function sendBroadcastMessage() {
+        if (!sbReady()) { showToast("SUPABASE BELUM DIKONFIGURASI"); return; }
+        const title = document.getElementById('msgTitle').value.trim();
+        const body  = document.getElementById('msgBody').value.trim();
+        const sel   = document.getElementById('msgTypes');
+        const selectedTypes = [...sel.selectedOptions].map(o => o.value);
+        if (!title) { showToast("JUDUL PESAN WAJIB DIISI"); return; }
+
+        const name = localStorage.getItem('sb_name') || currentUser?.email || 'Admin';
+        const payload = {
+            id: genMsgId(),
+            title,
+            body,
+            types: selectedTypes.join(','),
+            sender: name,
+            created_at: new Date().toISOString()
+        };
+        try {
+            const res = await fetch(`${sbUrl}/rest/v1/app_messages`, {
+                method: 'POST',
+                headers: { ...sbHeaders(), 'Prefer': 'return=minimal' },
+                body: JSON.stringify(payload)
+            });
+            if (!res.ok) { const t = await res.text(); throw new Error(t.substring(0,100)); }
+            showToast("PESAN TERKIRIM KE SEMUA USER");
+            document.getElementById('msgTitle').value = '';
+            document.getElementById('msgBody').value = '';
+            [...sel.options].forEach(o => o.selected = false);
+            addHistory('cloud', 0, title, 'Pemberitahuan dikirim ke semua user');
+        } catch(e) {
+            showToast("GAGAL KIRIM PESAN");
+            console.error('sendBroadcastMessage:', e);
+        }
+    }
+
+    async function openSentMessagesModal() {
+        document.getElementById('sentMessagesModal').classList.remove('hidden');
+        const list = document.getElementById('sentMessagesList');
+        list.innerHTML = `<div class="py-16 text-center text-slate-500 text-[10px] font-bold uppercase italic tracking-widest">Memuat...</div>`;
+        try {
+            const res = await fetch(`${sbUrl}/rest/v1/app_messages?select=*&order=created_at.desc&limit=100`, {
+                headers: { 'apikey': sbKey, 'Authorization': 'Bearer ' + (accessToken || sbKey) }
+            });
+            const rows = res.ok ? await res.json() : [];
+            if (rows.length === 0) {
+                list.innerHTML = `<div class="py-16 text-center text-slate-500 text-[10px] font-bold uppercase italic tracking-widest">Belum ada pesan terkirim</div>`;
+                return;
+            }
+            list.innerHTML = rows.map(m => {
+                const types = typesArray(m.types);
+                return `
+                <div class="flex items-start gap-3 bg-slate-900/60 rounded-2xl px-4 py-3.5 border border-white/5">
+                    <div class="flex-1 min-w-0">
+                        <span class="text-[10px] font-black text-white">${m.title || '(Tanpa judul)'}</span>
+                        ${m.body ? `<p class="text-[10px] text-slate-500 mt-1 leading-relaxed">${m.body}</p>` : ''}
+                        ${types.length ? `<div class="flex gap-1 flex-wrap mt-1.5">${types.map(t => `<span class="text-[8px] font-black px-1.5 py-0.5 rounded-md uppercase tracking-widest badge-cloud">${t}</span>`).join('')}</div>` : ''}
+                        <p class="text-[9px] text-slate-600 font-mono mt-1">${formatHistDate(new Date(m.created_at).getTime())}${m.sender ? ' · ' + m.sender : ''}</p>
+                    </div>
+                    <button onclick="deleteSentMessage('${m.id}')" class="flex-shrink-0 w-7 h-7 rounded-lg bg-rose-500/0 hover:bg-rose-500/15 text-slate-600 hover:text-rose-400 flex items-center justify-center transition-all" title="Hapus pesan ini">
+                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M6 18L18 6M6 6l12 12"></path></svg>
+                    </button>
+                </div>`;
+            }).join('');
+        } catch(e) {
+            list.innerHTML = `<div class="py-16 text-center text-rose-500 text-[10px] font-bold uppercase italic tracking-widest">Gagal memuat pesan</div>`;
+        }
+    }
+
+    async function deleteSentMessage(id) {
+        if (!confirm('Hapus pesan ini? User tidak akan melihatnya lagi.')) return;
+        try {
+            await fetch(`${sbUrl}/rest/v1/app_messages?id=eq.${id}`, {
+                method: 'DELETE',
+                headers: sbHeaders()
+            });
+            showToast("PESAN DIHAPUS");
+            openSentMessagesModal();
+            fetchMailbox();
+        } catch(e) {
+            showToast("GAGAL HAPUS PESAN");
+        }
+    }
+
+    function startMailboxPolling() {
+        if (mailboxPollInterval) clearInterval(mailboxPollInterval);
+        mailboxPollInterval = setInterval(() => fetchMailbox(false), 60000); // cek pesan baru tiap 60 detik
+    }
     </script>
 </body>
 </html>
