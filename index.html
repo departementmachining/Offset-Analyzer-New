@@ -613,20 +613,25 @@ CREATE POLICY mread_delete ON app_message_reads FOR DELETE USING (true);</div>
                 </div>
             </div>
 
-            <!-- CHIP REPAIR: PILIH KONDISI CHIP TR04 -->
+            <!-- CHIP REPAIR: PILIH KONDISI CHIP TL404 -->
             <div class="premium-card p-6 border-l-4 border-fuchsia-500 bg-gradient-to-r from-fuchsia-500/5 to-transparent">
-                <div class="space-y-2">
-                    <label class="text-[10px] font-black text-fuchsia-400 uppercase tracking-widest ml-1">Kondisi Chip — TR04 Sumbu X OP2</label>
+                <div class="flex items-center justify-between gap-4 mb-1">
+                    <label class="text-[10px] font-black text-fuchsia-400 uppercase tracking-widest ml-1">Chip Repair — TL404 Sumbu X OP2</label>
+                    <button id="chipToggleBtn" onclick="toggleChipRepair()" class="relative w-14 h-7 rounded-full transition-colors duration-200 bg-slate-700 flex-shrink-0" title="Aktifkan Chip Repair">
+                        <span id="chipToggleKnob" class="absolute top-1 left-1 w-5 h-5 rounded-full bg-slate-300 transition-transform duration-200"></span>
+                    </button>
+                </div>
+                <div id="chipSelectorWrap" class="space-y-2 hidden">
                     <select id="chipSelector" onchange="updateChipOffset()" class="filter-select w-full bg-[#141b2b] border border-fuchsia-500/20 rounded-xl px-4 py-3.5 text-sm font-bold text-fuchsia-300 outline-none cursor-pointer">
-                        <option value="none">— Tidak Aktif —</option>
                         <option value="baru">Chip Baru</option>
                         <option value="r1">Repair 1x</option>
                         <option value="r2">Repair 2x</option>
                         <option value="r3">Repair 3x</option>
-                        <option value="r4" selected>Repair 4x (Aktif Sekarang)</option>
+                        <option value="r4" selected>Repair 4x (Setting Awal)</option>
                     </select>
                 </div>
-                <p class="text-[9px] text-slate-500 font-bold uppercase tracking-widest mt-3 ml-1">Hasil otomatis tampil di kartu SELISIH OP 2 di bawah · Tool manual lainnya diatur di Admin Panel</p>
+                <p id="chipInactiveNote" class="text-[9px] text-slate-500 font-bold uppercase tracking-widest mt-2 ml-1">Nonaktif — aktifkan toggle untuk memilih kondisi chip</p>
+                <p id="chipActiveNote" class="hidden text-[9px] text-slate-500 font-bold uppercase tracking-widest mt-3 ml-1">Hasil otomatis tampil di kartu SELISIH OP 2 di bawah · Tool manual lainnya diatur di Admin Panel</p>
             </div>
 
             <!-- COMPARISON PANELS -->
@@ -792,6 +797,27 @@ CREATE POLICY mread_delete ON app_message_reads FOR DELETE USING (true);</div>
                 </div>
             </div>
 
+            <!-- STATUS SINKRONISASI CHIP SETTINGS -->
+            <div id="chipCloudStatusBox" class="premium-card p-5 border-l-8 border-slate-600 bg-slate-800/30">
+                <div class="flex items-start gap-3">
+                    <svg id="chipCloudStatusIcon" class="w-4 h-4 text-slate-400 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
+                    <div class="flex-1">
+                        <p id="chipCloudStatusText" class="text-[10px] font-black uppercase tracking-widest text-slate-400">Mengecek status sinkronisasi Supabase...</p>
+                        <div id="chipCloudSetupGuide" class="hidden mt-3 bg-black/30 rounded-xl p-4 space-y-2">
+                            <p class="text-[10px] text-slate-400 font-bold uppercase tracking-widest mb-2">Buat tabel ini sekali saja di Supabase → SQL Editor:</p>
+                            <pre class="text-[10px] font-mono text-emerald-300 bg-black/50 rounded-lg p-3 overflow-x-auto whitespace-pre">create table chip_settings (
+  id int primary key,
+  manual_items jsonb default '[]',
+  excluded_types jsonb default '[]'
+);
+alter table chip_settings enable row level security;
+create policy "public rw" on chip_settings for all using (true) with check (true);</pre>
+                            <p class="text-[9px] text-slate-500">Setelah tabel dibuat, pengaturan Chip Repair &amp; Tipe Dikecualikan akan otomatis tersinkron ke semua browser/device.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
             <!-- CHIP REPAIR MANUAL PANEL (ADMIN ONLY) -->
             <div class="premium-card p-6 border-l-8 border-fuchsia-500 bg-fuchsia-500/5">
                 <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-5">
@@ -800,7 +826,7 @@ CREATE POLICY mread_delete ON app_message_reads FOR DELETE USING (true);</div>
                             <span class="w-2.5 h-2.5 rounded-full bg-fuchsia-400 flex-shrink-0" style="box-shadow:0 0 8px #e879f9"></span>
                             Chip Repair — Tambah Tool Manual
                         </h3>
-                        <p class="text-[10px] text-slate-400 mt-1">Tambahkan selisih offset manual untuk tool selain TR04, per OP dan per sumbu (X/Z)</p>
+                        <p class="text-[10px] text-slate-400 mt-1">Tambahkan selisih offset manual untuk tool selain TL404, per OP dan per sumbu (X/Z)</p>
                     </div>
                     <button onclick="openManualChipModal()" class="px-6 py-3 bg-fuchsia-500 hover:bg-fuchsia-600 text-slate-950 rounded-xl text-[10px] font-black uppercase tracking-widest transition flex items-center justify-center gap-2 whitespace-nowrap">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4"></path></svg>
@@ -808,6 +834,18 @@ CREATE POLICY mread_delete ON app_message_reads FOR DELETE USING (true);</div>
                     </button>
                 </div>
                 <div id="manualChipList" class="space-y-2"></div>
+            </div>
+
+            <!-- TYPE DIKECUALIKAN DARI TL404 OP2 (ADMIN ONLY) -->
+            <div class="premium-card p-6 border-l-8 border-rose-500 bg-rose-500/5">
+                <div class="mb-5">
+                    <h3 class="font-black text-white text-sm uppercase tracking-wider flex items-center gap-2">
+                        <span class="w-2.5 h-2.5 rounded-full bg-rose-400 flex-shrink-0" style="box-shadow:0 0 8px #fb7185"></span>
+                        Tipe Dikecualikan Dari TL404 OP2
+                    </h3>
+                    <p class="text-[10px] text-slate-400 mt-1">Tipe yang dicentang tidak akan menampilkan baris TL404 OP2 (chip repair) di kartu SELISIH OP 2, baik saat dipilih sebagai Master maupun Target</p>
+                </div>
+                <div id="chipExcludeTypeList" class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-2"></div>
             </div>
 
             <!-- MODAL: TAMBAH CHIP REPAIR MANUAL -->
@@ -1324,6 +1362,11 @@ CREATE POLICY mread_delete ON app_message_reads FOR DELETE USING (true);</div>
             showSyncBanner("Menghubungkan ke Supabase...", true);
             await fetchAppConfig();
             await fetchFromCloud(false);
+            await fetchChipSettingsFromCloud();
+            renderManualChipList();
+            renderChipExcludeTypeList();
+            updateChipCloudStatusBox();
+            updateComparison();
             startAutoSync();
             await flushPendingSync();
             await fetchMailbox(false);
@@ -1984,8 +2027,8 @@ CREATE POLICY mread_delete ON app_message_reads FOR DELETE USING (true);</div>
         const tableBody = document.getElementById('detailTableBody');
         if (!t1 || !t2) {
             tableBody.innerHTML = `<tr><td colspan="5" class="px-8 py-20 text-center text-slate-500 italic font-black text-xs uppercase tracking-widest">Silakan Pilih Tipe Master & Target</td></tr>`;
-            renderSimplePanel(getChipExtraItems('OP1'), 'op1Content', 'count-op1', 'blue');
-            renderSimplePanel(getChipExtraItems('OP2'), 'op2Content', 'count-op2', 'emerald');
+            renderSimplePanel(getChipExtraItems('OP1', t1, t2), 'op1Content', 'count-op1', 'blue');
+            renderSimplePanel(getChipExtraItems('OP2', t1, t2), 'op2Content', 'count-op2', 'emerald');
             return;
         }
         const data1 = (db[`line${activeLine}`] || []).filter(x => x.type === t1);
@@ -2028,36 +2071,177 @@ CREATE POLICY mread_delete ON app_message_reads FOR DELETE USING (true);</div>
         });
 
         tableBody.innerHTML = fullRows || `<tr><td colspan="5" class="px-8 py-16 text-center text-slate-500 font-black uppercase tracking-widest italic">Tidak Ada Data Perkakas yang Cocok</td></tr>`;
-        renderSimplePanel(op1List.concat(getChipExtraItems('OP1')), 'op1Content', 'count-op1', 'blue');
-        renderSimplePanel(op2List.concat(getChipExtraItems('OP2')), 'op2Content', 'count-op2', 'emerald');
+        renderSimplePanel(op1List.concat(getChipExtraItems('OP1', t1, t2)), 'op1Content', 'count-op1', 'blue');
+        renderSimplePanel(op2List.concat(getChipExtraItems('OP2', t1, t2)), 'op2Content', 'count-op2', 'emerald');
     }
 
-    // ── CHIP REPAIR CALCULATOR: TR04 Sumbu X OP2 ──────────────
+    // ── CHIP REPAIR CALCULATOR: TL404 Sumbu X OP2 ──────────────
     // Basis aktif saat ini = Repair 4x (delta 0). Selisih tiap level chip = 0,05.
     // Urutan: Baru -0,20 | Repair1x -0,15 | Repair2x -0,10 | Repair3x -0,05 | Repair4x 0 (basis)
     const CHIP_STEP = 0.05;
     const CHIP_LEVELS = { baru: 4, r1: 3, r2: 2, r3: 1, r4: 0 };
     const CHIP_LABELS = { baru: 'Chip Baru', r1: 'Repair 1x', r2: 'Repair 2x', r3: 'Repair 3x', r4: 'Repair 4x' };
 
-    // Daftar item chip repair yang ditambahkan manual oleh user: {tool, op, axis, value}
-    let manualChipItems = JSON.parse(localStorage.getItem('manual_chip_items') || '[]');
+    // Status ON/OFF chip repair — SELALU nonaktif setiap kali aplikasi dibuka (tidak disinkronkan)
+    let chipRepairEnabled = false;
 
-    function saveManualChipItems() {
-        localStorage.setItem('manual_chip_items', JSON.stringify(manualChipItems));
+    // Daftar item chip repair yang ditambahkan manual oleh user: {tool, op, axis, value}
+    // Daftar tipe yang dikecualikan dari TL404 OP2 (baik sebagai master maupun target)
+    // Keduanya SINKRON via Supabase (tabel chip_settings) agar sama di semua browser/device.
+    // Fallback ke localStorage jika tabel belum dibuat di Supabase atau sedang offline.
+    let manualChipItems = JSON.parse(localStorage.getItem('manual_chip_items') || '[]');
+    let chipExcludedTypes = JSON.parse(localStorage.getItem('chip_excluded_types') || '[]');
+    let chipSettingsCloudOK = false; // true jika tabel chip_settings berhasil diakses di Supabase
+
+    // Ambil pengaturan chip (manual items + tipe dikecualikan) dari Supabase — dipanggil saat load & saat masuk admin
+    async function fetchChipSettingsFromCloud() {
+        if (!sbReady()) return;
+        try {
+            const res = await fetch(`${sbUrl}/rest/v1/chip_settings?id=eq.1&select=*`, {
+                method: 'GET',
+                headers: { 'apikey': sbKey, 'Authorization': 'Bearer ' + (accessToken || sbKey), 'Content-Type': 'application/json' }
+            });
+            if (!res.ok) { chipSettingsCloudOK = false; return; }
+            const rows = await res.json();
+            chipSettingsCloudOK = true;
+            if (rows && rows.length > 0) {
+                manualChipItems = rows[0].manual_items || [];
+                chipExcludedTypes = rows[0].excluded_types || [];
+                localStorage.setItem('manual_chip_items', JSON.stringify(manualChipItems));
+                localStorage.setItem('chip_excluded_types', JSON.stringify(chipExcludedTypes));
+            }
+        } catch(e) {
+            chipSettingsCloudOK = false;
+            console.error('fetchChipSettingsFromCloud error:', e);
+        }
     }
 
-    // Menghasilkan daftar item tambahan (chip TR04 otomatis + manual) untuk sebuah OP ('OP1'/'OP2')
-    function getChipExtraItems(opFilter) {
+    // Simpan pengaturan chip (manual items + tipe dikecualikan) ke Supabase, dengan fallback localStorage
+    async function saveChipSettingsToCloud() {
+        localStorage.setItem('manual_chip_items', JSON.stringify(manualChipItems));
+        localStorage.setItem('chip_excluded_types', JSON.stringify(chipExcludedTypes));
+        if (!sbReady()) { updateChipCloudStatusBox(); return; }
+        try {
+            const res = await fetch(`${sbUrl}/rest/v1/chip_settings?on_conflict=id`, {
+                method: 'POST',
+                headers: { ...sbHeaders(), 'Prefer': 'resolution=merge-duplicates,return=minimal' },
+                body: JSON.stringify({ id: 1, manual_items: manualChipItems, excluded_types: chipExcludedTypes })
+            });
+            if (!res.ok) {
+                chipSettingsCloudOK = false;
+                const errText = await res.text();
+                console.error('saveChipSettingsToCloud gagal:', res.status, errText.substring(0,150));
+                showToast("⚠ TABEL chip_settings BELUM ADA DI SUPABASE — TERSIMPAN LOKAL SAJA");
+            } else {
+                chipSettingsCloudOK = true;
+            }
+        } catch(e) {
+            chipSettingsCloudOK = false;
+            console.error('saveChipSettingsToCloud error:', e);
+        }
+        updateChipCloudStatusBox();
+    }
+
+    function saveManualChipItems() {
+        saveChipSettingsToCloud();
+    }
+
+    function saveChipExcludedTypes() {
+        saveChipSettingsToCloud();
+    }
+
+    function updateChipCloudStatusBox() {
+        const box = document.getElementById('chipCloudStatusBox');
+        const text = document.getElementById('chipCloudStatusText');
+        const icon = document.getElementById('chipCloudStatusIcon');
+        const guide = document.getElementById('chipCloudSetupGuide');
+        if (!box || !text) return;
+
+        if (chipSettingsCloudOK) {
+            box.className = "premium-card p-5 border-l-8 border-emerald-500 bg-emerald-500/5";
+            text.className = "text-[10px] font-black uppercase tracking-widest text-emerald-400";
+            text.innerText = "✓ Tersinkron ke Supabase — Pengaturan Sama Di Semua Browser & Device";
+            if (icon) icon.setAttribute('class', 'w-4 h-4 text-emerald-400 flex-shrink-0 mt-0.5');
+            guide.classList.add('hidden');
+        } else {
+            box.className = "premium-card p-5 border-l-8 border-amber-500 bg-amber-500/5";
+            text.className = "text-[10px] font-black uppercase tracking-widest text-amber-400";
+            text.innerText = "⚠ Belum Tersinkron Ke Supabase — Pengaturan Hanya Tersimpan Di Browser Ini";
+            if (icon) icon.setAttribute('class', 'w-4 h-4 text-amber-400 flex-shrink-0 mt-0.5');
+            guide.classList.remove('hidden');
+        }
+    }
+
+    function renderChipExcludeTypeList() {
+        const container = document.getElementById('chipExcludeTypeList');
+        if (!container) return;
+        const types = [...new Set((db[`line${activeLine}`] || []).map(d => d.type))].sort();
+        if (types.length === 0) {
+            container.innerHTML = `<div class="col-span-full py-8 text-center text-slate-500 text-[10px] font-bold uppercase italic tracking-widest">Belum Ada Tipe Pada Line Ini</div>`;
+            return;
+        }
+        container.innerHTML = types.map(t => {
+            const checked = chipExcludedTypes.includes(t);
+            return `
+            <label class="flex items-center gap-2 bg-slate-900/80 border ${checked ? 'border-rose-500/40' : 'border-white/5'} rounded-xl px-3 py-2.5 cursor-pointer transition hover:border-rose-500/30">
+                <input type="checkbox" ${checked ? 'checked' : ''} onchange="toggleChipExcludeType('${t}')" class="w-4 h-4 accent-rose-500 flex-shrink-0">
+                <span class="text-xs font-bold ${checked ? 'text-rose-300' : 'text-slate-300'} truncate">${t}</span>
+            </label>`;
+        }).join('');
+    }
+
+    async function toggleChipExcludeType(type) {
+        const idx = chipExcludedTypes.indexOf(type);
+        if (idx >= 0) chipExcludedTypes.splice(idx, 1);
+        else chipExcludedTypes.push(type);
+        renderChipExcludeTypeList();
+        updateComparison();
+        await saveChipExcludedTypes();
+    }
+
+    function toggleChipRepair() {
+        chipRepairEnabled = !chipRepairEnabled;
+        const btn = document.getElementById('chipToggleBtn');
+        const knob = document.getElementById('chipToggleKnob');
+        const wrap = document.getElementById('chipSelectorWrap');
+        const inactiveNote = document.getElementById('chipInactiveNote');
+        const activeNote = document.getElementById('chipActiveNote');
+
+        if (chipRepairEnabled) {
+            btn.classList.remove('bg-slate-700');
+            btn.classList.add('bg-fuchsia-500');
+            knob.classList.add('translate-x-7');
+            wrap.classList.remove('hidden');
+            inactiveNote.classList.add('hidden');
+            activeNote.classList.remove('hidden');
+            const sel = document.getElementById('chipSelector');
+            if (sel) sel.value = 'r4'; // default otomatis ke Repair 4x setiap diaktifkan
+        } else {
+            btn.classList.add('bg-slate-700');
+            btn.classList.remove('bg-fuchsia-500');
+            knob.classList.remove('translate-x-7');
+            wrap.classList.add('hidden');
+            inactiveNote.classList.remove('hidden');
+            activeNote.classList.add('hidden');
+        }
+        updateChipOffset();
+    }
+
+    // Menghasilkan daftar item tambahan (chip TL404 otomatis + manual) untuk sebuah OP ('OP1'/'OP2')
+    function getChipExtraItems(opFilter, t1, t2) {
         const items = [];
         const sel = document.getElementById('chipSelector');
-        const chip = sel ? sel.value : 'none';
+        const chip = (chipRepairEnabled && sel) ? sel.value : null;
 
-        // TR04 sumbu X OP2 otomatis dari dropdown kondisi chip
-        if (opFilter === 'OP2' && chip && chip !== 'none') {
+        // Tipe master/target termasuk daftar dikecualikan? Jika ya, baris TL404 OP2 disembunyikan
+        const isExcluded = (t1 && chipExcludedTypes.includes(t1)) || (t2 && chipExcludedTypes.includes(t2));
+
+        // TL404 sumbu X OP2 otomatis dari toggle + dropdown kondisi chip
+        if (opFilter === 'OP2' && chip && !isExcluded) {
             const stepsFromR4 = CHIP_LEVELS[chip];
             const delta = -(stepsFromR4 * CHIP_STEP);
             const formattedDx = delta > 0 ? `+${delta.toFixed(2)}` : delta.toFixed(2);
-            items.push({ tool: 'TR04', op: `OP2 · ${CHIP_LABELS[chip]}`, dx: formattedDx, dz: '0.000' });
+            items.push({ tool: 'TL404', op: `OP2 · ${CHIP_LABELS[chip]}`, dx: formattedDx, dz: '0.000' });
         }
 
         // Item manual sesuai OP yang dipilih user
@@ -2087,13 +2271,18 @@ CREATE POLICY mread_delete ON app_message_reads FOR DELETE USING (true);</div>
         const bannerIcon = document.getElementById('chipSettingBannerIcon');
         if (!sel || !banner || !bannerText) return;
 
-        const chip = sel.value;
         const bannerBox = banner.querySelector('div');
 
-        if (chip === 'none') {
-            banner.classList.add('hidden');
+        if (!chipRepairEnabled) {
+            banner.classList.remove('hidden');
+            bannerText.innerText = `Chip Repair Nonaktif — Aktifkan Toggle Untuk Memilih Kondisi Chip`;
+            bannerText.className = "text-slate-400 text-[10px] font-black uppercase tracking-widest";
+            if (bannerIcon) bannerIcon.setAttribute('class', 'w-4 h-4 text-slate-400 flex-shrink-0');
+            bannerBox.className = "bg-slate-800/40 border border-white/10 rounded-2xl px-6 py-3 flex items-center gap-3";
             return;
         }
+
+        const chip = sel.value;
         banner.classList.remove('hidden');
 
         if (chip === 'r4') {
@@ -2113,7 +2302,7 @@ CREATE POLICY mread_delete ON app_message_reads FOR DELETE USING (true);</div>
         document.getElementById('manualChipModal').classList.remove('hidden');
     }
 
-    function addManualChip() {
+    async function addManualChip() {
         const tool = document.getElementById('manualChipTool').value.trim();
         const op = document.getElementById('manualChipOp').value;
         const axis = document.getElementById('manualChipAxis').value;
@@ -2123,7 +2312,6 @@ CREATE POLICY mread_delete ON app_message_reads FOR DELETE USING (true);</div>
         if (value === '' || isNaN(parseFloat(value))) { showToast("NILAI SELISIH WAJIB DIISI"); return; }
 
         manualChipItems.push({ tool: tool.toUpperCase(), op, axis, value: parseFloat(value) });
-        saveManualChipItems();
 
         document.getElementById('manualChipTool').value = '';
         document.getElementById('manualChipValue').value = '';
@@ -2131,14 +2319,15 @@ CREATE POLICY mread_delete ON app_message_reads FOR DELETE USING (true);</div>
         showToast("TOOL MANUAL DITAMBAHKAN");
         renderManualChipList();
         updateComparison();
+        await saveManualChipItems();
     }
 
-    function deleteManualChip(idx) {
+    async function deleteManualChip(idx) {
         manualChipItems.splice(idx, 1);
-        saveManualChipItems();
         renderManualChipList();
         updateComparison();
         showToast("TOOL MANUAL DIHAPUS");
+        await saveManualChipItems();
     }
 
     function renderManualChipList() {
@@ -2359,6 +2548,8 @@ CREATE POLICY mread_delete ON app_message_reads FOR DELETE USING (true);</div>
             renderDatabase();
             populateMsgTypesSelector();
             renderManualChipList();
+            renderChipExcludeTypeList();
+            updateChipCloudStatusBox();
         }
         updateKPIs();
     }
@@ -2369,7 +2560,7 @@ CREATE POLICY mread_delete ON app_message_reads FOR DELETE USING (true);</div>
         showToast("SESI ADMIN BERAKHIR");
     }
 
-    function switchLine(n) { activeLine = parseInt(n); updateTypeDropdowns(); updateComparison(); updateKPIs(); updateChipOffset(); }
+    function switchLine(n) { activeLine = parseInt(n); updateTypeDropdowns(); updateComparison(); updateKPIs(); updateChipOffset(); renderChipExcludeTypeList(); }
     function closeEditModal() { document.getElementById('editModal').classList.add('hidden'); }
 
     function setAdminInputLine(n) {
