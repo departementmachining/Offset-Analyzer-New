@@ -836,14 +836,14 @@ create policy "public rw" on chip_settings for all using (true) with check (true
                 <div id="manualChipList" class="space-y-2"></div>
             </div>
 
-            <!-- TYPE DIKECUALIKAN DARI TR404 OP2 (ADMIN ONLY) -->
+            <!-- TYPE DIKECUALIKAN DARI TL404 OP2 (ADMIN ONLY) -->
             <div class="premium-card p-6 border-l-8 border-rose-500 bg-rose-500/5">
                 <div class="mb-5">
                     <h3 class="font-black text-white text-sm uppercase tracking-wider flex items-center gap-2">
                         <span class="w-2.5 h-2.5 rounded-full bg-rose-400 flex-shrink-0" style="box-shadow:0 0 8px #fb7185"></span>
-                        Tipe Dikecualikan Dari TR404 OP2
+                        Tipe Dikecualikan Dari TL404 OP2
                     </h3>
-                    <p class="text-[10px] text-slate-400 mt-1">Tipe yang dicentang tidak akan menampilkan baris TR404 OP2 (chip repair) di kartu SELISIH OP 2, baik saat dipilih sebagai Master maupun Target</p>
+                    <p class="text-[10px] text-slate-400 mt-1">Tipe yang dicentang tidak akan menampilkan baris TL404 OP2 (data asli database) di kartu SELISIH OP 2, baik saat dipilih sebagai Master maupun Target. Fitur ini terpisah dari Chip Repair TR404.</p>
                 </div>
                 <div id="chipExcludeTypeList" class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-2"></div>
             </div>
@@ -2065,6 +2065,16 @@ create policy "public rw" on chip_settings for all using (true) with check (true
 
                 if (isDiff) {
                     const opStr = m1.op.toUpperCase();
+                    const toolStr = (m1.tool || '').toUpperCase();
+                    const isTl404Op2 = toolStr.includes('TL404') && (opStr.includes('2') && !opStr.includes('1'));
+                    const excludedNormalized = chipExcludedTypes.map(x => String(x).trim());
+                    const isTypeExcluded = excludedNormalized.includes(String(t1).trim()) || excludedNormalized.includes(String(t2).trim());
+
+                    // Sembunyikan baris TL404 OP2 jika tipe Master/Target termasuk yang dikecualikan
+                    if (isTl404Op2 && isTypeExcluded) {
+                        return;
+                    }
+
                     if (opStr.includes('1') || opStr.includes('10')) op1List.push({tool: m1.tool, op: m1.op, dx: formattedDx, dz: formattedDz});
                     else op2List.push({tool: m1.tool, op: m1.op, dx: formattedDx, dz: formattedDz});
                 }
@@ -2087,7 +2097,7 @@ create policy "public rw" on chip_settings for all using (true) with check (true
     let chipRepairEnabled = false;
 
     // Daftar item chip repair yang ditambahkan manual oleh user: {tool, op, axis, value}
-    // Daftar tipe yang dikecualikan dari TR404 OP2 (baik sebagai master maupun target)
+    // Daftar tipe yang dikecualikan dari TL404 OP2 — data ASLI dari database (bukan chip repair TR404)
     // Keduanya SINKRON via Supabase (tabel chip_settings) agar sama di semua browser/device.
     // Fallback ke localStorage jika tabel belum dibuat di Supabase atau sedang offline.
     let manualChipItems = JSON.parse(localStorage.getItem('manual_chip_items') || '[]');
@@ -2176,9 +2186,14 @@ create policy "public rw" on chip_settings for all using (true) with check (true
     function renderChipExcludeTypeList() {
         const container = document.getElementById('chipExcludeTypeList');
         if (!container) return;
-        const types = [...new Set((db[`line${activeLine}`] || []).map(d => d.type))].sort();
+        // Gabungan tipe dari SEMUA line (1-4), bukan hanya line yang sedang aktif
+        const allTypes = [];
+        for (let ln = 1; ln <= 4; ln++) {
+            (db[`line${ln}`] || []).forEach(d => allTypes.push(d.type));
+        }
+        const types = [...new Set(allTypes)].sort();
         if (types.length === 0) {
-            container.innerHTML = `<div class="col-span-full py-8 text-center text-slate-500 text-[10px] font-bold uppercase italic tracking-widest">Belum Ada Tipe Pada Line Ini</div>`;
+            container.innerHTML = `<div class="col-span-full py-8 text-center text-slate-500 text-[10px] font-bold uppercase italic tracking-widest">Belum Ada Tipe Pada Database</div>`;
             return;
         }
         container.innerHTML = types.map(t => {
@@ -2230,17 +2245,15 @@ create policy "public rw" on chip_settings for all using (true) with check (true
     }
 
     // Menghasilkan daftar item tambahan (chip TR404 otomatis + manual) untuk sebuah OP ('OP1'/'OP2')
+    // Catatan: fitur "Tipe Dikecualikan" TIDAK memengaruhi chip repair TR404 ini —
+    // pengecualian hanya berlaku untuk baris TL404 OP2 dari data asli database.
     function getChipExtraItems(opFilter, t1, t2) {
         const items = [];
         const sel = document.getElementById('chipSelector');
         const chip = (chipRepairEnabled && sel) ? sel.value : null;
 
-        // Tipe master/target termasuk daftar dikecualikan? Jika ya, baris TR404 OP2 disembunyikan
-        const excludedNormalized = chipExcludedTypes.map(x => String(x).trim());
-        const isExcluded = (t1 && excludedNormalized.includes(String(t1).trim())) || (t2 && excludedNormalized.includes(String(t2).trim()));
-
         // TR404 sumbu X OP2 otomatis dari toggle + dropdown kondisi chip
-        if (opFilter === 'OP2' && chip && !isExcluded) {
+        if (opFilter === 'OP2' && chip) {
             const stepsFromR4 = CHIP_LEVELS[chip];
             const delta = -(stepsFromR4 * CHIP_STEP);
             const formattedDx = delta > 0 ? `+${delta.toFixed(2)}` : delta.toFixed(2);
