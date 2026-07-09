@@ -506,21 +506,20 @@ CREATE POLICY mread_delete ON app_message_reads FOR DELETE USING (true);</div>
                 </h1>
                 <p class="text-xs text-slate-400 font-medium tracking-wide">Sistem Analisis Deviasi Dimensi Pemesinan CNC Presisi Tinggi</p>
             </div>
-            <div class="flex items-center gap-3">
-                <button onclick="openMailboxModal()" id="mailboxNavBtn" class="relative p-3.5 bg-slate-900/60 rounded-2xl backdrop-blur-md border border-white/10 text-slate-400 hover:text-amber-400 hover:border-amber-500/30 transition-all" title="Kotak Pesan">
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg>
+            <div class="flex items-center bg-slate-900/60 p-1.5 rounded-2xl backdrop-blur-md border border-white/10 gap-1">
+                <button onclick="openMailboxModal()" id="mailboxNavBtn" class="relative h-11 w-11 flex-shrink-0 rounded-xl flex items-center justify-center text-slate-400 hover:text-amber-400 hover:bg-white/5 transition-all" title="Kotak Pesan">
+                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg>
                     <span id="mailBadge" class="hidden hist-badge">0</span>
                 </button>
-                <div class="bg-slate-900/60 p-1.5 rounded-2xl backdrop-blur-md border border-white/10 flex gap-1">
-                    <button onclick="switchMenu('dashboard')" id="nav-dashboard" class="px-8 py-3.5 rounded-xl text-xs font-black transition-all nav-active flex items-center gap-2">
-                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path></svg>
-                        DASHBOARD
-                    </button>
-                    <button onclick="openAdminPanel()" id="adminNavBtn" class="hidden px-8 py-3.5 rounded-xl text-xs font-black transition-all text-slate-400 hover:text-white flex items-center gap-2">
-                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4"></path></svg>
-                        ADMIN PANEL
-                    </button>
-                </div>
+                <div class="w-px h-6 bg-white/10 mx-0.5"></div>
+                <button onclick="switchMenu('dashboard')" id="nav-dashboard" class="h-11 px-6 rounded-xl text-xs font-black transition-all nav-active flex items-center justify-center gap-2 whitespace-nowrap">
+                    <svg class="w-3.5 h-3.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path></svg>
+                    DASHBOARD
+                </button>
+                <button onclick="openAdminPanel()" id="nav-admin" class="hidden h-11 px-6 rounded-xl text-xs font-black transition-all text-slate-400 hover:text-white flex items-center justify-center gap-2 whitespace-nowrap">
+                    <svg class="w-3.5 h-3.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4"></path></svg>
+                    ADMIN PANEL
+                </button>
             </div>
         </div>
     </header>
@@ -531,6 +530,15 @@ CREATE POLICY mread_delete ON app_message_reads FOR DELETE USING (true);</div>
             <svg id="syncBannerIcon" class="w-4 h-4 text-amber-400 animate-spin-slow" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
             <span id="syncBannerText" class="text-amber-400 text-[10px] font-black uppercase tracking-widest">Menghubungkan ke Google Sheets...</span>
             <button onclick="document.getElementById('syncBanner').classList.add('hidden')" class="ml-auto text-slate-500 hover:text-white text-xs">✕</button>
+        </div>
+    </div>
+
+    <!-- CHIP SETTING NOTICE BANNER -->
+    <div id="chipSettingBanner" class="max-w-7xl mx-auto px-6 md:px-8 mt-2 mb-[-20px] relative z-10">
+        <div class="bg-fuchsia-500/10 border border-fuchsia-500/30 rounded-2xl px-6 py-3 flex items-center gap-3">
+            <svg id="chipSettingBannerIcon" class="w-4 h-4 text-fuchsia-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+            <span id="chipSettingBannerText" class="text-fuchsia-400 text-[10px] font-black uppercase tracking-widest">Setting Chip Aktif: Repair 4x (Setting Awal / Default)</span>
+            <button onclick="document.getElementById('chipSettingBanner').classList.add('hidden')" class="ml-auto text-slate-500 hover:text-white text-xs">✕</button>
         </div>
     </div>
 
@@ -605,63 +613,20 @@ CREATE POLICY mread_delete ON app_message_reads FOR DELETE USING (true);</div>
                 </div>
             </div>
 
-            <!-- CHIP REPAIR: PILIH KONDISI CHIP TR04 + TAMBAH MANUAL TOOL LAIN -->
+            <!-- CHIP REPAIR: PILIH KONDISI CHIP TR04 -->
             <div class="premium-card p-6 border-l-4 border-fuchsia-500 bg-gradient-to-r from-fuchsia-500/5 to-transparent">
-                <div class="flex flex-col lg:flex-row gap-6 lg:items-end">
-                    <div class="space-y-2 flex-1">
-                        <label class="text-[10px] font-black text-fuchsia-400 uppercase tracking-widest ml-1">Kondisi Chip — TR04 Sumbu X OP2</label>
-                        <select id="chipSelector" onchange="updateChipOffset()" class="filter-select w-full bg-[#141b2b] border border-fuchsia-500/20 rounded-xl px-4 py-3.5 text-sm font-bold text-fuchsia-300 outline-none cursor-pointer">
-                            <option value="none">— Tidak Aktif —</option>
-                            <option value="baru">Chip Baru</option>
-                            <option value="r1">Repair 1x</option>
-                            <option value="r2">Repair 2x</option>
-                            <option value="r3">Repair 3x</option>
-                            <option value="r4" selected>Repair 4x (Aktif Sekarang)</option>
-                        </select>
-                    </div>
-                    <button onclick="openManualChipModal()" class="bg-fuchsia-500/10 hover:bg-fuchsia-500/20 border border-fuchsia-500/30 text-fuchsia-300 px-6 py-3.5 rounded-xl text-[10px] font-black uppercase tracking-widest transition flex items-center justify-center gap-2">
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4"></path></svg>
-                        Tambah Tool Manual
-                    </button>
+                <div class="space-y-2">
+                    <label class="text-[10px] font-black text-fuchsia-400 uppercase tracking-widest ml-1">Kondisi Chip — TR04 Sumbu X OP2</label>
+                    <select id="chipSelector" onchange="updateChipOffset()" class="filter-select w-full bg-[#141b2b] border border-fuchsia-500/20 rounded-xl px-4 py-3.5 text-sm font-bold text-fuchsia-300 outline-none cursor-pointer">
+                        <option value="none">— Tidak Aktif —</option>
+                        <option value="baru">Chip Baru</option>
+                        <option value="r1">Repair 1x</option>
+                        <option value="r2">Repair 2x</option>
+                        <option value="r3">Repair 3x</option>
+                        <option value="r4" selected>Repair 4x (Aktif Sekarang)</option>
+                    </select>
                 </div>
-                <p class="text-[9px] text-slate-500 font-bold uppercase tracking-widest mt-3 ml-1">Hasil otomatis tampil di kartu SELISIH OP 2 di bawah</p>
-            </div>
-
-            <!-- MODAL: TAMBAH CHIP REPAIR MANUAL -->
-            <div id="manualChipModal" class="hidden fixed inset-0 z-[560] flex items-center justify-center p-4 bg-black/90 backdrop-blur-lg">
-                <div class="bg-[#0a0e1a] border border-fuchsia-500/20 rounded-[32px] p-8 max-w-md w-full shadow-2xl shadow-black animate-fade">
-                    <div class="flex items-center justify-between mb-6">
-                        <h2 class="text-lg font-black text-white">Tambah Chip Repair Manual</h2>
-                        <button onclick="document.getElementById('manualChipModal').classList.add('hidden')" class="w-8 h-8 bg-slate-800 hover:bg-slate-700 text-slate-400 rounded-xl flex items-center justify-center transition">
-                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M6 18L18 6M6 6l12 12"></path></svg>
-                        </button>
-                    </div>
-                    <div class="space-y-4">
-                        <div class="space-y-2">
-                            <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Nama Tool</label>
-                            <input id="manualChipTool" type="text" placeholder="Contoh: TR02" class="w-full bg-[#141b2b] border border-white/10 rounded-xl px-4 py-3 text-sm font-bold text-white outline-none focus:border-fuchsia-400 transition-all">
-                        </div>
-                        <div class="space-y-2">
-                            <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">OP</label>
-                            <select id="manualChipOp" class="filter-select w-full bg-[#141b2b] border border-white/10 rounded-xl px-4 py-3 text-sm font-bold text-white outline-none cursor-pointer">
-                                <option value="OP1">OP 1</option>
-                                <option value="OP2" selected>OP 2</option>
-                            </select>
-                        </div>
-                        <div class="space-y-2">
-                            <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Sumbu</label>
-                            <select id="manualChipAxis" class="filter-select w-full bg-[#141b2b] border border-white/10 rounded-xl px-4 py-3 text-sm font-bold text-white outline-none cursor-pointer">
-                                <option value="x">Sumbu X</option>
-                                <option value="z">Sumbu Z</option>
-                            </select>
-                        </div>
-                        <div class="space-y-2">
-                            <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Nilai Selisih (Offset)</label>
-                            <input id="manualChipValue" type="number" step="0.01" placeholder="Contoh: -0.05" class="w-full bg-[#141b2b] border border-white/10 rounded-xl px-4 py-3 text-sm font-bold text-white outline-none focus:border-fuchsia-400 transition-all font-mono">
-                        </div>
-                        <button onclick="addManualChip()" class="w-full bg-fuchsia-500 hover:bg-fuchsia-600 text-slate-950 px-6 py-3.5 rounded-xl text-[10px] font-black uppercase tracking-widest transition mt-2">Tambahkan ke Selisih OP</button>
-                    </div>
-                </div>
+                <p class="text-[9px] text-slate-500 font-bold uppercase tracking-widest mt-3 ml-1">Hasil otomatis tampil di kartu SELISIH OP 2 di bawah · Tool manual lainnya diatur di Admin Panel</p>
             </div>
 
             <!-- COMPARISON PANELS -->
@@ -823,6 +788,61 @@ CREATE POLICY mread_delete ON app_message_reads FOR DELETE USING (true);</div>
                             </div>
                             <div id="debugLog" class="font-mono text-[9px] text-emerald-400 bg-black/40 rounded-lg p-2 max-h-40 overflow-y-auto space-y-0.5 whitespace-pre-wrap break-all"></div>
                         </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- CHIP REPAIR MANUAL PANEL (ADMIN ONLY) -->
+            <div class="premium-card p-6 border-l-8 border-fuchsia-500 bg-fuchsia-500/5">
+                <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-5">
+                    <div>
+                        <h3 class="font-black text-white text-sm uppercase tracking-wider flex items-center gap-2">
+                            <span class="w-2.5 h-2.5 rounded-full bg-fuchsia-400 flex-shrink-0" style="box-shadow:0 0 8px #e879f9"></span>
+                            Chip Repair — Tambah Tool Manual
+                        </h3>
+                        <p class="text-[10px] text-slate-400 mt-1">Tambahkan selisih offset manual untuk tool selain TR04, per OP dan per sumbu (X/Z)</p>
+                    </div>
+                    <button onclick="openManualChipModal()" class="px-6 py-3 bg-fuchsia-500 hover:bg-fuchsia-600 text-slate-950 rounded-xl text-[10px] font-black uppercase tracking-widest transition flex items-center justify-center gap-2 whitespace-nowrap">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4"></path></svg>
+                        Tambah Tool Manual
+                    </button>
+                </div>
+                <div id="manualChipList" class="space-y-2"></div>
+            </div>
+
+            <!-- MODAL: TAMBAH CHIP REPAIR MANUAL -->
+            <div id="manualChipModal" class="hidden fixed inset-0 z-[560] flex items-center justify-center p-4 bg-black/90 backdrop-blur-lg">
+                <div class="bg-[#0a0e1a] border border-fuchsia-500/20 rounded-[32px] p-8 max-w-md w-full shadow-2xl shadow-black animate-fade">
+                    <div class="flex items-center justify-between mb-6">
+                        <h2 class="text-lg font-black text-white">Tambah Chip Repair Manual</h2>
+                        <button onclick="document.getElementById('manualChipModal').classList.add('hidden')" class="w-8 h-8 bg-slate-800 hover:bg-slate-700 text-slate-400 rounded-xl flex items-center justify-center transition">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M6 18L18 6M6 6l12 12"></path></svg>
+                        </button>
+                    </div>
+                    <div class="space-y-4">
+                        <div class="space-y-2">
+                            <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Nama Tool</label>
+                            <input id="manualChipTool" type="text" placeholder="Contoh: TR02" class="w-full bg-[#141b2b] border border-white/10 rounded-xl px-4 py-3 text-sm font-bold text-white outline-none focus:border-fuchsia-400 transition-all">
+                        </div>
+                        <div class="space-y-2">
+                            <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">OP</label>
+                            <select id="manualChipOp" class="filter-select w-full bg-[#141b2b] border border-white/10 rounded-xl px-4 py-3 text-sm font-bold text-white outline-none cursor-pointer">
+                                <option value="OP1">OP 1</option>
+                                <option value="OP2" selected>OP 2</option>
+                            </select>
+                        </div>
+                        <div class="space-y-2">
+                            <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Sumbu</label>
+                            <select id="manualChipAxis" class="filter-select w-full bg-[#141b2b] border border-white/10 rounded-xl px-4 py-3 text-sm font-bold text-white outline-none cursor-pointer">
+                                <option value="x">Sumbu X</option>
+                                <option value="z">Sumbu Z</option>
+                            </select>
+                        </div>
+                        <div class="space-y-2">
+                            <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Nilai Selisih (Offset)</label>
+                            <input id="manualChipValue" type="number" step="0.01" placeholder="Contoh: -0.05" class="w-full bg-[#141b2b] border border-white/10 rounded-xl px-4 py-3 text-sm font-bold text-white outline-none focus:border-fuchsia-400 transition-all font-mono">
+                        </div>
+                        <button onclick="addManualChip()" class="w-full bg-fuchsia-500 hover:bg-fuchsia-600 text-slate-950 px-6 py-3.5 rounded-xl text-[10px] font-black uppercase tracking-widest transition mt-2">Tambahkan ke Selisih OP</button>
                     </div>
                 </div>
             </div>
@@ -1198,7 +1218,7 @@ CREATE POLICY mread_delete ON app_message_reads FOR DELETE USING (true);</div>
     function updateAdminVisibility() {
         const admin = isAdmin();
         // Tombol Admin di navbar
-        const adminNavBtn = document.getElementById('adminNavBtn');
+        const adminNavBtn = document.getElementById('nav-admin');
         if (adminNavBtn) {
             adminNavBtn.classList.toggle('hidden', !admin);
         }
@@ -1287,6 +1307,7 @@ CREATE POLICY mread_delete ON app_message_reads FOR DELETE USING (true);</div>
         updateTypeDropdowns();
         updateKPIs();
         updateChipOffset();
+        updateChipSettingBanner();
 
         // Cek session existing
         const hasSession = await checkExistingSession();
@@ -2056,6 +2077,36 @@ CREATE POLICY mread_delete ON app_message_reads FOR DELETE USING (true);</div>
 
     function updateChipOffset() {
         updateComparison();
+        updateChipSettingBanner();
+    }
+
+    function updateChipSettingBanner() {
+        const sel = document.getElementById('chipSelector');
+        const banner = document.getElementById('chipSettingBanner');
+        const bannerText = document.getElementById('chipSettingBannerText');
+        const bannerIcon = document.getElementById('chipSettingBannerIcon');
+        if (!sel || !banner || !bannerText) return;
+
+        const chip = sel.value;
+        const bannerBox = banner.querySelector('div');
+
+        if (chip === 'none') {
+            banner.classList.add('hidden');
+            return;
+        }
+        banner.classList.remove('hidden');
+
+        if (chip === 'r4') {
+            bannerText.innerText = `Setting Chip Aktif: ${CHIP_LABELS[chip]} (Setting Awal / Default)`;
+            bannerText.className = "text-fuchsia-400 text-[10px] font-black uppercase tracking-widest";
+            if (bannerIcon) bannerIcon.setAttribute('class', 'w-4 h-4 text-fuchsia-400 flex-shrink-0');
+            bannerBox.className = "bg-fuchsia-500/10 border border-fuchsia-500/30 rounded-2xl px-6 py-3 flex items-center gap-3";
+        } else {
+            bannerText.innerText = `Setting Chip Aktif: ${CHIP_LABELS[chip]} — Berbeda Dari Setting Awal (Repair 4x)`;
+            bannerText.className = "text-amber-400 text-[10px] font-black uppercase tracking-widest";
+            if (bannerIcon) bannerIcon.setAttribute('class', 'w-4 h-4 text-amber-400 flex-shrink-0');
+            bannerBox.className = "bg-amber-500/10 border border-amber-500/30 rounded-2xl px-6 py-3 flex items-center gap-3";
+        }
     }
 
     function openManualChipModal() {
@@ -2078,7 +2129,40 @@ CREATE POLICY mread_delete ON app_message_reads FOR DELETE USING (true);</div>
         document.getElementById('manualChipValue').value = '';
         document.getElementById('manualChipModal').classList.add('hidden');
         showToast("TOOL MANUAL DITAMBAHKAN");
+        renderManualChipList();
         updateComparison();
+    }
+
+    function deleteManualChip(idx) {
+        manualChipItems.splice(idx, 1);
+        saveManualChipItems();
+        renderManualChipList();
+        updateComparison();
+        showToast("TOOL MANUAL DIHAPUS");
+    }
+
+    function renderManualChipList() {
+        const container = document.getElementById('manualChipList');
+        if (!container) return;
+        if (manualChipItems.length === 0) {
+            container.innerHTML = `<div class="py-8 text-center text-slate-500 text-[10px] font-bold uppercase italic tracking-widest">Belum Ada Tool Manual Ditambahkan</div>`;
+            return;
+        }
+        container.innerHTML = manualChipItems.map((m, idx) => {
+            const val = parseFloat(m.value);
+            const formatted = val > 0 ? `+${val.toFixed(3)}` : val.toFixed(3);
+            return `
+            <div class="bg-slate-900/80 p-4 rounded-xl border border-white/5 shadow-inner flex justify-between items-center">
+                <div>
+                    <div class="text-sm font-black text-white tracking-wide">${m.tool}</div>
+                    <div class="text-[8px] text-slate-500 font-bold uppercase tracking-widest">${m.op} · Sumbu ${m.axis.toUpperCase()}</div>
+                </div>
+                <div class="flex items-center gap-4">
+                    <div class="text-xs font-mono font-black text-fuchsia-400">${formatted}</div>
+                    <button onclick="deleteManualChip(${idx})" class="text-rose-400 hover:text-rose-300 text-[10px] font-black uppercase tracking-widest transition-colors">Hapus</button>
+                </div>
+            </div>`;
+        }).join('');
     }
 
     function updateKPIs() {
@@ -2266,14 +2350,15 @@ CREATE POLICY mread_delete ON app_message_reads FOR DELETE USING (true);</div>
         const dashBtn = document.getElementById('nav-dashboard');
         const adminBtn = document.getElementById('nav-admin');
         if (menu === 'dashboard') {
-            dashBtn.className = "px-8 py-3.5 rounded-xl text-xs font-black transition-all nav-active flex items-center gap-2";
-            adminBtn.className = "px-8 py-3.5 rounded-xl text-xs font-black transition-all text-slate-400 hover:text-white flex items-center gap-2";
+            dashBtn.className = "h-11 px-6 rounded-xl text-xs font-black transition-all nav-active flex items-center justify-center gap-2 whitespace-nowrap";
+            adminBtn.className = "h-11 px-6 rounded-xl text-xs font-black transition-all text-slate-400 hover:text-white flex items-center justify-center gap-2 whitespace-nowrap";
             updateComparison();
         } else {
-            adminBtn.className = "px-8 py-3.5 rounded-xl text-xs font-black transition-all nav-active flex items-center gap-2";
-            dashBtn.className = "px-8 py-3.5 rounded-xl text-xs font-black transition-all text-slate-400 hover:text-white flex items-center gap-2";
+            adminBtn.className = "h-11 px-6 rounded-xl text-xs font-black transition-all nav-active flex items-center justify-center gap-2 whitespace-nowrap";
+            dashBtn.className = "h-11 px-6 rounded-xl text-xs font-black transition-all text-slate-400 hover:text-white flex items-center justify-center gap-2 whitespace-nowrap";
             renderDatabase();
             populateMsgTypesSelector();
+            renderManualChipList();
         }
         updateKPIs();
     }
