@@ -605,21 +605,13 @@ CREATE POLICY mread_delete ON app_message_reads FOR DELETE USING (true);</div>
                 </div>
             </div>
 
-            <!-- CHIP REPAIR CALCULATOR: TR04 X OP2 -->
+            <!-- CHIP REPAIR: PILIH KONDISI CHIP TR04 + TAMBAH MANUAL TOOL LAIN -->
             <div class="premium-card p-6 border-l-4 border-fuchsia-500 bg-gradient-to-r from-fuchsia-500/5 to-transparent">
-                <div class="flex items-center gap-3 mb-5">
-                    <div class="p-2 bg-fuchsia-500/10 rounded-xl text-fuchsia-400">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 3v2m6-2v2M9 19v2m6-2v2M5 9H3m2 6H3m18-6h-2m2 6h-2M7 19h10a2 2 0 002-2V7a2 2 0 00-2-2H7a2 2 0 00-2 2v10a2 2 0 002 2zM9 9h6v6H9V9z"></path></svg>
-                    </div>
-                    <div>
-                        <h2 class="text-base font-black text-white uppercase tracking-wide">Kalkulator Chip Repair — TR04 Sumbu X OP2</h2>
-                        <p class="text-[9px] text-slate-500 font-bold uppercase tracking-widest">Basis saat ini: Repair 4x (offset 0). Selisih tiap level: 0,05</p>
-                    </div>
-                </div>
                 <div class="flex flex-col lg:flex-row gap-6 lg:items-end">
                     <div class="space-y-2 flex-1">
-                        <label class="text-[10px] font-black text-fuchsia-400 uppercase tracking-widest ml-1">Pilih Kondisi Chip</label>
+                        <label class="text-[10px] font-black text-fuchsia-400 uppercase tracking-widest ml-1">Kondisi Chip — TR04 Sumbu X OP2</label>
                         <select id="chipSelector" onchange="updateChipOffset()" class="filter-select w-full bg-[#141b2b] border border-fuchsia-500/20 rounded-xl px-4 py-3.5 text-sm font-bold text-fuchsia-300 outline-none cursor-pointer">
+                            <option value="none">— Tidak Aktif —</option>
                             <option value="baru">Chip Baru</option>
                             <option value="r1">Repair 1x</option>
                             <option value="r2">Repair 2x</option>
@@ -627,15 +619,47 @@ CREATE POLICY mread_delete ON app_message_reads FOR DELETE USING (true);</div>
                             <option value="r4" selected>Repair 4x (Aktif Sekarang)</option>
                         </select>
                     </div>
-                    <div class="flex-1 grid grid-cols-2 gap-4">
-                        <div class="bg-[#0e1422]/60 rounded-xl px-4 py-3.5 border border-white/5">
-                            <p class="text-[9px] font-black text-slate-500 uppercase tracking-widest mb-1">Offset TR04 X OP2 Baru</p>
-                            <p id="chipOffsetResult" class="text-2xl font-black text-fuchsia-400 font-mono">0.00</p>
+                    <button onclick="openManualChipModal()" class="bg-fuchsia-500/10 hover:bg-fuchsia-500/20 border border-fuchsia-500/30 text-fuchsia-300 px-6 py-3.5 rounded-xl text-[10px] font-black uppercase tracking-widest transition flex items-center justify-center gap-2">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4"></path></svg>
+                        Tambah Tool Manual
+                    </button>
+                </div>
+                <p class="text-[9px] text-slate-500 font-bold uppercase tracking-widest mt-3 ml-1">Hasil otomatis tampil di kartu SELISIH OP 2 di bawah</p>
+            </div>
+
+            <!-- MODAL: TAMBAH CHIP REPAIR MANUAL -->
+            <div id="manualChipModal" class="hidden fixed inset-0 z-[560] flex items-center justify-center p-4 bg-black/90 backdrop-blur-lg">
+                <div class="bg-[#0a0e1a] border border-fuchsia-500/20 rounded-[32px] p-8 max-w-md w-full shadow-2xl shadow-black animate-fade">
+                    <div class="flex items-center justify-between mb-6">
+                        <h2 class="text-lg font-black text-white">Tambah Chip Repair Manual</h2>
+                        <button onclick="document.getElementById('manualChipModal').classList.add('hidden')" class="w-8 h-8 bg-slate-800 hover:bg-slate-700 text-slate-400 rounded-xl flex items-center justify-center transition">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M6 18L18 6M6 6l12 12"></path></svg>
+                        </button>
+                    </div>
+                    <div class="space-y-4">
+                        <div class="space-y-2">
+                            <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Nama Tool</label>
+                            <input id="manualChipTool" type="text" placeholder="Contoh: TR02" class="w-full bg-[#141b2b] border border-white/10 rounded-xl px-4 py-3 text-sm font-bold text-white outline-none focus:border-fuchsia-400 transition-all">
                         </div>
-                        <div class="bg-[#0e1422]/60 rounded-xl px-4 py-3.5 border border-white/5">
-                            <p class="text-[9px] font-black text-slate-500 uppercase tracking-widest mb-1">Selisih dari Repair 4x</p>
-                            <p id="chipOffsetDelta" class="text-2xl font-black text-slate-300 font-mono">0.00</p>
+                        <div class="space-y-2">
+                            <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">OP</label>
+                            <select id="manualChipOp" class="filter-select w-full bg-[#141b2b] border border-white/10 rounded-xl px-4 py-3 text-sm font-bold text-white outline-none cursor-pointer">
+                                <option value="OP1">OP 1</option>
+                                <option value="OP2" selected>OP 2</option>
+                            </select>
                         </div>
+                        <div class="space-y-2">
+                            <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Sumbu</label>
+                            <select id="manualChipAxis" class="filter-select w-full bg-[#141b2b] border border-white/10 rounded-xl px-4 py-3 text-sm font-bold text-white outline-none cursor-pointer">
+                                <option value="x">Sumbu X</option>
+                                <option value="z">Sumbu Z</option>
+                            </select>
+                        </div>
+                        <div class="space-y-2">
+                            <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Nilai Selisih (Offset)</label>
+                            <input id="manualChipValue" type="number" step="0.01" placeholder="Contoh: -0.05" class="w-full bg-[#141b2b] border border-white/10 rounded-xl px-4 py-3 text-sm font-bold text-white outline-none focus:border-fuchsia-400 transition-all font-mono">
+                        </div>
+                        <button onclick="addManualChip()" class="w-full bg-fuchsia-500 hover:bg-fuchsia-600 text-slate-950 px-6 py-3.5 rounded-xl text-[10px] font-black uppercase tracking-widest transition mt-2">Tambahkan ke Selisih OP</button>
                     </div>
                 </div>
             </div>
@@ -1939,11 +1963,8 @@ CREATE POLICY mread_delete ON app_message_reads FOR DELETE USING (true);</div>
         const tableBody = document.getElementById('detailTableBody');
         if (!t1 || !t2) {
             tableBody.innerHTML = `<tr><td colspan="5" class="px-8 py-20 text-center text-slate-500 italic font-black text-xs uppercase tracking-widest">Silakan Pilih Tipe Master & Target</td></tr>`;
-            ['op1Content','op2Content'].forEach(id => {
-                document.getElementById(id).innerHTML = `<div class="py-16 text-center text-slate-500 text-[11px] font-black uppercase italic tracking-widest">Pilih tipe terlebih dahulu</div>`;
-            });
-            document.getElementById('count-op1').innerText = "0";
-            document.getElementById('count-op2').innerText = "0";
+            renderSimplePanel(getChipExtraItems('OP1'), 'op1Content', 'count-op1', 'blue');
+            renderSimplePanel(getChipExtraItems('OP2'), 'op2Content', 'count-op2', 'emerald');
             return;
         }
         const data1 = (db[`line${activeLine}`] || []).filter(x => x.type === t1);
@@ -1986,8 +2007,8 @@ CREATE POLICY mread_delete ON app_message_reads FOR DELETE USING (true);</div>
         });
 
         tableBody.innerHTML = fullRows || `<tr><td colspan="5" class="px-8 py-16 text-center text-slate-500 font-black uppercase tracking-widest italic">Tidak Ada Data Perkakas yang Cocok</td></tr>`;
-        renderSimplePanel(op1List, 'op1Content', 'count-op1', 'blue');
-        renderSimplePanel(op2List, 'op2Content', 'count-op2', 'emerald');
+        renderSimplePanel(op1List.concat(getChipExtraItems('OP1')), 'op1Content', 'count-op1', 'blue');
+        renderSimplePanel(op2List.concat(getChipExtraItems('OP2')), 'op2Content', 'count-op2', 'emerald');
     }
 
     // ── CHIP REPAIR CALCULATOR: TR04 Sumbu X OP2 ──────────────
@@ -1996,35 +2017,68 @@ CREATE POLICY mread_delete ON app_message_reads FOR DELETE USING (true);</div>
     const CHIP_STEP = 0.05;
     const CHIP_LEVELS = { baru: 4, r1: 3, r2: 2, r3: 1, r4: 0 };
     const CHIP_LABELS = { baru: 'Chip Baru', r1: 'Repair 1x', r2: 'Repair 2x', r3: 'Repair 3x', r4: 'Repair 4x' };
-    // Nilai offset TR04 X OP2 yang sedang dipakai sekarang (basis, saat repair 4x).
-    // Jika Anda mengubah nilai TR04 X OP2 aktual di mesin, sesuaikan angka ini.
-    let TR04_OP2_BASE_X = 0;
 
-    function getTr04BaseFromDb() {
-        // Coba cari nilai TR04 pada OP2 di data line aktif (tipe apa saja) sebagai basis referensi
-        const lineData = db[`line${activeLine}`] || [];
-        const found = lineData.find(x => (x.tool || '').toUpperCase().includes('TR04') && (x.op || '').toUpperCase().includes('2'));
-        return found ? parseFloat(found.x) : 0;
+    // Daftar item chip repair yang ditambahkan manual oleh user: {tool, op, axis, value}
+    let manualChipItems = JSON.parse(localStorage.getItem('manual_chip_items') || '[]');
+
+    function saveManualChipItems() {
+        localStorage.setItem('manual_chip_items', JSON.stringify(manualChipItems));
+    }
+
+    // Menghasilkan daftar item tambahan (chip TR04 otomatis + manual) untuk sebuah OP ('OP1'/'OP2')
+    function getChipExtraItems(opFilter) {
+        const items = [];
+        const sel = document.getElementById('chipSelector');
+        const chip = sel ? sel.value : 'none';
+
+        // TR04 sumbu X OP2 otomatis dari dropdown kondisi chip
+        if (opFilter === 'OP2' && chip && chip !== 'none') {
+            const stepsFromR4 = CHIP_LEVELS[chip];
+            const delta = -(stepsFromR4 * CHIP_STEP);
+            const formattedDx = delta > 0 ? `+${delta.toFixed(2)}` : delta.toFixed(2);
+            items.push({ tool: 'TR04', op: `OP2 · ${CHIP_LABELS[chip]}`, dx: formattedDx, dz: '0.000' });
+        }
+
+        // Item manual sesuai OP yang dipilih user
+        manualChipItems.filter(m => m.op === opFilter).forEach(m => {
+            const val = parseFloat(m.value);
+            const formatted = val > 0 ? `+${val.toFixed(3)}` : val.toFixed(3);
+            items.push({
+                tool: m.tool,
+                op: `${m.op} · Manual`,
+                dx: m.axis === 'x' ? formatted : '0.000',
+                dz: m.axis === 'z' ? formatted : '0.000'
+            });
+        });
+
+        return items;
     }
 
     function updateChipOffset() {
-        const sel = document.getElementById('chipSelector');
-        if (!sel) return;
-        const chip = sel.value;
-        const stepsFromR4 = CHIP_LEVELS[chip]; // berapa langkah di bawah repair 4x
-        const delta = -(stepsFromR4 * CHIP_STEP);
+        updateComparison();
+    }
 
-        TR04_OP2_BASE_X = getTr04BaseFromDb() || 0;
-        const newOffset = TR04_OP2_BASE_X + delta;
+    function openManualChipModal() {
+        document.getElementById('manualChipModal').classList.remove('hidden');
+    }
 
-        const resultEl = document.getElementById('chipOffsetResult');
-        const deltaEl = document.getElementById('chipOffsetDelta');
-        if (resultEl) resultEl.innerText = newOffset.toFixed(2);
-        if (deltaEl) {
-            const formattedDelta = delta > 0 ? `+${delta.toFixed(2)}` : delta.toFixed(2);
-            deltaEl.innerText = formattedDelta;
-            deltaEl.className = 'text-2xl font-black font-mono ' + (delta === 0 ? 'text-slate-300' : 'text-fuchsia-400 glow-text-blue');
-        }
+    function addManualChip() {
+        const tool = document.getElementById('manualChipTool').value.trim();
+        const op = document.getElementById('manualChipOp').value;
+        const axis = document.getElementById('manualChipAxis').value;
+        const value = document.getElementById('manualChipValue').value;
+
+        if (!tool) { showToast("NAMA TOOL WAJIB DIISI"); return; }
+        if (value === '' || isNaN(parseFloat(value))) { showToast("NILAI SELISIH WAJIB DIISI"); return; }
+
+        manualChipItems.push({ tool: tool.toUpperCase(), op, axis, value: parseFloat(value) });
+        saveManualChipItems();
+
+        document.getElementById('manualChipTool').value = '';
+        document.getElementById('manualChipValue').value = '';
+        document.getElementById('manualChipModal').classList.add('hidden');
+        showToast("TOOL MANUAL DITAMBAHKAN");
+        updateComparison();
     }
 
     function updateKPIs() {
