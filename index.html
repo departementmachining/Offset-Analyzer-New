@@ -613,10 +613,10 @@ CREATE POLICY mread_delete ON app_message_reads FOR DELETE USING (true);</div>
                 </div>
             </div>
 
-            <!-- CHIP REPAIR: PILIH KONDISI CHIP TL404 -->
+            <!-- CHIP REPAIR: PILIH KONDISI CHIP TR404 -->
             <div class="premium-card p-6 border-l-4 border-fuchsia-500 bg-gradient-to-r from-fuchsia-500/5 to-transparent">
                 <div class="flex items-center justify-between gap-4 mb-1">
-                    <label class="text-[10px] font-black text-fuchsia-400 uppercase tracking-widest ml-1">Chip Repair — TL404 Sumbu X OP2</label>
+                    <label class="text-[10px] font-black text-fuchsia-400 uppercase tracking-widest ml-1">Chip Repair — TR404 Sumbu X OP2</label>
                     <button id="chipToggleBtn" onclick="toggleChipRepair()" class="relative w-14 h-7 rounded-full transition-colors duration-200 bg-slate-700 flex-shrink-0" title="Aktifkan Chip Repair">
                         <span id="chipToggleKnob" class="absolute top-1 left-1 w-5 h-5 rounded-full bg-slate-300 transition-transform duration-200"></span>
                     </button>
@@ -826,7 +826,7 @@ create policy "public rw" on chip_settings for all using (true) with check (true
                             <span class="w-2.5 h-2.5 rounded-full bg-fuchsia-400 flex-shrink-0" style="box-shadow:0 0 8px #e879f9"></span>
                             Chip Repair — Tambah Tool Manual
                         </h3>
-                        <p class="text-[10px] text-slate-400 mt-1">Tambahkan selisih offset manual untuk tool selain TL404, per OP dan per sumbu (X/Z)</p>
+                        <p class="text-[10px] text-slate-400 mt-1">Tambahkan selisih offset manual untuk tool selain TR404, per OP dan per sumbu (X/Z)</p>
                     </div>
                     <button onclick="openManualChipModal()" class="px-6 py-3 bg-fuchsia-500 hover:bg-fuchsia-600 text-slate-950 rounded-xl text-[10px] font-black uppercase tracking-widest transition flex items-center justify-center gap-2 whitespace-nowrap">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4"></path></svg>
@@ -836,14 +836,14 @@ create policy "public rw" on chip_settings for all using (true) with check (true
                 <div id="manualChipList" class="space-y-2"></div>
             </div>
 
-            <!-- TYPE DIKECUALIKAN DARI TL404 OP2 (ADMIN ONLY) -->
+            <!-- TYPE DIKECUALIKAN DARI TR404 OP2 (ADMIN ONLY) -->
             <div class="premium-card p-6 border-l-8 border-rose-500 bg-rose-500/5">
                 <div class="mb-5">
                     <h3 class="font-black text-white text-sm uppercase tracking-wider flex items-center gap-2">
                         <span class="w-2.5 h-2.5 rounded-full bg-rose-400 flex-shrink-0" style="box-shadow:0 0 8px #fb7185"></span>
-                        Tipe Dikecualikan Dari TL404 OP2
+                        Tipe Dikecualikan Dari TR404 OP2
                     </h3>
-                    <p class="text-[10px] text-slate-400 mt-1">Tipe yang dicentang tidak akan menampilkan baris TL404 OP2 (chip repair) di kartu SELISIH OP 2, baik saat dipilih sebagai Master maupun Target</p>
+                    <p class="text-[10px] text-slate-400 mt-1">Tipe yang dicentang tidak akan menampilkan baris TR404 OP2 (chip repair) di kartu SELISIH OP 2, baik saat dipilih sebagai Master maupun Target</p>
                 </div>
                 <div id="chipExcludeTypeList" class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-2"></div>
             </div>
@@ -1436,6 +1436,7 @@ create policy "public rw" on chip_settings for all using (true) with check (true
             localStorage.setItem('offset_db', JSON.stringify(db));
             lastSyncHash = JSON.stringify(rows);
             updateTypeDropdowns(); renderDatabase(); updateComparison(); updateKPIs();
+            renderChipExcludeTypeList();
             checkSyncStatus('online'); updateLastSyncTime();
             if (showFeedback) {
                 showSyncBanner("✓ Terhubung ke Supabase", false);
@@ -2075,7 +2076,7 @@ create policy "public rw" on chip_settings for all using (true) with check (true
         renderSimplePanel(op2List.concat(getChipExtraItems('OP2', t1, t2)), 'op2Content', 'count-op2', 'emerald');
     }
 
-    // ── CHIP REPAIR CALCULATOR: TL404 Sumbu X OP2 ──────────────
+    // ── CHIP REPAIR CALCULATOR: TR404 Sumbu X OP2 ──────────────
     // Basis aktif saat ini = Repair 4x (delta 0). Selisih tiap level chip = 0,05.
     // Urutan: Baru -0,20 | Repair1x -0,15 | Repair2x -0,10 | Repair3x -0,05 | Repair4x 0 (basis)
     const CHIP_STEP = 0.05;
@@ -2086,7 +2087,7 @@ create policy "public rw" on chip_settings for all using (true) with check (true
     let chipRepairEnabled = false;
 
     // Daftar item chip repair yang ditambahkan manual oleh user: {tool, op, axis, value}
-    // Daftar tipe yang dikecualikan dari TL404 OP2 (baik sebagai master maupun target)
+    // Daftar tipe yang dikecualikan dari TR404 OP2 (baik sebagai master maupun target)
     // Keduanya SINKRON via Supabase (tabel chip_settings) agar sama di semua browser/device.
     // Fallback ke localStorage jika tabel belum dibuat di Supabase atau sedang offline.
     let manualChipItems = JSON.parse(localStorage.getItem('manual_chip_items') || '[]');
@@ -2181,7 +2182,7 @@ create policy "public rw" on chip_settings for all using (true) with check (true
             return;
         }
         container.innerHTML = types.map(t => {
-            const checked = chipExcludedTypes.includes(t);
+            const checked = chipExcludedTypes.map(x => String(x).trim()).includes(String(t).trim());
             return `
             <label class="flex items-center gap-2 bg-slate-900/80 border ${checked ? 'border-rose-500/40' : 'border-white/5'} rounded-xl px-3 py-2.5 cursor-pointer transition hover:border-rose-500/30">
                 <input type="checkbox" ${checked ? 'checked' : ''} onchange="toggleChipExcludeType('${t}')" class="w-4 h-4 accent-rose-500 flex-shrink-0">
@@ -2191,9 +2192,10 @@ create policy "public rw" on chip_settings for all using (true) with check (true
     }
 
     async function toggleChipExcludeType(type) {
-        const idx = chipExcludedTypes.indexOf(type);
+        const t = String(type).trim();
+        const idx = chipExcludedTypes.indexOf(t);
         if (idx >= 0) chipExcludedTypes.splice(idx, 1);
-        else chipExcludedTypes.push(type);
+        else chipExcludedTypes.push(t);
         renderChipExcludeTypeList();
         updateComparison();
         await saveChipExcludedTypes();
@@ -2227,21 +2229,22 @@ create policy "public rw" on chip_settings for all using (true) with check (true
         updateChipOffset();
     }
 
-    // Menghasilkan daftar item tambahan (chip TL404 otomatis + manual) untuk sebuah OP ('OP1'/'OP2')
+    // Menghasilkan daftar item tambahan (chip TR404 otomatis + manual) untuk sebuah OP ('OP1'/'OP2')
     function getChipExtraItems(opFilter, t1, t2) {
         const items = [];
         const sel = document.getElementById('chipSelector');
         const chip = (chipRepairEnabled && sel) ? sel.value : null;
 
-        // Tipe master/target termasuk daftar dikecualikan? Jika ya, baris TL404 OP2 disembunyikan
-        const isExcluded = (t1 && chipExcludedTypes.includes(t1)) || (t2 && chipExcludedTypes.includes(t2));
+        // Tipe master/target termasuk daftar dikecualikan? Jika ya, baris TR404 OP2 disembunyikan
+        const excludedNormalized = chipExcludedTypes.map(x => String(x).trim());
+        const isExcluded = (t1 && excludedNormalized.includes(String(t1).trim())) || (t2 && excludedNormalized.includes(String(t2).trim()));
 
-        // TL404 sumbu X OP2 otomatis dari toggle + dropdown kondisi chip
+        // TR404 sumbu X OP2 otomatis dari toggle + dropdown kondisi chip
         if (opFilter === 'OP2' && chip && !isExcluded) {
             const stepsFromR4 = CHIP_LEVELS[chip];
             const delta = -(stepsFromR4 * CHIP_STEP);
             const formattedDx = delta > 0 ? `+${delta.toFixed(2)}` : delta.toFixed(2);
-            items.push({ tool: 'TL404', op: `OP2 · ${CHIP_LABELS[chip]}`, dx: formattedDx, dz: '0.000' });
+            items.push({ tool: 'TR404', op: `OP2 · ${CHIP_LABELS[chip]}`, dx: formattedDx, dz: '0.000' });
         }
 
         // Item manual sesuai OP yang dipilih user
