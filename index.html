@@ -605,6 +605,41 @@ CREATE POLICY mread_delete ON app_message_reads FOR DELETE USING (true);</div>
                 </div>
             </div>
 
+            <!-- CHIP REPAIR CALCULATOR: TR04 X OP2 -->
+            <div class="premium-card p-6 border-l-4 border-fuchsia-500 bg-gradient-to-r from-fuchsia-500/5 to-transparent">
+                <div class="flex items-center gap-3 mb-5">
+                    <div class="p-2 bg-fuchsia-500/10 rounded-xl text-fuchsia-400">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 3v2m6-2v2M9 19v2m6-2v2M5 9H3m2 6H3m18-6h-2m2 6h-2M7 19h10a2 2 0 002-2V7a2 2 0 00-2-2H7a2 2 0 00-2 2v10a2 2 0 002 2zM9 9h6v6H9V9z"></path></svg>
+                    </div>
+                    <div>
+                        <h2 class="text-base font-black text-white uppercase tracking-wide">Kalkulator Chip Repair — TR04 Sumbu X OP2</h2>
+                        <p class="text-[9px] text-slate-500 font-bold uppercase tracking-widest">Basis saat ini: Repair 4x (offset 0). Selisih tiap level: 0,05</p>
+                    </div>
+                </div>
+                <div class="flex flex-col lg:flex-row gap-6 lg:items-end">
+                    <div class="space-y-2 flex-1">
+                        <label class="text-[10px] font-black text-fuchsia-400 uppercase tracking-widest ml-1">Pilih Kondisi Chip</label>
+                        <select id="chipSelector" onchange="updateChipOffset()" class="filter-select w-full bg-[#141b2b] border border-fuchsia-500/20 rounded-xl px-4 py-3.5 text-sm font-bold text-fuchsia-300 outline-none cursor-pointer">
+                            <option value="baru">Chip Baru</option>
+                            <option value="r1">Repair 1x</option>
+                            <option value="r2">Repair 2x</option>
+                            <option value="r3">Repair 3x</option>
+                            <option value="r4" selected>Repair 4x (Aktif Sekarang)</option>
+                        </select>
+                    </div>
+                    <div class="flex-1 grid grid-cols-2 gap-4">
+                        <div class="bg-[#0e1422]/60 rounded-xl px-4 py-3.5 border border-white/5">
+                            <p class="text-[9px] font-black text-slate-500 uppercase tracking-widest mb-1">Offset TR04 X OP2 Baru</p>
+                            <p id="chipOffsetResult" class="text-2xl font-black text-fuchsia-400 font-mono">0.00</p>
+                        </div>
+                        <div class="bg-[#0e1422]/60 rounded-xl px-4 py-3.5 border border-white/5">
+                            <p class="text-[9px] font-black text-slate-500 uppercase tracking-widest mb-1">Selisih dari Repair 4x</p>
+                            <p id="chipOffsetDelta" class="text-2xl font-black text-slate-300 font-mono">0.00</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
             <!-- COMPARISON PANELS -->
             <div id="summaryContainer" class="grid grid-cols-1 lg:grid-cols-2 gap-8">
                 <div id="panel-op1" class="premium-card overflow-hidden border-t-4 border-blue-500">
@@ -1227,6 +1262,7 @@ CREATE POLICY mread_delete ON app_message_reads FOR DELETE USING (true);</div>
         renderViewTabs();
         updateTypeDropdowns();
         updateKPIs();
+        updateChipOffset();
 
         // Cek session existing
         const hasSession = await checkExistingSession();
@@ -1954,6 +1990,43 @@ CREATE POLICY mread_delete ON app_message_reads FOR DELETE USING (true);</div>
         renderSimplePanel(op2List, 'op2Content', 'count-op2', 'emerald');
     }
 
+    // ── CHIP REPAIR CALCULATOR: TR04 Sumbu X OP2 ──────────────
+    // Basis aktif saat ini = Repair 4x (delta 0). Selisih tiap level chip = 0,05.
+    // Urutan: Baru -0,20 | Repair1x -0,15 | Repair2x -0,10 | Repair3x -0,05 | Repair4x 0 (basis)
+    const CHIP_STEP = 0.05;
+    const CHIP_LEVELS = { baru: 4, r1: 3, r2: 2, r3: 1, r4: 0 };
+    const CHIP_LABELS = { baru: 'Chip Baru', r1: 'Repair 1x', r2: 'Repair 2x', r3: 'Repair 3x', r4: 'Repair 4x' };
+    // Nilai offset TR04 X OP2 yang sedang dipakai sekarang (basis, saat repair 4x).
+    // Jika Anda mengubah nilai TR04 X OP2 aktual di mesin, sesuaikan angka ini.
+    let TR04_OP2_BASE_X = 0;
+
+    function getTr04BaseFromDb() {
+        // Coba cari nilai TR04 pada OP2 di data line aktif (tipe apa saja) sebagai basis referensi
+        const lineData = db[`line${activeLine}`] || [];
+        const found = lineData.find(x => (x.tool || '').toUpperCase().includes('TR04') && (x.op || '').toUpperCase().includes('2'));
+        return found ? parseFloat(found.x) : 0;
+    }
+
+    function updateChipOffset() {
+        const sel = document.getElementById('chipSelector');
+        if (!sel) return;
+        const chip = sel.value;
+        const stepsFromR4 = CHIP_LEVELS[chip]; // berapa langkah di bawah repair 4x
+        const delta = -(stepsFromR4 * CHIP_STEP);
+
+        TR04_OP2_BASE_X = getTr04BaseFromDb() || 0;
+        const newOffset = TR04_OP2_BASE_X + delta;
+
+        const resultEl = document.getElementById('chipOffsetResult');
+        const deltaEl = document.getElementById('chipOffsetDelta');
+        if (resultEl) resultEl.innerText = newOffset.toFixed(2);
+        if (deltaEl) {
+            const formattedDelta = delta > 0 ? `+${delta.toFixed(2)}` : delta.toFixed(2);
+            deltaEl.innerText = formattedDelta;
+            deltaEl.className = 'text-2xl font-black font-mono ' + (delta === 0 ? 'text-slate-300' : 'text-fuchsia-400 glow-text-blue');
+        }
+    }
+
     function updateKPIs() {
         const lineData = db[`line${activeLine}`] || [];
         document.getElementById('statLine').innerText = `LINE ${activeLine}`;
@@ -2157,7 +2230,7 @@ CREATE POLICY mread_delete ON app_message_reads FOR DELETE USING (true);</div>
         showToast("SESI ADMIN BERAKHIR");
     }
 
-    function switchLine(n) { activeLine = parseInt(n); updateTypeDropdowns(); updateComparison(); updateKPIs(); }
+    function switchLine(n) { activeLine = parseInt(n); updateTypeDropdowns(); updateComparison(); updateKPIs(); updateChipOffset(); }
     function closeEditModal() { document.getElementById('editModal').classList.add('hidden'); }
 
     function setAdminInputLine(n) {
