@@ -2,11 +2,7 @@
 <html lang="id">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <meta name="mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="format-detection" content="telephone=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Offset Analyzer Pro | Premium Executive Dashboard</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
@@ -14,9 +10,7 @@
         
         :root { --primary: #090d16; --accent: #f59e0b; --accent-glow: rgba(245, 158, 11, 0.15); }
 
-        body { background: radial-gradient(circle at top right, #111827, #070a13); font-family: 'Plus Jakarta Sans', sans-serif; color: #f1f5f9; min-height: 100vh; touch-action: pan-x pan-y; -webkit-text-size-adjust: 100%; text-size-adjust: 100%; overscroll-behavior-y: contain; }
-        html { touch-action: pan-x pan-y; -webkit-text-size-adjust: 100%; text-size-adjust: 100%; }
-        input, select, textarea { font-size: 16px !important; }
+        body { background: radial-gradient(circle at top right, #111827, #070a13); font-family: 'Plus Jakarta Sans', sans-serif; color: #f1f5f9; min-height: 100vh; }
 
         .premium-card { background: rgba(17, 24, 39, 0.6); backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.06); box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.5); border-radius: 24px; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
         .premium-card:hover { border-color: rgba(245, 158, 11, 0.2); box-shadow: 0 25px 50px -12px rgba(245, 158, 11, 0.08); }
@@ -493,7 +487,18 @@ CREATE POLICY mread_delete ON app_message_reads FOR DELETE USING (true);</div>
     </div>
 
     <!-- HEADER PREMIUM -->
-    <header class="text-white pt-10 pb-20 px-6 md:px-8 mb-[-40px]" style="background: linear-gradient(135deg, #070a13 0%, #111827 100%);">
+    <header class="text-white pt-6 pb-20 px-6 md:px-8 mb-[-40px]" style="background: linear-gradient(135deg, #070a13 0%, #111827 100%);">
+        <!-- Baris atas: mail & admin panel kecil, pojok kanan -->
+        <div class="max-w-7xl mx-auto flex justify-end items-center gap-1.5 mb-6">
+            <button onclick="openMailboxModal()" id="mailboxNavBtn" class="relative h-8 w-8 flex-shrink-0 rounded-lg flex items-center justify-center text-slate-500 hover:text-amber-400 hover:bg-white/5 transition-all" title="Kotak Pesan">
+                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg>
+                <span id="mailBadge" class="hidden hist-badge">0</span>
+            </button>
+            <button onclick="openAdminPanel()" id="nav-admin" class="hidden h-8 px-3 rounded-lg text-[10px] font-black transition-all text-slate-500 hover:text-amber-400 hover:bg-white/5 flex items-center justify-center gap-1.5 whitespace-nowrap" title="Admin Panel">
+                <svg class="w-3.5 h-3.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4"></path></svg>
+                ADMIN
+            </button>
+        </div>
         <div class="max-w-7xl mx-auto flex flex-col lg:flex-row justify-between items-center gap-6">
             <div class="space-y-2 text-center lg:text-left">
                 <div class="flex items-center justify-center lg:justify-start gap-2.5 mb-1">
@@ -513,18 +518,9 @@ CREATE POLICY mread_delete ON app_message_reads FOR DELETE USING (true);</div>
                 <p class="text-xs text-slate-400 font-medium tracking-wide">Sistem Analisis Deviasi Dimensi Pemesinan CNC Presisi Tinggi</p>
             </div>
             <div class="flex items-center bg-slate-900/60 p-1.5 rounded-2xl backdrop-blur-md border border-white/10 gap-1">
-                <button onclick="openMailboxModal()" id="mailboxNavBtn" class="relative h-11 w-11 flex-shrink-0 rounded-xl flex items-center justify-center text-slate-400 hover:text-amber-400 hover:bg-white/5 transition-all" title="Kotak Pesan">
-                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg>
-                    <span id="mailBadge" class="hidden hist-badge">0</span>
-                </button>
-                <div class="w-px h-6 bg-white/10 mx-0.5"></div>
                 <button onclick="switchMenu('dashboard')" id="nav-dashboard" class="h-11 px-6 rounded-xl text-xs font-black transition-all nav-active flex items-center justify-center gap-2 whitespace-nowrap">
                     <svg class="w-3.5 h-3.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path></svg>
                     DASHBOARD
-                </button>
-                <button onclick="openAdminPanel()" id="nav-admin" class="hidden h-11 px-6 rounded-xl text-xs font-black transition-all text-slate-400 hover:text-white flex items-center justify-center gap-2 whitespace-nowrap">
-                    <svg class="w-3.5 h-3.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4"></path></svg>
-                    ADMIN PANEL
                 </button>
             </div>
         </div>
@@ -550,42 +546,21 @@ CREATE POLICY mread_delete ON app_message_reads FOR DELETE USING (true);</div>
 
     <main class="max-w-7xl mx-auto px-6 md:px-8 mt-12">
         
-        <!-- STATS KPI WIDGETS -->
-        <div id="kpiSection" class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
-            <div class="premium-card p-4 flex items-center justify-between">
-                <div>
-                    <span class="text-[9px] font-bold text-slate-400 uppercase tracking-widest">Garis Aktif</span>
-                    <div id="statLine" class="text-lg font-black text-amber-400 mt-1">LINE 1</div>
-                </div>
-                <div class="p-2.5 bg-amber-400/10 rounded-xl text-amber-400">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path></svg>
-                </div>
+        <!-- STATS KPI WIDGETS (disembunyikan agar tampilan lebih bersih; elemen tetap ada untuk kompatibilitas script) -->
+        <div id="kpiSection" class="hidden grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+            <div>
+                <span id="statLine">LINE 1</span>
             </div>
-            <div class="premium-card p-4 flex items-center justify-between">
-                <div>
-                    <span class="text-[9px] font-bold text-slate-400 uppercase tracking-widest">Total Tipe Unit</span>
-                    <div id="statTotalType" class="text-lg font-black text-white mt-1">0</div>
-                </div>
-                <div class="p-2.5 bg-blue-500/10 rounded-xl text-blue-400">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3"></path></svg>
-                </div>
+            <div>
+                <span id="statTotalType">0</span>
             </div>
-            <div class="premium-card p-4 flex items-center justify-between">
-                <div>
-                    <span class="text-[9px] font-bold text-slate-400 uppercase tracking-widest">Total Perkakas</span>
-                    <div id="statTotalTool" class="text-lg font-black text-white mt-1">0</div>
-                </div>
-                <div class="p-2.5 bg-emerald-500/10 rounded-xl text-emerald-400">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path></svg>
-                </div>
+            <div>
+                <span id="statTotalTool">0</span>
             </div>
-            <div class="premium-card p-4 flex items-center justify-between">
-                <div>
-                    <span class="text-[9px] font-bold text-slate-400 uppercase tracking-widest">Status Sinkron</span>
-                    <div id="statSyncDelay" class="text-sm font-extrabold text-rose-400 mt-1">LOKAL ONLY</div>
-                    <div id="userInfo" class="text-[9px] text-slate-500 font-bold mt-0.5"></div>
-                </div>
-                <button id="refreshRoleBtn" onclick="refreshMyRole()" class="hidden w-10 h-10 bg-purple-500/10 border border-purple-500/20 rounded-xl text-purple-400 hover:bg-purple-500/20 transition flex items-center justify-center text-base" title="Refresh Role">↺</button>
+            <div>
+                <span id="statSyncDelay">LOKAL ONLY</span>
+                <span id="userInfo"></span>
+                <button id="refreshRoleBtn" onclick="refreshMyRole()" class="hidden">↺</button>
             </div>
         </div>
 
@@ -807,10 +782,10 @@ CREATE POLICY mread_delete ON app_message_reads FOR DELETE USING (true);</div>
             <div id="chipCloudStatusBox" class="premium-card p-5 border-l-8 border-slate-600 bg-slate-800/30">
                 <div class="flex items-start gap-3">
                     <svg id="chipCloudStatusIcon" class="w-4 h-4 text-slate-400 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
-                    <div class="flex-1 min-w-0">
-                        <p id="chipCloudStatusText" class="text-xs font-black text-slate-400 leading-relaxed break-words">Mengecek status sinkronisasi Supabase...</p>
+                    <div class="flex-1">
+                        <p id="chipCloudStatusText" class="text-[10px] font-black uppercase tracking-widest text-slate-400">Mengecek status sinkronisasi Supabase...</p>
                         <div id="chipCloudSetupGuide" class="hidden mt-3 bg-black/30 rounded-xl p-4 space-y-2">
-                            <p class="text-[10px] text-slate-400 font-bold uppercase tracking-widest mb-2 leading-relaxed break-words">Buat tabel ini sekali saja di Supabase → SQL Editor:</p>
+                            <p class="text-[10px] text-slate-400 font-bold uppercase tracking-widest mb-2">Buat tabel ini sekali saja di Supabase → SQL Editor:</p>
                             <pre class="text-[10px] font-mono text-emerald-300 bg-black/50 rounded-lg p-3 overflow-x-auto whitespace-pre">create table chip_settings (
   id int primary key,
   manual_items jsonb default '[]',
@@ -818,7 +793,7 @@ CREATE POLICY mread_delete ON app_message_reads FOR DELETE USING (true);</div>
 );
 alter table chip_settings enable row level security;
 create policy "public rw" on chip_settings for all using (true) with check (true);</pre>
-                            <p class="text-[9px] text-slate-500 leading-relaxed break-words">Setelah tabel dibuat, pengaturan Chip Repair &amp; Tipe Dikecualikan akan otomatis tersinkron ke semua browser/device.</p>
+                            <p class="text-[9px] text-slate-500">Setelah tabel dibuat, pengaturan Chip Repair &amp; Tipe Dikecualikan akan otomatis tersinkron ke semua browser/device.</p>
                         </div>
                     </div>
                 </div>
@@ -1346,21 +1321,6 @@ create policy "public rw" on chip_settings for all using (true) with check (true
     // ═══════════════════════════════════════════════════
     //  INIT
     // ═══════════════════════════════════════════════════
-
-    // ── KUNCI ZOOM: cegah pinch-zoom & double-tap zoom agar terasa seperti app native ──
-    document.addEventListener('gesturestart', (e) => e.preventDefault());
-    document.addEventListener('gesturechange', (e) => e.preventDefault());
-    document.addEventListener('gestureend', (e) => e.preventDefault());
-    document.addEventListener('touchmove', (e) => {
-        if (e.scale !== undefined && e.scale !== 1) e.preventDefault();
-    }, { passive: false });
-    let lastTouchEnd = 0;
-    document.addEventListener('touchend', (e) => {
-        const now = Date.now();
-        if (now - lastTouchEnd <= 300) e.preventDefault();
-        lastTouchEnd = now;
-    }, { passive: false, capture: true });
-
     window.onload = async () => {
         renderViewTabs();
         updateTypeDropdowns();
@@ -2191,14 +2151,14 @@ create policy "public rw" on chip_settings for all using (true) with check (true
 
         if (chipSettingsCloudOK) {
             box.className = "premium-card p-5 border-l-8 border-emerald-500 bg-emerald-500/5";
-            text.className = "text-xs font-black text-emerald-400 leading-relaxed break-words";
-            text.innerText = "✓ Tersinkron ke Supabase — pengaturan sama di semua browser & device";
+            text.className = "text-[10px] font-black uppercase tracking-widest text-emerald-400";
+            text.innerText = "✓ Tersinkron ke Supabase — Pengaturan Sama Di Semua Browser & Device";
             if (icon) icon.setAttribute('class', 'w-4 h-4 text-emerald-400 flex-shrink-0 mt-0.5');
             guide.classList.add('hidden');
         } else {
             box.className = "premium-card p-5 border-l-8 border-amber-500 bg-amber-500/5";
-            text.className = "text-xs font-black text-amber-400 leading-relaxed break-words";
-            text.innerText = "⚠ Belum tersinkron ke Supabase — pengaturan hanya tersimpan di browser ini";
+            text.className = "text-[10px] font-black uppercase tracking-widest text-amber-400";
+            text.innerText = "⚠ Belum Tersinkron Ke Supabase — Pengaturan Hanya Tersimpan Di Browser Ini";
             if (icon) icon.setAttribute('class', 'w-4 h-4 text-amber-400 flex-shrink-0 mt-0.5');
             guide.classList.remove('hidden');
         }
@@ -2571,7 +2531,7 @@ create policy "public rw" on chip_settings for all using (true) with check (true
 
         document.getElementById('menu-dashboard').classList.toggle('hidden', menu !== 'dashboard');
         document.getElementById('menu-admin').classList.toggle('hidden', menu !== 'admin');
-        document.getElementById('kpiSection').style.display = menu === 'admin' ? 'none' : '';
+        document.getElementById('kpiSection').style.display = 'none';
 
         const dashBtn = document.getElementById('nav-dashboard');
         const adminBtn = document.getElementById('nav-admin');
