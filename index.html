@@ -2,7 +2,11 @@
 <html lang="id">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="format-detection" content="telephone=no">
     <title>Offset Analyzer Pro | Premium Executive Dashboard</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
@@ -10,7 +14,9 @@
         
         :root { --primary: #090d16; --accent: #f59e0b; --accent-glow: rgba(245, 158, 11, 0.15); }
 
-        body { background: radial-gradient(circle at top right, #111827, #070a13); font-family: 'Plus Jakarta Sans', sans-serif; color: #f1f5f9; min-height: 100vh; }
+        body { background: radial-gradient(circle at top right, #111827, #070a13); font-family: 'Plus Jakarta Sans', sans-serif; color: #f1f5f9; min-height: 100vh; touch-action: pan-x pan-y; -webkit-text-size-adjust: 100%; text-size-adjust: 100%; overscroll-behavior-y: contain; }
+        html { touch-action: pan-x pan-y; -webkit-text-size-adjust: 100%; text-size-adjust: 100%; }
+        input, select, textarea { font-size: 16px !important; }
 
         .premium-card { background: rgba(17, 24, 39, 0.6); backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.06); box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.5); border-radius: 24px; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
         .premium-card:hover { border-color: rgba(245, 158, 11, 0.2); box-shadow: 0 25px 50px -12px rgba(245, 158, 11, 0.08); }
@@ -801,10 +807,10 @@ CREATE POLICY mread_delete ON app_message_reads FOR DELETE USING (true);</div>
             <div id="chipCloudStatusBox" class="premium-card p-5 border-l-8 border-slate-600 bg-slate-800/30">
                 <div class="flex items-start gap-3">
                     <svg id="chipCloudStatusIcon" class="w-4 h-4 text-slate-400 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
-                    <div class="flex-1">
-                        <p id="chipCloudStatusText" class="text-[10px] font-black uppercase tracking-widest text-slate-400">Mengecek status sinkronisasi Supabase...</p>
+                    <div class="flex-1 min-w-0">
+                        <p id="chipCloudStatusText" class="text-xs font-black text-slate-400 leading-relaxed break-words">Mengecek status sinkronisasi Supabase...</p>
                         <div id="chipCloudSetupGuide" class="hidden mt-3 bg-black/30 rounded-xl p-4 space-y-2">
-                            <p class="text-[10px] text-slate-400 font-bold uppercase tracking-widest mb-2">Buat tabel ini sekali saja di Supabase → SQL Editor:</p>
+                            <p class="text-[10px] text-slate-400 font-bold uppercase tracking-widest mb-2 leading-relaxed break-words">Buat tabel ini sekali saja di Supabase → SQL Editor:</p>
                             <pre class="text-[10px] font-mono text-emerald-300 bg-black/50 rounded-lg p-3 overflow-x-auto whitespace-pre">create table chip_settings (
   id int primary key,
   manual_items jsonb default '[]',
@@ -812,7 +818,7 @@ CREATE POLICY mread_delete ON app_message_reads FOR DELETE USING (true);</div>
 );
 alter table chip_settings enable row level security;
 create policy "public rw" on chip_settings for all using (true) with check (true);</pre>
-                            <p class="text-[9px] text-slate-500">Setelah tabel dibuat, pengaturan Chip Repair &amp; Tipe Dikecualikan akan otomatis tersinkron ke semua browser/device.</p>
+                            <p class="text-[9px] text-slate-500 leading-relaxed break-words">Setelah tabel dibuat, pengaturan Chip Repair &amp; Tipe Dikecualikan akan otomatis tersinkron ke semua browser/device.</p>
                         </div>
                     </div>
                 </div>
@@ -1340,6 +1346,21 @@ create policy "public rw" on chip_settings for all using (true) with check (true
     // ═══════════════════════════════════════════════════
     //  INIT
     // ═══════════════════════════════════════════════════
+
+    // ── KUNCI ZOOM: cegah pinch-zoom & double-tap zoom agar terasa seperti app native ──
+    document.addEventListener('gesturestart', (e) => e.preventDefault());
+    document.addEventListener('gesturechange', (e) => e.preventDefault());
+    document.addEventListener('gestureend', (e) => e.preventDefault());
+    document.addEventListener('touchmove', (e) => {
+        if (e.scale !== undefined && e.scale !== 1) e.preventDefault();
+    }, { passive: false });
+    let lastTouchEnd = 0;
+    document.addEventListener('touchend', (e) => {
+        const now = Date.now();
+        if (now - lastTouchEnd <= 300) e.preventDefault();
+        lastTouchEnd = now;
+    }, { passive: false, capture: true });
+
     window.onload = async () => {
         renderViewTabs();
         updateTypeDropdowns();
@@ -2170,14 +2191,14 @@ create policy "public rw" on chip_settings for all using (true) with check (true
 
         if (chipSettingsCloudOK) {
             box.className = "premium-card p-5 border-l-8 border-emerald-500 bg-emerald-500/5";
-            text.className = "text-[10px] font-black uppercase tracking-widest text-emerald-400";
-            text.innerText = "✓ Tersinkron ke Supabase — Pengaturan Sama Di Semua Browser & Device";
+            text.className = "text-xs font-black text-emerald-400 leading-relaxed break-words";
+            text.innerText = "✓ Tersinkron ke Supabase — pengaturan sama di semua browser & device";
             if (icon) icon.setAttribute('class', 'w-4 h-4 text-emerald-400 flex-shrink-0 mt-0.5');
             guide.classList.add('hidden');
         } else {
             box.className = "premium-card p-5 border-l-8 border-amber-500 bg-amber-500/5";
-            text.className = "text-[10px] font-black uppercase tracking-widest text-amber-400";
-            text.innerText = "⚠ Belum Tersinkron Ke Supabase — Pengaturan Hanya Tersimpan Di Browser Ini";
+            text.className = "text-xs font-black text-amber-400 leading-relaxed break-words";
+            text.innerText = "⚠ Belum tersinkron ke Supabase — pengaturan hanya tersimpan di browser ini";
             if (icon) icon.setAttribute('class', 'w-4 h-4 text-amber-400 flex-shrink-0 mt-0.5');
             guide.classList.remove('hidden');
         }
