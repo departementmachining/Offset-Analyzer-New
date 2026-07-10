@@ -488,15 +488,17 @@ CREATE POLICY mread_delete ON app_message_reads FOR DELETE USING (true);</div>
 
     <!-- HEADER PREMIUM -->
     <header class="text-white pt-6 pb-20 px-6 md:px-8 mb-[-40px]" style="background: linear-gradient(135deg, #070a13 0%, #111827 100%);">
-        <!-- Baris atas: mail & admin panel kecil, pojok kanan -->
+        <!-- Baris atas: dashboard, mail & admin panel kecil, pojok kanan -->
         <div class="max-w-7xl mx-auto flex justify-end items-center gap-1.5 mb-6">
+            <button onclick="switchMenu('dashboard')" id="nav-dashboard" class="relative h-8 w-8 flex-shrink-0 rounded-lg flex items-center justify-center text-amber-400 bg-white/5 transition-all" title="Dashboard">
+                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path></svg>
+            </button>
             <button onclick="openMailboxModal()" id="mailboxNavBtn" class="relative h-8 w-8 flex-shrink-0 rounded-lg flex items-center justify-center text-slate-500 hover:text-amber-400 hover:bg-white/5 transition-all" title="Kotak Pesan">
                 <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg>
                 <span id="mailBadge" class="hidden hist-badge">0</span>
             </button>
-            <button onclick="openAdminPanel()" id="nav-admin" class="hidden h-8 px-3 rounded-lg text-[10px] font-black transition-all text-slate-500 hover:text-amber-400 hover:bg-white/5 flex items-center justify-center gap-1.5 whitespace-nowrap" title="Admin Panel">
+            <button onclick="openAdminPanel()" id="nav-admin" class="hidden h-8 w-8 flex-shrink-0 rounded-lg flex items-center justify-center text-slate-500 hover:text-amber-400 hover:bg-white/5 transition-all" title="Admin Panel">
                 <svg class="w-3.5 h-3.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4"></path></svg>
-                ADMIN
             </button>
         </div>
         <div class="max-w-7xl mx-auto flex flex-col lg:flex-row justify-between items-center gap-6">
@@ -516,12 +518,6 @@ CREATE POLICY mread_delete ON app_message_reads FOR DELETE USING (true);</div>
                     OFFSET <span class="text-amber-400">ANALYZER</span> PRO
                 </h1>
                 <p class="text-xs text-slate-400 font-medium tracking-wide">Sistem Analisis Deviasi Dimensi Pemesinan CNC Presisi Tinggi</p>
-            </div>
-            <div class="flex items-center bg-slate-900/60 p-1.5 rounded-2xl backdrop-blur-md border border-white/10 gap-1">
-                <button onclick="switchMenu('dashboard')" id="nav-dashboard" class="h-11 px-6 rounded-xl text-xs font-black transition-all nav-active flex items-center justify-center gap-2 whitespace-nowrap">
-                    <svg class="w-3.5 h-3.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path></svg>
-                    DASHBOARD
-                </button>
             </div>
         </div>
     </header>
@@ -2535,13 +2531,14 @@ create policy "public rw" on chip_settings for all using (true) with check (true
 
         const dashBtn = document.getElementById('nav-dashboard');
         const adminBtn = document.getElementById('nav-admin');
+        const iconBtnBase = "relative h-8 w-8 flex-shrink-0 rounded-lg flex items-center justify-center transition-all";
         if (menu === 'dashboard') {
-            dashBtn.className = "h-11 px-6 rounded-xl text-xs font-black transition-all nav-active flex items-center justify-center gap-2 whitespace-nowrap";
-            adminBtn.className = "h-11 px-6 rounded-xl text-xs font-black transition-all text-slate-400 hover:text-white flex items-center justify-center gap-2 whitespace-nowrap";
+            dashBtn.className = iconBtnBase + " text-amber-400 bg-white/5";
+            adminBtn.className = (adminBtn.classList.contains('hidden') ? "hidden " : "") + iconBtnBase + " text-slate-500 hover:text-amber-400 hover:bg-white/5";
             updateComparison();
         } else {
-            adminBtn.className = "h-11 px-6 rounded-xl text-xs font-black transition-all nav-active flex items-center justify-center gap-2 whitespace-nowrap";
-            dashBtn.className = "h-11 px-6 rounded-xl text-xs font-black transition-all text-slate-400 hover:text-white flex items-center justify-center gap-2 whitespace-nowrap";
+            adminBtn.className = (adminBtn.classList.contains('hidden') ? "hidden " : "") + iconBtnBase + " text-amber-400 bg-white/5";
+            dashBtn.className = iconBtnBase + " text-slate-500 hover:text-amber-400 hover:bg-white/5";
             renderDatabase();
             populateMsgTypesSelector();
             renderManualChipList();
