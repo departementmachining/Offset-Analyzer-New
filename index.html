@@ -490,7 +490,7 @@ CREATE POLICY mread_delete ON app_message_reads FOR DELETE USING (true);</div>
     <header class="text-white pt-6 pb-20 px-6 md:px-8 mb-[-40px]" style="background: linear-gradient(135deg, #070a13 0%, #111827 100%);">
         <!-- Baris atas: judul, dashboard, mail & admin panel kecil -->
         <div class="max-w-7xl mx-auto flex justify-between items-center gap-3 mb-6">
-            <h1 class="text-lg font-black italic tracking-tighter uppercase text-transparent bg-clip-text bg-gradient-to-r from-white via-slate-100 to-amber-400 whitespace-nowrap">
+            <h1 class="text-sm font-black italic tracking-tighter uppercase text-transparent bg-clip-text bg-gradient-to-r from-white via-slate-100 to-amber-400 whitespace-nowrap">
                 OFFSET <span class="text-amber-400">ANALYZER</span> PRO
             </h1>
             <div class="flex items-center gap-1.5">
@@ -566,19 +566,18 @@ CREATE POLICY mread_delete ON app_message_reads FOR DELETE USING (true);</div>
         <!-- DASHBOARD MENU -->
         <div id="menu-dashboard" class="animate-fade space-y-8">
             <div class="premium-card p-6 border-l-4 border-amber-500 bg-gradient-to-r from-amber-500/5 to-transparent">
-                <div id="typeUpdateBanner" class="hidden mb-4 px-4 py-3 rounded-xl bg-amber-500/15 border border-amber-500/40 flex items-center gap-2.5 animate-fade">
-                    <svg class="w-4 h-4 text-amber-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
-                    <span class="text-[11px] font-black text-amber-300 uppercase tracking-widest">✓ Terupdate — Kombinasi tipe ini sudah tersedia data terbaru</span>
-                </div>
                 <div class="flex flex-col lg:flex-row gap-6 lg:items-end">
                     <div class="space-y-2">
                         <label class="text-[10px] font-black text-amber-500 uppercase tracking-widest ml-1">Pilihan Garis Produksi</label>
-                        <select id="lineSelector" onchange="switchLine(this.value)" class="filter-select w-full lg:w-40 bg-[#141b2b] border border-white/10 rounded-xl px-4 py-3.5 text-sm font-black text-amber-400 outline-none cursor-pointer">
-                            <option value="1">LINE 1</option>
-                            <option value="2">LINE 2</option>
-                            <option value="3">LINE 3</option>
-                            <option value="4">LINE 4</option>
-                        </select>
+                        <div class="flex items-center gap-3 flex-wrap">
+                            <select id="lineSelector" onchange="switchLine(this.value)" class="filter-select w-full lg:w-40 bg-[#141b2b] border border-white/10 rounded-xl px-4 py-3.5 text-sm font-black text-amber-400 outline-none cursor-pointer">
+                                <option value="1">LINE 1</option>
+                                <option value="2">LINE 2</option>
+                                <option value="3">LINE 3</option>
+                                <option value="4">LINE 4</option>
+                            </select>
+                            <span id="typeUpdateBanner" class="hidden text-[11px] font-black uppercase tracking-widest animate-fade" style="color:#10b981;text-shadow:0 0 10px rgba(16,185,129,0.6);">Terupdate</span>
+                        </div>
                     </div>
                     <div class="flex flex-col sm:flex-row gap-4 flex-1">
                         <div class="space-y-2 flex-1">
@@ -2305,8 +2304,13 @@ create policy "public rw" on chip_settings for all using (true) with check (true
         if (!banner) return;
         const t1 = document.getElementById('type1Selector')?.value;
         const t2 = document.getElementById('type2Selector')?.value;
+        const t1U = String(t1).trim().toUpperCase();
+        const t2U = String(t2).trim().toUpperCase();
         const isUpdated = !!t1 && !!t2 && typeUpdateList.some(p =>
-            parseInt(p.line) === activeLine && p.master === String(t1).trim().toUpperCase() && p.target === String(t2).trim().toUpperCase()
+            parseInt(p.line) === activeLine && (
+                (p.master === t1U && p.target === t2U) ||
+                (p.master === t2U && p.target === t1U)
+            )
         );
         banner.classList.toggle('hidden', !isUpdated);
     }
