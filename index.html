@@ -90,6 +90,13 @@
         .badge-delete { background: rgba(239,68,68,0.15); color: #f87171; border: 1px solid rgba(239,68,68,0.25); }
         .badge-cloud { background: rgba(59,130,246,0.15); color: #60a5fa; border: 1px solid rgba(59,130,246,0.25); }
         .badge-clear { background: rgba(168,85,247,0.15); color: #c084fc; border: 1px solid rgba(168,85,247,0.25); }
+
+        /* Admin panel tab navbar */
+        .admin-tab-btn { background: transparent; color: #64748b; border: 1px solid transparent; }
+        .admin-tab-btn:hover { color: #cbd5e1; background: rgba(255,255,255,0.04); }
+        .admin-tab-btn.active { background: rgba(251,191,36,0.12); color: #fbbf24; border: 1px solid rgba(251,191,36,0.3); box-shadow: inset 0 0 12px rgba(251,191,36,0.08); }
+        .admin-tab-panel { display: none; }
+        .admin-tab-panel.active { display: block; }
     </style>
 </head>
 <body class="pb-16 custom-scrollbar">
@@ -671,7 +678,32 @@ CREATE POLICY mread_delete ON app_message_reads FOR DELETE USING (true);</div>
         </div>
 
         <!-- ADMIN MENU -->
-        <div id="menu-admin" class="hidden animate-fade space-y-8 pb-20">
+        <div id="menu-admin" class="hidden animate-fade space-y-6 pb-20">
+
+            <!-- ADMIN TAB NAVBAR -->
+            <div class="premium-card p-2 sticky top-2 z-30 overflow-x-auto custom-scrollbar">
+                <div class="flex gap-1.5 min-w-max">
+                    <button onclick="setAdminTab('koneksi')" id="atab-koneksi" class="admin-tab-btn flex items-center gap-2 px-4 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-widest transition whitespace-nowrap">
+                        <svg class="w-3.5 h-3.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
+                        Koneksi
+                    </button>
+                    <button onclick="setAdminTab('chip')" id="atab-chip" class="admin-tab-btn flex items-center gap-2 px-4 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-widest transition whitespace-nowrap">
+                        <svg class="w-3.5 h-3.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path></svg>
+                        Chip Repair
+                    </button>
+                    <button onclick="setAdminTab('broadcast')" id="atab-broadcast" class="admin-tab-btn flex items-center gap-2 px-4 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-widest transition whitespace-nowrap">
+                        <svg class="w-3.5 h-3.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg>
+                        Pesan
+                    </button>
+                    <button onclick="setAdminTab('data')" id="atab-data" class="admin-tab-btn flex items-center gap-2 px-4 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-widest transition whitespace-nowrap">
+                        <svg class="w-3.5 h-3.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4"></path></svg>
+                        Data &amp; Import
+                    </button>
+                </div>
+            </div>
+
+            <!-- TAB PANEL: KONEKSI -->
+            <div id="admin-panel-koneksi" class="admin-tab-panel space-y-6">
 
             <!-- CLOUD URL PANEL -->
             <div class="premium-card p-6 border-l-8 border-emerald-500 bg-emerald-500/5">
@@ -805,6 +837,12 @@ alter table chip_settings add column if not exists type_update_list jsonb defaul
                 </div>
             </div>
 
+            </div>
+            <!-- /TAB PANEL: KONEKSI -->
+
+            <!-- TAB PANEL: CHIP -->
+            <div id="admin-panel-chip" class="admin-tab-panel space-y-6">
+
             <!-- CHIP REPAIR MANUAL PANEL (ADMIN ONLY) -->
             <div class="premium-card p-6 border-l-8 border-fuchsia-500 bg-fuchsia-500/5">
                 <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-5">
@@ -912,6 +950,12 @@ alter table chip_settings add column if not exists type_update_list jsonb defaul
                 </div>
             </div>
 
+            </div>
+            <!-- /TAB PANEL: CHIP -->
+
+            <!-- TAB PANEL: BROADCAST -->
+            <div id="admin-panel-broadcast" class="admin-tab-panel space-y-6">
+
             <!-- BROADCAST MESSAGE PANEL -->
             <div class="premium-card p-6 border-l-8 border-blue-500 bg-blue-500/5">
                 <div class="flex items-center justify-between mb-4 flex-wrap gap-3">
@@ -939,6 +983,12 @@ alter table chip_settings add column if not exists type_update_list jsonb defaul
                     </button>
                 </div>
             </div>
+
+            </div>
+            <!-- /TAB PANEL: BROADCAST -->
+
+            <!-- TAB PANEL: DATA -->
+            <div id="admin-panel-data" class="admin-tab-panel space-y-6">
 
             <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
                 <!-- BULK IMPORT -->
@@ -1002,6 +1052,9 @@ alter table chip_settings add column if not exists type_update_list jsonb defaul
                     </div>
                 </div>
             </div>
+            </div>
+            <!-- /TAB PANEL: DATA -->
+
         </div>
     </main>
 
@@ -2676,8 +2729,21 @@ alter table chip_settings add column if not exists type_update_list jsonb defaul
             renderChipExcludeTypeList();
             renderTypeUpdateList();
             updateChipCloudStatusBox();
+            setAdminTab(currentAdminTab);
         }
         updateKPIs();
+    }
+
+    // ── ADMIN PANEL TAB NAVIGATION ──────────────────────
+    let currentAdminTab = 'koneksi';
+    function setAdminTab(tab) {
+        currentAdminTab = tab;
+        ['koneksi','chip','broadcast','data'].forEach(t => {
+            const panel = document.getElementById('admin-panel-' + t);
+            const btn = document.getElementById('atab-' + t);
+            if (panel) panel.classList.toggle('active', t === tab);
+            if (btn) btn.classList.toggle('active', t === tab);
+        });
     }
 
     function logoutAdmin() {
